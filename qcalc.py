@@ -741,17 +741,117 @@ from typing import *
 # end:
 
 
+
+
+
+# ##################################################################
+# # Miscellaneous conversions
+# ##################################################################
+def _first_kstrict(k: int, rows: int, cols: int) -> Optional[List[int]]:
+    return [max(k, cols - i) for i in range(rows)]
+
+
+def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
+    n = len(lambda_)
+    i = n
+    
+    while i > 0 and lambda_[i-1] == 0:
+        i -= 1
+
+    if i == 0:
+        return None
+    
+    li = lambda_[i-1] - 1
+    
+    if li <= k:
+        return lambda_[:i-1] + [li] * (n - i + 1)
+    elif li + i - n > k:
+        return lambda_[:i-1] + [li - j for j in range(n - i + 1)]
+    else:
+        return lambda_[:i-1] + [li - j for j in range(li - k + 1)] + [k] * (n - i - li + k)
+
+
+def part_clip(lambda_: List[int]) -> Optional[List[int]]:
+    i = len(lambda_) - 1  # zero-based indexing in Python
+    while i >= 0 and lambda_[i] == 0:
+        i -= 1
+
+    return lambda_[:i+1] if i >= 0 else None
+
+
+def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
+    res = set()
+    lam = _first_kstrict(k, rows, cols)
+    
+    while isinstance(lam, list): # Check if lam is a list
+        clipped = part_clip(lam)
+        if clipped:  # Check if clipped is not None
+            res.add(tuple(clipped))
+        lam = _itr_kstrict(lam, k)
+
+    return res
+
+
+def part_conj(lambda_: List[int]) -> List[int]:
+    n = len(lambda_)
+    if n == 0:
+        return []
+    else:
+        m = lambda_[0]
+        res = [0] * m
+        j = 1
+        for i in range(m, 0, -1):
+            while j < n and lambda_[j] >= i:
+                j += 1
+            res[i - 1] = j
+        return res
+    
+
+def part_itr(mu: List[int]) -> Optional[List[int]]:
+    i = len(mu) - 1
+    while i >= 0 and mu[i] == 0:
+        i -= 1
+    if i < 0:
+        return None
+    a = mu[i] - 1
+    return mu[:i] + [a] * (len(mu) - i)
+
+
+# tau < mu < lambda
+def part_itr_between(mu: List[int], tau: List[int], lambda_: List[int]) -> Optional[List[int]]:
+    i = len(mu) - 1
+    while i >= 0 and mu[i] == tau[i]:
+        i -= 1
+
+    if i < 0:
+        return None
+
+    return mu[:i] + [min(mu[j]-1, lambda_[j]) for j in range(i, len(mu))]
+
+
+def part_len(lambda_: List[int]) -> int:
+    n = len(lambda_) - 1
+    while n >= 0 and lambda_[n] == 0:
+        n -= 1
+    return n + 1
+
+
+
 # ##################################################################
 # # Miscellaneous conversions
 # ##################################################################
 
-# part2pair_inner := proc(lam, k)
-#   local top, bot, i;
-#   top := part_conj([seq(min(op(i,lam),k), i=1..nops(lam))]);
-#   bot := part_clip([seq(max(op(i,lam)-k,0), i=1..nops(lam))]);
-#   S[[op(top),0$(k-nops(top))],
-#     `if`(nops(lam)>0 and op(-1,lam)=0, [op(bot),0], bot)];
-# end:
+def part2pair_inner(lam: List[int], k: int) -> Tuple[List[int], List[int]]:
+    top = part_conj([min(i, k) for i in lam])
+    bot = part_clip([max(i - k, 0) for i in lam])
+
+    # Adjust lengths
+    top.extend([0] * (k - len(top)))
+    
+    if len(lam) > 0 and lam[-1] == 0:
+        bot.append(0)
+
+    return top, bot
 
 # pair2part_inner := proc(pair)
 #   local lam, np2, i;
@@ -855,99 +955,3 @@ from typing import *
 #   fi;
 #   res;
 # end:
-
-
-# ##################################################################
-# # Miscellaneous conversions
-# ##################################################################
-
-# part_len := proc(lambda)
-#   local n;
-#   n := nops(lambda);
-#   while n > 0 and op(n,lambda) = 0 do n := n - 1; od;
-#   RETURN(n);
-# end:
-
-# # tau < mu < lambda
-# part_itr_between := proc(mu, tau, lambda)
-#   local i, j, n, m, a, res;
-#   i := nops(mu);
-#   while i > 0 and op(i,mu) = op(i,tau) do i := i - 1; od;
-#   if i = 0 then
-#     false;
-#   else
-#     [op(1..i-1, mu), seq(min(op(i,mu)-1, op(j,lambda)), j=i..nops(mu))];
-#   fi;
-# end:
-
-# part_itr := proc(mu)
-#   local i, a;
-#   i := nops(mu);
-#   while i>0 and op(i,mu)=0 do i := i-1; od;
-#   if i=0 then RETURN(false); fi;
-#   a := op(i,mu)-1;
-#   [op(1..i-1,mu),a$(nops(mu)-i+1)];
-# end:
-
-
-
-# part_conj := proc(lambda)
-#   local n, m, res, i, j;
-#   n := nops(lambda);
-#   if n = 0 then
-#     [];
-#   else
-#     m := op(1, lambda);
-#     res := array(1..m);
-#     j := 1;
-#     for i from m by -1 to 1 do
-#       while j < n and op(j+1, lambda) >= i do j := j+1; od;
-#       res[i] := j;
-#     od;
-#     [seq(res[i], i=1..m)];
-#   fi;
-# end:
-
-
-def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
-    res = set()
-    lam = _first_kstrict(k, rows, cols)
-    
-    while isinstance(lam, list): # Check if lam is a list
-        clipped = part_clip(lam)
-        if clipped:  # Check if clipped is not None
-            res.add(tuple(clipped))
-        lam = _itr_kstrict(lam, k)
-
-    return res
-
-def part_clip(lambda_: List[int]) -> Optional[List[int]]:
-    i = len(lambda_) - 1  # zero-based indexing in Python
-    while i >= 0 and lambda_[i] == 0:
-        i -= 1
-
-    return lambda_[:i+1] if i >= 0 else None
-
-
-def _first_kstrict(k: int, rows: int, cols: int) -> Optional[List[int]]:
-    return [max(k, cols - i) for i in range(rows)]
-
-
-def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
-    n = len(lambda_)
-    i = n
-    
-    while i > 0 and lambda_[i-1] == 0:
-        i -= 1
-
-    if i == 0:
-        return None
-    
-    li = lambda_[i-1] - 1
-    
-    if li <= k:
-        return lambda_[:i-1] + [li] * (n - i + 1)
-    elif li + i - n > k:
-        return lambda_[:i-1] + [li - j for j in range(n - i + 1)]
-    else:
-        return lambda_[:i-1] + [li - j for j in range(li - k + 1)] + [k] * (n - i - li + k)
