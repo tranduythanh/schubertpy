@@ -946,12 +946,41 @@ def part2pair_inner(lam: List[int], k: int) -> Tuple[List[int], List[int]]:
 #   if not member(k,la) then RETURN(S[op(la)]); fi;
 #   S[op(la), `if`(nops({ii$ii=1..n+1} minus {op(idx)}) mod 2 = 1, 0, NULL)];
 # end:
+def _pieri_itr(lam: List[int], inner: List[int], outer: List[int]) -> Union[List[int], None]:
+    if not lam:
+        return None
+    
+    p = lam[-1] - inner[-1]
+    
+    for r in range(len(lam) - 1, 0, -1):
+        if lam[r-1] > inner[r-1]:
+            lam1 = lam.copy()
+            lam1[r-1] -= 1
+            lam1 = _pieri_fill(lam1, inner, outer, r + 1, p + 1)
+            if lam1 is not None:
+                return lam1
+            p = p + lam[r-1] - inner[r-1]
+    
+    return None
 
-# dualize_index_inner := proc(idx, N, tp)
-#   local i, res;
-#   res := S[seq(N+1-op(-i,idx),i=1..nops(idx))];
-#   if tp="D" and N/2 mod 2 = 1 then
-#     res := subs({N/2=N/2+1,N/2+1=N/2}, res);
-#   fi;
-#   res;
-# end:
+
+def _part_star(lam: List[int], cols: int) -> Union[int, List[int]]:
+    if not lam or lam[0] != cols:
+        return 0
+    return ['S'] + lam[1:]
+
+def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[str, int]]]:
+    if part_len(lam) != rows or (lam and lam[0] > cols):
+        return 0
+    
+    r = rows + lam[0] - cols if lam else -cols
+    
+    if r <= 0:
+        return 0
+    if r < rows and len(lam) > r and lam[r] > 1:
+        return 0
+
+    result = ['S'] + lam[1:r]
+    if lam and lam[-1] == 0:
+        result.append(0)
+    return result
