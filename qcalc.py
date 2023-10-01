@@ -17,6 +17,7 @@
 # I will be grateful for any comments or bug reports regarding this package. Thanks to Weihong Xu for one such report. Enjoy!
 
 import numpy as np
+import sympy as sp
 from typing import *
 
 # qcalc := module()
@@ -48,76 +49,79 @@ from typing import *
 # # Common interface for all types
 # ##################################################################
 
-# fail_no_type := proc()
-#   ERROR("Must set type with IG or OG or set_type functions.");
-# end:
+def fail_no_type() -> None:
+    raise ValueError("Must set type with IG or OG or set_type functions.")
 
-# _type   := false:
-# _k      := false:
-# _n      := false:
-# _pieri  := fail_no_type:
-# _qpieri := fail_no_type:
+# Using Python's None instead of Maple's false to represent unset values
+_type = None
+_k = None
+_n = None
+_pieri = fail_no_type
+_qpieri = fail_no_type
 
-# set_type := proc(tp, k, n)
-#   if k<0 or n<k then ERROR("Need 0 <= k <= n."); fi;
-#   if tp = "A" then
-#     _pieri  := pieriA_inner;
-#     _qpieri := qpieriA_inner;
-#   elif tp = "C" then
-#     _pieri  := pieriC_inner;
-#     _qpieri := qpieriC_inner;
-#   elif tp = "B" then
-#     _pieri  := pieriB_inner;
-#     _qpieri := qpieriB_inner;
-#   elif tp = "D" then
-#     _pieri  := pieriD_inner;
-#     _qpieri := qpieriD_inner;
-#   else
-#     fail_no_type();
-#   fi;
-#   _k      := k;
-#   _n      := n;
-#   _type   := tp;
-#   type_string();
-# end:
+def set_type(tp: str, k: int, n: int) -> str:
+    if k < 0 or n < k:
+        raise ValueError("Need 0 <= k <= n.")
+    
+    global _pieri, _qpieri, _k, _n, _type
+    
+    if tp == "A":
+        _pieri = pieriA_inner
+        _qpieri = qpieriA_inner
+    elif tp == "C":
+        _pieri = pieriC_inner
+        _qpieri = qpieriC_inner
+    elif tp == "B":
+        _pieri = pieriB_inner
+        _qpieri = qpieriB_inner
+    elif tp == "D":
+        _pieri = pieriD_inner
+        _qpieri = qpieriD_inner
+    else:
+        fail_no_type()
+    
+    _k = k
+    _n = n
+    _type = tp
+    
+    return type_string()  # Assuming type_string() is a function returning a string
 
-# type_string := proc()
-#   local td;
-#   td := get_type();
-#   sprintf("Type %s ;  (k,n) = (%d,%d) ;  %s(%d,%d) ;  deg(q) = %d", op(td));
-#   # sprintf("Type %s ;  %s(%d,%d) ;  deg(q) = %d", td[1], op(4..-1,td));
-# end:
 
-# get_type := proc()
-#   if _type = "A" then
-#     ["A", _k, _n, "Gr", _n-_k, _n, _n];
-#   elif _type = "C" then
-#     ["C", _k, _n, "IG", _n-_k, 2*_n, _n+1+_k];
-#   elif _type = "B" then
-#     ["B", _k, _n, "OG", _n-_k, 2*_n+1, `if`(_k=0,2*_n,_n+_k)];
-#   elif _type = "D" then
-#     ["D", _k, _n, "OG", _n+1-_k, 2*_n+2, `if`(_k=0,2*_n,_n+_k)];
-#   else
-#     fail_no_type();
-#   fi;
-# end:
+def type_string() -> str:
+    td = get_type()
+    return f"Type {td[0]} ;  (k,n) = ({td[1]},{td[2]}) ;  {td[3]}({td[4]},{td[5]}) ;  deg(q) = {td[6]}"
 
-# Gr := proc(m, N)
-#   set_type("A", N-m, N);
-# end:
 
-# IG := proc(m, N)
-#   if N mod 2 = 1 then ERROR("Second argument must be even."); fi;
-#   set_type("C", N/2-m, N/2);
-# end:
+def get_type() -> list:
+    global _type, _k, _n
+    if _type == "A":
+        return ["A", _k, _n, "Gr", _n-_k, _n, _n]
+    elif _type == "C":
+        return ["C", _k, _n, "IG", _n-_k, 2*_n, _n+1+_k]
+    elif _type == "B":
+        return ["B", _k, _n, "OG", _n-_k, 2*_n+1, 2*_n if _k == 0 else _n+_k]
+    elif _type == "D":
+        return ["D", _k, _n, "OG", _n+1-_k, 2*_n+2, 2*_n if _k == 0 else _n+_k]
+    else:
+        fail_no_type()
 
-# OG := proc(m, N)
-#   if N mod 2 = 1 then
-#     set_type("B", (N-1)/2-m, (N-1)/2);
-#   else
-#     set_type("D", N/2-m, N/2-1);
-#   fi;
-# end:
+
+def Gr(m: int, N: int) -> None:
+    set_type("A", N-m, N)
+
+
+def IG(m: int, N: int) -> None:
+    if N % 2 == 1:
+        raise ValueError("Second argument must be even.")
+    set_type("C", N//2-m, N//2)
+
+
+def OG(m: int, N: int) -> None:
+    if N % 2 == 1:
+        set_type("B", (N-1) // 2 - m, (N-1) // 2)
+    else:
+        set_type("D", N // 2 - m, N // 2 - 1)
+
 
 # schub_classes := proc()
 #   local res, mu;
