@@ -73,12 +73,14 @@ def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
         return lambda_[:i-1] + [li - j for j in range(li - k + 1)] + [k] * (n - i - li + k)
 
 
-def part_clip(lambda_: List[int]) -> Optional[List[int]]:
-    i = len(lambda_) - 1  # zero-based indexing in Python
+def part_clip(lambda_: List[int]) -> List[int]:
+    '''
+    trims or removes trailing zeros from the list lambda.
+    '''
+    i = len(lambda_) - 1
     while i >= 0 and lambda_[i] == 0:
         i -= 1
-
-    return lambda_[:i+1] if i >= 0 else None
+    return lambda_[:i+1] if i >= 0 else []
 
 
 def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:

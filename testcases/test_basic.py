@@ -31,7 +31,7 @@ class Test_SetType_GetType(unittest.TestCase):
             set_type("E", 3, 5)
         with self.assertRaises(ValueError):
             IG(2, 5)
-            
+
         with self.assertRaises(TypeError):
             set_type("A", 'a', 3)
         with self.assertRaises(TypeError):
@@ -50,6 +50,31 @@ class Test_SetType_GetType(unittest.TestCase):
             IG(3, 'a')
         with self.assertRaises(TypeError):
             IG('a', 4)
+
+class TestPartClip(unittest.TestCase):
+
+    def test_empty_list(self):
+        self.assertEqual(part_clip([]), [])
+
+    def test_no_trailing_zeros(self):
+        self.assertEqual(part_clip([1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
+
+    def test_trailing_zeros(self):
+        self.assertEqual(part_clip([3, 4, 5, 0, 0]), [3, 4, 5])
+        self.assertEqual(part_clip([1, 0, 0, 0, 0]), [1])
     
+    def test_all_zeros(self):
+        self.assertEqual(part_clip([0, 0, 0, 0, 0]), [])
+    
+    def test_single_element_no_zero(self):
+        self.assertEqual(part_clip([5]), [5])
+    
+    def test_single_element_zero(self):
+        self.assertEqual(part_clip([0]), [])
+
+if __name__ == '__main__':
+    unittest.main()
+
+
 if __name__ == "__main__":
     unittest.main()
