@@ -805,6 +805,19 @@ _pieri = fail_no_type
 _qpieri = fail_no_type
 
 def set_type(tp: str, k: int, n: int) -> str:
+    if not isinstance(tp, str):
+        raise TypeError(f"tp must be a string, got {type(tp)}")
+  
+    if not isinstance(k, int): 
+        raise TypeError(f"k must be an int, got {type(k)}")
+
+    if not isinstance(n, int):
+        raise TypeError(f"n must be an int, got {type(n)}")
+
+    # Additional checks
+    if tp not in ['A', 'B', 'C', 'D']:
+        fail_no_type()
+
     if k < 0 or n < k:
         raise ValueError("Need 0 <= k <= n.")
     
@@ -822,8 +835,6 @@ def set_type(tp: str, k: int, n: int) -> str:
     elif tp == "D":
         _pieri = pieriD_inner
         _qpieri = qpieriD_inner
-    else:
-        fail_no_type()
     
     _k = k
     _n = n
@@ -851,17 +862,35 @@ def get_type() -> list:
         fail_no_type()
 
 
-def Gr(m: int, N: int) -> None:
+def Gr(m: int, N: int) -> None:   
+    if not isinstance(m, int): 
+        raise TypeError(f"m must be an int, got {type(m)}")
+
+    if not isinstance(N, int):
+        raise TypeError(f"N must be an int, got {type(N)}")
+     
     set_type("A", N-m, N)
 
 
 def IG(m: int, N: int) -> None:
+    if not isinstance(m, int): 
+        raise TypeError(f"m must be an int, got {type(m)}")
+
+    if not isinstance(N, int):
+        raise TypeError(f"N must be an int, got {type(N)}")
+    
     if N % 2 == 1:
         raise ValueError("Second argument must be even.")
     set_type("C", N//2-m, N//2)
 
 
 def OG(m: int, N: int) -> None:
+    if not isinstance(m, int): 
+        raise TypeError(f"m must be an int, got {type(m)}")
+
+    if not isinstance(N, int):
+        raise TypeError(f"N must be an int, got {type(N)}")
+        
     if N % 2 == 1:
         set_type("B", (N-1) // 2 - m, (N-1) // 2)
     else:
