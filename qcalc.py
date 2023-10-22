@@ -18,6 +18,7 @@
 
 import numpy as np
 import sympy as sp
+from collections import OrderedDict
 from typing import *
 
 # qcalc := module()
@@ -49,20 +50,33 @@ from typing import *
 # ##################################################################
 # # Miscellaneous conversions
 # ##################################################################
-def _first_kstrict(k: int, rows: int, cols: int) -> Optional[List[int]]:
+
+def _custom_sort_key(item: str):
+    # Extract the numbers from the string representation
+    item = item.replace(' ', '')
+    numbers = [int(n) for n in item[2:-1].split(',') if n]
+    return (len(numbers), numbers)
+
+def _sort_s_list(s_list):
+    # Sort the list using the custom sort key
+    return sorted(s_list, key=_custom_sort_key)
+
+def _unique(arr):
+    return list(OrderedDict.fromkeys(arr).keys())
+
+
+def _first_kstrict(k: int, rows: int, cols: int) -> List[int]:
     return [max(k, cols - i) for i in range(rows)]
 
 
 def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
     n = len(lambda_)
-    i = n
-    
-    while i > 0 and lambda_[i-1] == 0:
-        i -= 1
-
-    if i == 0:
+    clip_lambda = part_clip(lambda_)
+    if clip_lambda is None:
         return None
-    
+
+    i = len(clip_lambda)
+
     li = lambda_[i-1] - 1
     
     if li <= k:
@@ -73,25 +87,33 @@ def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
         return lambda_[:i-1] + [li - j for j in range(li - k + 1)] + [k] * (n - i - li + k)
 
 
-def part_clip(lambda_: List[int]) -> List[int]:
+def part_clip(lambda_: List[int]) -> Optional[List[int]]:
     '''
     trims or removes trailing zeros from the list lambda.
     '''
     i = len(lambda_) - 1
     while i >= 0 and lambda_[i] == 0:
         i -= 1
-    return lambda_[:i+1] if i >= 0 else []
+    return lambda_[:i+1] if i >= 0 else None
+
+
+first_kstrict = _first_kstrict
+itr_kstrict = _itr_kstrict
 
 
 def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
-    res = set()
+    res = []
     lam = _first_kstrict(k, rows, cols)
     
-    while isinstance(lam, list): # Check if lam is a list
+    while True: # Check if lam is a list
         clipped = part_clip(lam)
         if clipped:  # Check if clipped is not None
-            res.add(tuple(clipped))
-        lam = _itr_kstrict(lam, k)
+            res.append(clipped)
+            lam = _itr_kstrict(lam, k)
+            continue
+        
+        res.append([])
+        break
 
     return res
 
@@ -111,34 +133,49 @@ def part_conj(lambda_: List[int]) -> List[int]:
         return res
     
 
+def part_gen(lambda_: List[int]):
+    mu = lambda_.copy()
+    ret = []
+    while mu is not None:
+        pmu = part_clip(mu)
+
+        if pmu is not None:
+            ret.append(pmu)
+            mu = part_itr(mu)
+            continue
+        
+        ret.append([])
+        break
+        
+    return ret
+
+
 def part_itr(mu: List[int]) -> Optional[List[int]]:
-    i = len(mu) - 1
-    while i >= 0 and mu[i] == 0:
-        i -= 1
-    if i < 0:
+    if mu is None:
         return None
-    a = mu[i] - 1
-    return mu[:i] + [a] * (len(mu) - i)
+    if part_clip(mu) is None:
+        return None
+    
+    last_idx = part_len(mu)-1
+    a = mu[last_idx] - 1
+    return mu[:last_idx] + [a] * (len(mu) - last_idx)
 
 
 # tau < mu < lambda
-def part_itr_between(mu: List[int], tau: List[int], lambda_: List[int]) -> Optional[List[int]]:
-    i = len(mu) - 1
-    while i >= 0 and mu[i] == tau[i]:
-        i -= 1
-
-    if i < 0:
-        return None
-
-    return mu[:i] + [min(mu[j]-1, lambda_[j]) for j in range(i, len(mu))]
+def part_itr_between(mu: List[int], tau: List[int], lambda_: List[int]) -> List[int]:
+    ln = part_len(mu)
+    if ln == 0:
+        return []
+    
+    last_idx = ln - 1
+    return mu[:last_idx] + [min(mu[j]-1, lambda_[j]) for j in range(last_idx, len(mu))]
 
 
 def part_len(lambda_: List[int]) -> int:
-    n = len(lambda_) - 1
-    while n >= 0 and lambda_[n] == 0:
-        n -= 1
-    return n + 1
-
+    cl = part_clip(lambda_)
+    if cl is None:
+        return 0
+    return len(cl)
 
 
 # ##################################################################
@@ -899,38 +936,40 @@ def OG(m: int, N: int) -> None:
         set_type("D", N // 2 - m, N // 2 - 1)
 
 
-def S(*args: int) -> sp.Symbol:
-    # Placeholder function to represent symbolic expression
-    return sp.Symbol(' '.join(map(str, args)))
- 
+def S(*args: int) -> str:
+    mu = ','.join(map(str, args))
+    return f"S[{mu}]"
 
-def schub_classes() -> Set[sp.Symbol]:
+
+def schub_classes() -> List[str]:
     if not isinstance(_type, str):
         fail_no_type()
 
     if _type == "A":
-        res = set()
         mu = [_k] * (_n - _k)
-        while isinstance(mu, list):
-            res.add(S(*part_clip(mu)))
-            mu = part_itr(mu)
-        return res
+        partitions = part_gen(mu)
 
-    elif _type == "D":
-        result = set()
+        res = [S(*lam) for lam in partitions]
+        res = _unique(res)
+        return _sort_s_list(res)
+
+    if _type == "D":
+        res = []
         for mu in all_kstrict(_k, _n + 1 - _k, _n + _k):
             if _k in mu:
-                result.add(S(*mu))
-                result.add(S(*mu, 0))
+                res.append(S(*mu))
+                res.append(S(*mu, 0))
             else:
-                result.add(S(*mu))
-        return result
+                res.append(S(*mu))
+        res = _unique(res)
+        return _sort_s_list(res)
 
-    else:
-        return {S(*lam) for lam in all_kstrict(_k, _n - _k, _n + _k)}
+    res = [S(*lam) for lam in all_kstrict(_k, _n - _k, _n + _k)]
+    res = _unique(res)
+    return _sort_s_list(res)
 
 
-def generators() -> List[sp.Symbol]:
+def generators() -> List[str]:
     if not isinstance(_type, str):
         fail_no_type()
 
@@ -947,7 +986,7 @@ def generators() -> List[sp.Symbol]:
 
     return gen_list
 
-def point_class() -> sp.Symbol:
+def point_class() -> str:
     if not isinstance(_type, str):
         fail_no_type()
 
