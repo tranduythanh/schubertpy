@@ -369,7 +369,7 @@ def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]
 # ##################################################################
 # # Pieri rule internals
 # ##################################################################
-def _pieri_fillA(lam: List[int], inner: List[int], outer: List[int], r: int, p: int) -> Union[List[int], None]:
+def _pieri_fillA(lam: List[int], inner: List[int], outer: List[int], r: int, p: int) -> Optional[List[int]]:
     if not lam:
         return lam
     
@@ -622,11 +622,12 @@ def num2spec(p: int) -> List[Union[int, str]]:
 
 
 def apply_lc(f: Callable, lc: Union[int, List[Union[str, int]]]) -> Union[int, List[Union[str, int]]]:
-    if isinstance(lc, (int, float)):
+    # if lc is an integer coefficient
+    if isinstance(lc, int):
         return lc
-    elif lc and isinstance(lc, list) and lc[0] == 'S':
+    elif lc and isinstance(lc, list) and lc[0] == 'S':  # if lc is a Schubert class
         return f(lc[1:])
-    else:
+    else:  # if lc is a linear combination
         return [apply_lc(f, item) for item in lc]
 
 
@@ -991,9 +992,19 @@ def point_class() -> str:
         fail_no_type()
 
     if _type == "A":
-        return S(*([_k] * (_n - _k)) if _k > 0 else [])
+        if _k > 0:
+            return S(*(([_k] * (_n - _k))))
+        return []
 
-    return S(*[_n + _k - i for i in range(0, _n - _k - (0 if (_type == "D" and _k > 0) else 1))])
+    delta = 1
+    if _type == "D" and _k > 0:
+        delta = 0
+
+    result = []
+    for i in range(0, _n - _k - delta + 1):
+        result.append(_n + _k - i)
+    
+    return S(*result)
 
 
 def part2pair(lc: Any) -> Any:
