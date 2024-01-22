@@ -166,13 +166,13 @@ def part_itr(mu: List[int]) -> Optional[List[int]]:
 
 
 # tau < mu < lambda
-def part_itr_between(mu: List[int], tau: List[int], lambda_: List[int]) -> List[int]:
-    ln = part_len(mu)
-    if ln == 0:
-        return []
-    
-    last_idx = ln - 1
-    return mu[:last_idx] + [min(mu[j]-1, lambda_[j]) for j in range(last_idx, len(mu))]
+def part_itr_between(mu: List[int], tau: List[int], lam: List[int]) -> Optional[List[int]]:
+    i = len(mu)-1
+    while i>=0 and mu[i] == tau[i]:
+        i -= 1
+    if i < 0:
+        return None
+    return mu[:i] + [min(mu[i]-1, lam[j]) for j in range(i, len(mu))]
 
 
 def part_len(lambda_: List[int]) -> int:
