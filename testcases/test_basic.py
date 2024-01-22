@@ -142,7 +142,10 @@ class TestPartItrBetween(unittest.TestCase):
         self.assertEqual(part_itr_between([2,1],[3,1],[3,2]), [1,1])
         self.assertEqual(part_itr_between([2,1],[2,2],[3,2]), [2,0])
         self.assertEqual(part_itr_between([2,1],[3,3],[3,2]), [2,0])
-        self.assertEqual(part_itr_between([4,3,1], [2,2,2],[4,3,2]), [4,3,0])
+        self.assertEqual(part_itr_between([4,3,1],[2,2,2],[4,3,2]), [4,3,0])
+        self.assertEqual(part_itr_between([2,1,1],[3,2,1],[4,3,2]), [2,0,0])
+        self.assertEqual(part_itr_between([9,9],[2,1],[3,2]), [9,2])
+        self.assertIsNone(part_itr_between([2,2],[2,2],[3,2]))
 
 
 if __name__ == '__main__':
