@@ -370,18 +370,9 @@ def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]
 # # Pieri rule internals
 # ##################################################################
 
-def _pieri_fillA(
-        lam: List[int], 
-        inner: List[int], 
-        outer: List[int], 
-        row_index: int, p: int,
-) -> Optional[List[int]]:
-    
-    if not lam:
-        return lam
-    
-    if len(lam) == 0:
-        return lam
+def _pieri_fillA(lam: List[int], inner: List[int], outer: List[int], row_index: int, p: int) -> Optional[List[int]]:    
+    if not lam or len(lam) == 0:
+        return None
     
     res = lam.copy()
     pp = p
@@ -406,12 +397,9 @@ def _pieri_fillA(
 
 
 def _pieri_itrA(lam: List[int], inner: List[int], outer: List[int]) -> Optional[List[int]]:
-    if not lam:
+    if not lam or len(lam) == 0:
         return None
     
-    if len(lam) == 0:
-        return lam
-
     p = lam[-1] - inner[-1]
     for r in range(len(lam) - 2, -1, -1):
         if lam[r] > inner[r]:

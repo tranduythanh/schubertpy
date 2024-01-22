@@ -15,5 +15,6 @@ def yd(partition):
 lambda_partition = (2, 1)
 yd(lambda_partition)
 
-for i in range(3, -1, -1):
-    print(i)
+lam = []
+if not lam:
+    print('Empty list')
