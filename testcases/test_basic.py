@@ -118,5 +118,25 @@ class TestItrKstrict(unittest.TestCase):
     def test_else_branch(self):
         self.assertEqual(itr_kstrict([3, 2, 1], 0), [3, 2, 0])
 
+
+class TestPartConj(unittest.TestCase):
+    
+    def test_empty_list(self):
+        self.assertEqual(part_conj([]), [])
+        
+    def test_single_element_list(self):
+        self.assertEqual(part_conj([3]), [1, 1, 1])
+            
+    def test_unsorted_list(self):
+        self.assertEqual(part_conj([5, 2]), [2, 2, 1, 1, 1])
+        
+    def test_duplicate_elements(self):
+        self.assertEqual(part_conj([2, 2, 2]), [3, 3])
+        
+    def test_negative_elements(self):
+        self.assertEqual(part_conj([-1, -2, -3]), [])
+        
+
+
 if __name__ == '__main__':
     unittest.main()

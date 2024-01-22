@@ -122,15 +122,19 @@ def part_conj(lambda_: List[int]) -> List[int]:
     n = len(lambda_)
     if n == 0:
         return []
-    else:
-        m = lambda_[0]
-        res = [0] * m
-        j = 1
-        for i in range(m, 0, -1):
-            while j < n and lambda_[j] >= i:
-                j += 1
-            res[i - 1] = j
-        return res
+
+    if min(lambda_) < 0:
+        return []
+    
+    m = lambda_[0]
+    lam = lambda_.copy()
+    res = [0] * m
+    
+    for i in range(0, m):
+        res[i] = len(lam)
+        lam = [lam[j] - 1 for j in range(len(lam))]
+        lam = part_clip(lam)
+    return res
     
 
 def part_gen(lambda_: List[int]):
