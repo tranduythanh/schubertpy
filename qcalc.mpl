@@ -300,7 +300,8 @@ pieriA_inner := proc(i, lam, k,n)
   local inner, outer, mu, res;
   inner := [op(lam), 0$(n-k-nops(lam))];
   outer := [k,op(1..-2,inner)];
-  mu    := _pieri_fillA(inner, inner, outer, 1, i);
+  #                      (lam, inner, outer, r, p)
+  mu    := _pieri_fillA(inner, inner, outer, 0, i);
   res := 0;
   while type(mu,list) do
     res := res + S[op(part_clip(mu))];

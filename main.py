@@ -6,7 +6,14 @@ print(type_string())
 print(all_kstrict(1,2,4))
 print(schub_classes())
 
-inner = padding_right([2,1], 0, 3)
-print(inner)
-outer = [9] + inner[:-1]
-print(outer)
+def yd(partition):
+    print('Young diagram for partition: ' + str(partition))
+    for row in partition:
+        print(('[]') * row)
+
+# Example usage
+lambda_partition = (2, 1)
+yd(lambda_partition)
+
+for i in range(3, -1, -1):
+    print(i)

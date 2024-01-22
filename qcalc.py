@@ -380,6 +380,9 @@ def _pieri_fillA(
     if not lam:
         return lam
     
+    if len(lam) == 0:
+        return lam
+    
     res = lam.copy()
     pp = p
     rr = row_index
@@ -402,34 +405,22 @@ def _pieri_fillA(
     return res[:len(lam)]
 
 
-def _pieri_itrA(lam: List[int], inner: List[int], outer: List[int]) -> Union[List[int], None]:
+def _pieri_itrA(lam: List[int], inner: List[int], outer: List[int]) -> Optional[List[int]]:
     if not lam:
         return None
+    
+    if len(lam) == 0:
+        return lam
 
     p = lam[-1] - inner[-1]
-
     for r in range(len(lam) - 2, -1, -1):
-        print("p,r=",p,r)
-        print(lam[r], inner[r])
         if lam[r] > inner[r]:
-            print(r, lam[r], inner[r], outer[r], p)
-            #     0    3        2         3      0
             lam1 = lam.copy()
             lam1[r] = lam[r] - 1
-            print("lam1 := subsop(r=lam[r]-1, lam)", lam1)
-
-            print("lam1=", lam1)
-            print("inner=", inner)
-            print("outer=", outer)
-            print("r+1", r+2)
-            print("p+1", p+1)
-            lam1 = _pieri_fillA(lam1, inner, outer, r+2, p+1)
-            print("new lam1=", lam1)
+            lam1 = _pieri_fillA(lam1, inner, outer, r+1, p+1)
             if lam1 is not None:
                 return lam1
-
-            p = p + lam[r-1] - inner[r-1]
-    
+            p = p + lam[r] - inner[r]
     return None
 
 
