@@ -20,6 +20,7 @@ import numpy as np
 import sympy as sp
 from collections import OrderedDict
 from typing import *
+from util import *
 
 # qcalc := module()
 # option package;
@@ -97,8 +98,7 @@ def part_clip(lambda_: List[int]) -> Optional[List[int]]:
     return lambda_[:i+1] if i >= 0 else None
 
 
-first_kstrict = _first_kstrict
-itr_kstrict = _itr_kstrict
+
 
 
 def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
@@ -369,30 +369,37 @@ def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]
 # ##################################################################
 # # Pieri rule internals
 # ##################################################################
-def _pieri_fillA(lam: List[int], inner: List[int], outer: List[int], r: int, p: int) -> Optional[List[int]]:
+
+def _pieri_fillA(
+        lam: List[int], 
+        inner: List[int], 
+        outer: List[int], 
+        row_index: int, p: int,
+) -> Optional[List[int]]:
+    
     if not lam:
         return lam
     
     res = lam.copy()
     pp = p
-    rr = r
+    rr = row_index
     
-    if rr == 1:
+    if rr == 0:
         x = min(outer[0], inner[0] + pp)
         res[0] = x
         pp = pp - x + inner[0]
-        rr = 2
+        rr = 1
 
-    while rr <= len(lam):
-        x = min(outer[rr-1], inner[rr-1] + pp, res[rr-2])
-        res[rr-1] = x
-        pp = pp - x + inner[rr-1]
+    while rr < len(lam):
+        x = min(outer[rr], inner[rr] + pp, res[rr-1])
+        res[rr] = x
+        pp = pp - x + inner[rr]
         rr += 1
 
     if pp > 0:
         return None
 
-    return res
+    return res[:len(lam)]
 
 
 def _pieri_itrA(lam: List[int], inner: List[int], outer: List[int]) -> Union[List[int], None]:
@@ -400,13 +407,24 @@ def _pieri_itrA(lam: List[int], inner: List[int], outer: List[int]) -> Union[Lis
         return None
 
     p = lam[-1] - inner[-1]
-    for r in range(len(lam) - 1, 0, -1):
-        if lam[r-1] > inner[r-1]:
+
+    for r in range(len(lam) - 2, -1, -1):
+        print("p,r=",p,r)
+        print(lam[r], inner[r])
+        if lam[r] > inner[r]:
+            print(r, lam[r], inner[r], outer[r], p)
+            #     0    3        2         3      0
             lam1 = lam.copy()
-            lam1[r-1] = lam[r-1] - 1
-            
-            lam1 = _pieri_fillA(lam1, inner, outer, r+1, p+1)
-            
+            lam1[r] = lam[r] - 1
+            print("lam1 := subsop(r=lam[r]-1, lam)", lam1)
+
+            print("lam1=", lam1)
+            print("inner=", inner)
+            print("outer=", outer)
+            print("r+1", r+2)
+            print("p+1", p+1)
+            lam1 = _pieri_fillA(lam1, inner, outer, r+2, p+1)
+            print("new lam1=", lam1)
             if lam1 is not None:
                 return lam1
 
@@ -697,8 +715,9 @@ def giambelli_rec(lc: sp.Expr, pieri: Callable, k: int) -> sp.Expr:
 # # Type A: Quantum cohomology of Gr(n-k,n).
 # ##################################################################
 
+# DO NOT MODIFY THIS FUNCTION
 def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> sp.Expr:
-    inner = lam + [0] * (n - k - len(lam))
+    inner = padding_right(lam, 0, n-k-len(lam))
     outer = [k] + inner[:-1]
     mu = _pieri_fillA(inner, inner, outer, 1, i)
     res = 0
@@ -844,6 +863,10 @@ _n = None
 _pieri = fail_no_type
 _qpieri = fail_no_type
 
+# Grassmaniann Gr(l,N):
+#           => k = N-l
+# Trong cong thuc, nguoi ta thuong dung Gr(l,N) 
+# trong cac giai thuat duoi day, ngta xai k=N-l
 def set_type(tp: str, k: int, n: int) -> str:
     if not isinstance(tp, str):
         raise TypeError(f"tp must be a string, got {type(tp)}")
@@ -1150,3 +1173,8 @@ def qmult(lc1: Any, lc2: Any) -> Any:
 
 def qtoS(lc: Any) -> Any:
     return qact(qgiambelli(lc), S())
+
+pieri_fillA = _pieri_fillA
+pieri_itrA = _pieri_itrA
+first_kstrict = _first_kstrict
+itr_kstrict = _itr_kstrict
