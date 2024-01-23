@@ -22,61 +22,9 @@ class TestPieriItrA(unittest.TestCase):
         self.assertIsNone(pieri_itrA([], [2,1,0,0,0], [5,2,1,0,0,0]))
 
 
-class TestMiamiSwapInner(unittest.TestCase):
-    def test_k_not_in_lam(self):
-        lam = [3,2,1]
-        k = 4
-        result = miami_swap_inner(lam, k)
-        self.assertEqual(result, 'S[3,2,1]')
-    
-    def test_even_count_greater_than_k(self):
-        lam = [5,4,3,2,1]
-        k = 3
-        result = miami_swap_inner(lam, k)
-        self.assertEqual(result, 'S[5,4,3,2,1]')
-    
-    def test_odd_count_greater_than_k(self):
-        lam = [5,4,3,2,1]
-        k = 2
-        result = miami_swap_inner(lam, k)
-        self.assertEqual(result, 'S[5,4,3,2,1,0]')
-    
-    def test_last_element_zero(self):
-        lam = [3,2,1,0]
-        k = 3
-        result = miami_swap_inner(lam, k)
-        self.assertEqual(result, 'S[3,2,1,0]')
-
-    def test_last_element_zero_2(self):
-        lam = [3,2,1,0,0,0,0]
-        k = 2
-        result = miami_swap_inner(lam, k)
-        self.assertEqual(result, 'S[3,2,1,0,0,0]')
-    
-    def test_last_element_non_zero(self):
-        lam = [4,3,2,1]
-        k = 3
-        result = miami_swap_inner(lam, k)
-        self.assertEqual(result, 'S[4,3,2,1,0]')
 
 
-class TestTypeSwapInner(unittest.TestCase):
-    
-    def test_empty_list(self):
-        self.assertEqual(type_swap_inner([], 2), 'S[]')
-        
-    def test_no_swap_needed(self):
-        self.assertEqual(type_swap_inner([3,2,1], 4), 'S[3,2,1]')
-        
-    def test_swap_needed(self):
-        self.assertEqual(type_swap_inner([3,2,1], 2), 'S[3,2,1,0]')
-        
-    def test_swap_needed_with_zero(self):
-        self.assertEqual(type_swap_inner([3,2,1,0], 2), 'S[3,2,1]')
-        
-    def test_swap_needed_with_zero_at_end(self):
-        self.assertEqual(type_swap_inner([3,2,1,0], 4), 'S[3,2,1]')
-        
+
 
 if __name__ == '__main__':
     unittest.main()

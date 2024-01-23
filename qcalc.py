@@ -251,37 +251,36 @@ def miami_swap_inner(lam: List[int], k: int) -> str:
 def type_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
     if lam is None or len(lam) == 0:
         return S(*[])
-    
     if k not in lam:
         if lam[-1] == 0:
             return S(*lam[:-1])
         return S(*lam)
-    
     if lam[-1] == 0:
         return S(*lam[:-1])
-    
     a = lam + [0]
     return S(*a)
 
 
 def part2indexA_inner(lam: List[int], k: int, n: int) -> List[int]:
     la = lam + [0] * (n - k)
-    return ['S'] + [k + j - la[j] for j in range(n - k)]
-
+    a = [k + j - la[j] + 1 for j in range(n - k)]
+    return S(*a)
 
 def part2indexB_inner(lam: List[int], k: int, n: int) -> List[int]:
     la = lam + [0] * (n - k)
-    result = ['S']
+    res = []
     for j in range(n - k):
-        count = 0
+        if la[j] > k:
+            res.append(n + k + 1 - la[j])
+            continue
+        
+        count = 0    
         for i in range(j):
             if la[i] + la[j] <= 2 * k + j - i:
                 count += 1
-        if la[j] <= k:
-            result.append(n + k + 2 - la[j] + count)
-        else:
-            result.append(n + k + 1 - la[j])
-    return result
+        a = n + k + 2 - la[j] + count
+        res.append(a)
+    return S(*res)
 
 
 def part2indexC_inner(lam: List[int], k: int, n: int) -> List[int]:

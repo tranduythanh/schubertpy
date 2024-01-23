@@ -807,8 +807,10 @@ end:
 part2indexB_inner := proc(lam, k, n)
   local la, i, j;
   la := [op(lam), 0$(n-k)];
-  S[seq(`if`(la[j]>k, n+k+1-la[j], n+k+2-la[j] +
-    `+`(seq(`if`(la[i]+la[j] <= 2*k+j-i,1,0), i=1..j-1))), j=1..n-k)];
+  S[seq(
+    `if`(la[j]>k, n+k+1-la[j], n+k+2-la[j] +
+    `+`(seq(`if`(la[i]+la[j] <= 2*k+j-i,1,0), i=1..j-1))), j=1..n-k
+  )];
 end:
 
 part2indexD_inner := proc(lam, k, n)
