@@ -80,7 +80,7 @@ class Test_SetType_GetType(unittest.TestCase):
 class TestPartClip(unittest.TestCase):
 
     def test_empty_list(self):
-        self.assertIsNone(part_clip([]))
+        self.assertEqual(part_clip([]), [])
 
     def test_no_trailing_zeros(self):
         self.assertEqual(part_clip([1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
@@ -90,21 +90,21 @@ class TestPartClip(unittest.TestCase):
         self.assertEqual(part_clip([1, 0, 0, 0, 0]), [1])
     
     def test_all_zeros(self):
-        self.assertIsNone(part_clip([0, 0, 0, 0, 0]))
+        self.assertEqual(part_clip([0, 0, 0, 0, 0]), [])
     
     def test_single_element_no_zero(self):
         self.assertEqual(part_clip([5]), [5])
     
     def test_single_element_zero(self):
-        self.assertIsNone(part_clip([0]))
+        self.assertEqual(part_clip([0]), [])
 
 class TestItrKstrict(unittest.TestCase):
 
     def test_empty_input(self):
-        self.assertIsNone(itr_kstrict([], 1))
+        self.assertEqual(itr_kstrict([], 1), [])
 
     def test_all_zeros(self):
-        self.assertIsNone(itr_kstrict([0, 0, 0], 1))
+        self.assertEqual(itr_kstrict([0, 0, 0], 1), [])
 
     def test_lambda_i_lesser_than_k(self):
         self.assertEqual(itr_kstrict([3, 2, 1], 2), [3, 2, 0])
@@ -147,6 +147,25 @@ class TestPartItrBetween(unittest.TestCase):
         self.assertEqual(part_itr_between([9,9],[2,1],[3,2]), [9,2])
         self.assertIsNone(part_itr_between([2,2],[2,2],[3,2]))
 
+class TestPart2PairInner(unittest.TestCase):
+    
+    def test_part2pair_inner_empty_list(self):
+        res = part2pair_inner([], 3)
+        self.assertEqual(res, 'S[[0, 0, 0],[]]')
+        
+    def test_part2pair_inner_all_zeros(self):
+        res = part2pair_inner([0, 0, 0], 2)
+        self.assertEqual(res, 'S[[0, 0],[0]]')
+    
+    def test_ok(self):
+        self.assertEqual(part2pair_inner([3, 1], 0), 'S[[],[3, 1]]')
+        self.assertEqual(part2pair_inner([3, 1], 1), 'S[[2],[2]]')
+        self.assertEqual(part2pair_inner([3, 1], 2), 'S[[2, 1],[1]]')
+        self.assertEqual(part2pair_inner([3, 1], 3), 'S[[2, 1, 1],[]]')
+        self.assertEqual(part2pair_inner([3, 1], 4), 'S[[2, 1, 1, 0],[]]')
+        self.assertEqual(part2pair_inner([3, 1], 5), 'S[[2, 1, 1, 0, 0],[]]')
+        
+        
 
 if __name__ == '__main__':
     unittest.main()

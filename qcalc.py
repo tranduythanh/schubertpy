@@ -75,6 +75,8 @@ def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
     clip_lambda = part_clip(lambda_)
     if clip_lambda is None:
         return None
+    if len(clip_lambda) == 0:
+        return []
 
     i = len(clip_lambda)
 
@@ -88,14 +90,14 @@ def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
         return lambda_[:i-1] + [li - j for j in range(li - k + 1)] + [k] * (n - i - li + k)
 
 
-def part_clip(lambda_: List[int]) -> Optional[List[int]]:
+def part_clip(lambda_: List[int]) -> List[int]:
     '''
     trims or removes trailing zeros from the list lambda.
     '''
     i = len(lambda_) - 1
     while i >= 0 and lambda_[i] == 0:
         i -= 1
-    return lambda_[:i+1] if i >= 0 else None
+    return lambda_[:i+1] if i >= 0 else []
 
 
 
@@ -137,13 +139,18 @@ def part_conj(lambda_: List[int]) -> List[int]:
     return res
     
 
-def part_gen(lambda_: List[int]):
-    mu = lambda_.copy()
+def part_gen(lam: List[int]):
+    if lam is None:
+        return []
+    if lam == []:
+        return []
+    
+    mu = lam.copy()
     ret = []
     while mu is not None:
         pmu = part_clip(mu)
 
-        if pmu is not None:
+        if pmu is not None and len(mu) > 0:
             ret.append(pmu)
             mu = part_itr(mu)
             continue
@@ -157,7 +164,12 @@ def part_gen(lambda_: List[int]):
 def part_itr(mu: List[int]) -> Optional[List[int]]:
     if mu is None:
         return None
-    if part_clip(mu) is None:
+    if len(mu)==0:
+        return None
+    pmu = part_clip(mu)
+    if pmu is None:
+        return None
+    if len(pmu) == 0:
         return None
     
     last_idx = part_len(mu)-1
@@ -187,8 +199,8 @@ def part_len(lambda_: List[int]) -> int:
 # ##################################################################
 
 def part2pair_inner(lam: List[int], k: int) -> Tuple[List[int], List[int]]:
-    top = part_conj([min(i, k) for i in lam])
-    bot = part_clip([max(i - k, 0) for i in lam])
+    top = part_conj([min(lam_i, k) for lam_i in lam])
+    bot = part_clip([max(lam_i - k, 0) for lam_i in lam])
 
     # Adjust lengths
     top.extend([0] * (k - len(top)))
@@ -196,7 +208,7 @@ def part2pair_inner(lam: List[int], k: int) -> Tuple[List[int], List[int]]:
     if len(lam) > 0 and lam[-1] == 0:
         bot.append(0)
 
-    return top, bot
+    return S(top,bot)
 
 
 def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[Union[int, None]]:
