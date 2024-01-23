@@ -266,6 +266,14 @@ def part2indexA_inner(lam: List[int], k: int, n: int) -> List[int]:
     a = [k + j - la[j] + 1 for j in range(n - k)]
     return S(*a)
 
+
+def _count_inner(la: List[int], k: int, j:int, delta:int=0) -> int:
+    count = 0
+    for i in range(j):
+        if la[i] + la[j] <= 2 * k + delta + j - i:
+            count += 1
+    return count
+
 def part2indexB_inner(lam: List[int], k: int, n: int) -> List[int]:
     la = lam + [0] * (n - k)
     res = []
@@ -273,51 +281,46 @@ def part2indexB_inner(lam: List[int], k: int, n: int) -> List[int]:
         if la[j] > k:
             res.append(n + k + 1 - la[j])
             continue
-        
-        count = 0    
-        for i in range(j):
-            if la[i] + la[j] <= 2 * k + j - i:
-                count += 1
+        count = _count_inner(la, k, j)
         a = n + k + 2 - la[j] + count
         res.append(a)
     return S(*res)
 
 
 def part2indexC_inner(lam: List[int], k: int, n: int) -> List[int]:
-    la = lam + [0] * (n - k)
-    result = ['S']
+    la = lam + [0] * (n-k)
+    res = []
     for j in range(n - k):
-        count = 0
-        for i in range(j):
-            if la[i] + la[j] <= 2 * k + j - i:
-                count += 1
-        result.append(n + k + 1 - la[j] + count)
-    return result
+        count = _count_inner(la, k, j)
+        res.append(n + k + 1 - la[j] + count)
+    return S(*res)
 
 
 def part2indexD_inner(lam: List[int], k: int, n: int) -> List[int]:
-    la = lam + [0] * (n + 1 - k)
+    la = lam + [0] * (n+1-k)
     nt = n + 2 if (len(lam) > 0 and lam[-1] == 0) else n + 1
-    result = ['S']
+    res = []
     for j in range(n + 1 - k):
-        count = 0
-        for i in range(j):
-            if la[i] + la[j] <= 2 * k - 1 + j - i:
-                count += 1
+        count = _count_inner(la, k, j, -1)
         value = n + k - la[j] + count
-        if la[j] > k or (la[j] == k and (j == 0 or k < la[j-1]) and (nt + j) % 2 == 0):
+        if la[j] > k:
             value += 1
-        else:
-            value += 2
-        result.append(value)
-    return result
+            res.append(value)
+            continue
+        if la[j] == k and (j == 0 or k < la[j-1]) and (nt + j) % 2 == 0:
+            value += 1
+            res.append(value)
+            continue
+        value += 2
+        res.append(value)
+    return S(*res)
 
 
 def index2partA_inner(idx: List[int], k: int, n: int) -> List[int]:
     la = []
     for j in range(n - k):
         la.append(k + j - idx[j])
-    return ['S'] + part_clip(la)
+    return S(*part_clip(la))
 
 def index2partC_inner(idx: List[int], k: int, n: int) -> List[int]:
     la = []
