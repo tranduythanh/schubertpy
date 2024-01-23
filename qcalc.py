@@ -230,20 +230,22 @@ def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[int]:
     return S(*a)
 
 
-def miami_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
+def miami_swap_inner(lam: List[int], k: int) -> str:
     # Check if k is not a member of lam
     if k not in lam:
-        return ['S'] + lam
+        return S(*lam)
     
     # Check if the number of elements in lam greater than k is even
-    if sum(1 for i in lam if i > k) % 2 == 0:
-        return ['S'] + lam
+    count = sum(1 for lam_i in lam if lam_i > k)
+    if count % 2 == 0:
+        return S(*lam)
     
     # Check if the last element of lam is 0
     if lam[-1] == 0:
-        return ['S'] + lam[:-1]
+        return S(*lam[:-1])
     else:
-        return ['S'] + lam + [0]
+        a = lam.copy()+[0]
+        return S(*a)
 
 
 def type_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
