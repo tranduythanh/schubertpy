@@ -211,22 +211,23 @@ def part2pair_inner(lam: List[int], k: int) -> Tuple[List[int], List[int]]:
     return S(top,bot)
 
 
-def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[Union[int, None]]:
-    top, bot = pair  # unpacking the pair
+def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[int]:
+    p1, p2 = pair  # unpacking the pair
     
-    if not top:  # if the first element of the pair is empty
-        return ['S'] + bot
+    if p1 is None or len(p1)==0:  # if the first element of the pair is empty
+        return S(*p2)
     
-    lam = part_conj(top)
-    np2 = len(bot)
+    lam = part_conj(p1)
+    np2 = len(p2)
     
     # Constructing the resultant list
-    res = ['S'] + [lam[i] + bot[i] for i in range(np2)] + lam[np2:]
+    a = [lam[i] + p2[i] for i in range(np2)]
+    a.extend(lam[np2:])
     
-    if np2 > 0 and bot[-1] == 0:
-        res.append(None)
-    
-    return res
+    if np2 > 0 and p2[-1] == 0:
+        a.append(0)
+
+    return S(*a)
 
 
 def miami_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
@@ -957,7 +958,7 @@ def OG(m: int, N: int) -> None:
 
 def S(*args: int) -> str:
     mu = ','.join(map(str, args))
-    return f"S[{mu}]"
+    return f"S[{mu}]".replace(' ', '')
 
 
 def schub_classes() -> List[str]:
