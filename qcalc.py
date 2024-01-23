@@ -249,23 +249,19 @@ def miami_swap_inner(lam: List[int], k: int) -> str:
 
 
 def type_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
-    # Check if lam is an empty list
-    if not lam:
-        return ['S']
+    if lam is None or len(lam) == 0:
+        return S(*[])
     
-    # Check if k is not a member of lam
     if k not in lam:
-        # Check if the last element of lam is 0
         if lam[-1] == 0:
-            return ['S'] + lam[:-1]
-        else:
-            return ['S'] + lam
+            return S(*lam[:-1])
+        return S(*lam)
     
-    # Check if the last element of lam is 0
     if lam[-1] == 0:
-        return ['S'] + lam[:-1]
-    else:
-        return ['S'] + lam + [0]
+        return S(*lam[:-1])
+    
+    a = lam + [0]
+    return S(*a)
 
 
 def part2indexA_inner(lam: List[int], k: int, n: int) -> List[int]:

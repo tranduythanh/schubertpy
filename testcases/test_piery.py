@@ -60,5 +60,23 @@ class TestMiamiSwapInner(unittest.TestCase):
         self.assertEqual(result, 'S[4,3,2,1,0]')
 
 
+class TestTypeSwapInner(unittest.TestCase):
+    
+    def test_empty_list(self):
+        self.assertEqual(type_swap_inner([], 2), 'S[]')
+        
+    def test_no_swap_needed(self):
+        self.assertEqual(type_swap_inner([3,2,1], 4), 'S[3,2,1]')
+        
+    def test_swap_needed(self):
+        self.assertEqual(type_swap_inner([3,2,1], 2), 'S[3,2,1,0]')
+        
+    def test_swap_needed_with_zero(self):
+        self.assertEqual(type_swap_inner([3,2,1,0], 2), 'S[3,2,1]')
+        
+    def test_swap_needed_with_zero_at_end(self):
+        self.assertEqual(type_swap_inner([3,2,1,0], 4), 'S[3,2,1]')
+        
+
 if __name__ == '__main__':
     unittest.main()
