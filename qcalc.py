@@ -337,16 +337,17 @@ def index2partC_inner(idx: List[int], k: int, n: int) -> List[int]:
 
 def index2partB_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
     la = []
-    for j in range(1, n - k + 1):
+    for j in range(0, n-k):
         count = 0
-        if idx[j - 1] <= n:
-            la.append(n + k + 1 - idx[j - 1])
-        else:
-            for i in range(1, j):
-                if idx[i - 1] + idx[j - 1] > 2 * n + 2:
-                    count += 1
-            la.append(n + k + 2 - idx[j - 1] + count)
-    return ['S'] + part_clip(la)
+        if idx[j] <= n:
+            la.append(n+k+1 - idx[j])
+            continue
+
+        for i in range(j):
+            if idx[i] + idx[j] > 2*n + 2:
+                count += 1
+        la.append(n+k+2 - idx[j] + count)
+    return S(*part_clip(la))
 
 
 def index2partD_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
