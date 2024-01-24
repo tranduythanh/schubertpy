@@ -302,12 +302,12 @@ def part2indexD_inner(lam: List[int], k: int, n: int) -> List[int]:
     res = []
     for j in range(n + 1 - k):
         count = _count_inner(la, k, j, -1)
-        value = n + k - la[j] + count
+        value = n+k-la[j] + count
         if la[j] > k:
             value += 1
             res.append(value)
             continue
-        if la[j] == k and (j == 0 or k < la[j-1]) and (nt + j) % 2 == 0:
+        if la[j] == k and (j==0 or k<la[j-1]) and (nt + j) % 2 == 1:
             value += 1
             res.append(value)
             continue

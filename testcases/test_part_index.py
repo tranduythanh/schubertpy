@@ -115,6 +115,41 @@ class TestPart2IndexCInner(unittest.TestCase):
         self.assertEqual(part2indexC_inner(lam, k, n), expected)    
 
 
+class TestPart2IndexDInner(unittest.TestCase):
+    def test_case1(self):
+        lam = [2, 1, 0, 0, 0]
+        k = 0
+        n = 1
+        expected = 'S[0,1]'
+        self.assertEqual(part2indexD_inner(lam, k, n), expected)
+
+    def test_case2(self):
+        lam = [2, 1, 0, 0, 0]
+        k = 0
+        n = 2
+        expected = 'S[1,2,4]'
+        self.assertEqual(part2indexD_inner(lam, k, n), expected)
+
+    def test_case3(self):
+        lam = [2, 1, 0, 0, 0]
+        k = 1
+        n = 2
+        expected = 'S[2,3]'
+        self.assertEqual(part2indexD_inner(lam, k, n), expected)
+
+    def test_case4(self):
+        lam = [2, 1, 0, 0, 0]
+        k = 2
+        n = 3
+        expected = 'S[4,7]'
+        self.assertEqual(part2indexD_inner(lam, k, n), expected)
+
+    def test_case5(self):
+        lam = [2, 1, 0, 0, 0]
+        k = 3
+        n = 4
+        expected = 'S[7,9]'
+        self.assertEqual(part2indexD_inner(lam, k, n), expected)
 
 
 if __name__ == '__main__':
