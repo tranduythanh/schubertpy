@@ -274,6 +274,7 @@ def _count_inner(la: List[int], k: int, j:int, delta:int=0) -> int:
             count += 1
     return count
 
+
 def part2indexB_inner(lam: List[int], k: int, n: int) -> List[int]:
     la = lam + [0] * (n - k)
     res = []
@@ -322,15 +323,16 @@ def index2partA_inner(idx: List[int], k: int, n: int) -> List[int]:
         la.append(k + j+1 - idx[j])
     return S(*part_clip(la))
 
+
 def index2partC_inner(idx: List[int], k: int, n: int) -> List[int]:
     la = []
     for j in range(n - k):
         count = 0
         for i in range(j):
-            if idx[i] + idx[j] > 2 * n + 1:
+            if idx[i] + idx[j] > 2*n+1:
                 count += 1
-        la.append(n + k + 1 - idx[j] + count)
-    return ['S'] + part_clip(la)
+        la.append(n+k+1 - idx[j] + count)
+    return S(*part_clip(la))
 
 
 def index2partB_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
