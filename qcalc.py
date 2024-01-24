@@ -319,7 +319,7 @@ def part2indexD_inner(lam: List[int], k: int, n: int) -> List[int]:
 def index2partA_inner(idx: List[int], k: int, n: int) -> List[int]:
     la = []
     for j in range(n - k):
-        la.append(k + j - idx[j])
+        la.append(k + j+1 - idx[j])
     return S(*part_clip(la))
 
 def index2partC_inner(idx: List[int], k: int, n: int) -> List[int]:
