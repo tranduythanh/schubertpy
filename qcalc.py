@@ -433,6 +433,33 @@ def _pieri_itrA(lam: List[int], inner: List[int], outer: List[int]) -> Optional[
     return None
 
 
+def calc_comps(
+    top1: List[int], 
+    bot1: List[int], 
+    top2 : List[int], 
+    bot2 : List[int],
+    lb2: int, k : int, d : int):    
+    comps = [0] * bot2[0]
+    for i in range(lb2):
+        for j in range(bot1[i], bot2[i]):
+            comps[j] = 1
+
+    b = 0
+    for i in range(k):
+        if top2[i] <= top1[i]:
+            while b+1 < lb2 and bot1[b]+(b+1)-1 > top1[i]+k-(i+1)-d:
+                b += 1
+            minj = top2[i] + k - (i+1) - (b+1) + 2 - d
+            maxj = min(top1[i] + k - (i+1) - (b+1) + 2 - d, bot2[0])
+            
+            # adjust for python index
+            minj -= 1
+            maxj -= 1
+            # =======================
+            for j in range(minj, maxj + 1):
+                comps[j] = -1
+    return comps
+
 def count_comps(lam1: List[int], lam2: List[int], skipfirst: bool, k: int, d: int) -> int:
     top1 = part_conj([min(item, k) for item in lam1])
     top1.extend([0] * (k - len(top1)))
@@ -447,20 +474,7 @@ def count_comps(lam1: List[int], lam2: List[int], skipfirst: bool, k: int, d: in
     if lb2 == 0:
         return 0
 
-    comps = [0] * bot2[0]
-    for i in range(lb2):
-        for j in range(bot1[i], bot2[i]):
-            comps[j] = 1
-
-    b = 1
-    for i in range(k):
-        if top2[i] <= top1[i]:
-            while b < lb2 and bot1[b] + b - 1 > top1[i] + k - i - d:
-                b += 1
-            minj = top2[i] + k - i - b + 2 - d
-            maxj = min(top1[i] + k - i - b + 2 - d, bot2[0])
-            for j in range(minj, maxj + 1):
-                comps[j] = -1
+    comps = calc_comps(top1, bot1, top2, bot2, lb2, k, d)
 
     res = 0
     incomp = skipfirst
