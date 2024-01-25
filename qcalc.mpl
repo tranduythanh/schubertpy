@@ -830,8 +830,8 @@ end:
 
 index2partC_inner := proc(idx, k, n)
   local i, j, la;
-  la := [seq(n+k+1-op(j,idx)+`+`(seq(`if`(op(i,idx)+op(j,idx) > 2*n+1,1,0),
-    i=1..j-1)), j=1..n-k)];
+  la := [seq(n+k+1-op(j,idx)+
+          `+`(seq(`if`(op(i,idx)+op(j,idx) > 2*n+1,1,0),i=1..j-1)), j=1..n-k)];
   S[op(part_clip(la))];
 end:
 
@@ -854,8 +854,9 @@ end:
 dualize_index_inner := proc(idx, N, tp)
   local i, res;
   res := S[seq(N+1-op(-i,idx),i=1..nops(idx))];
-  if tp="D" and N/2 mod 2 = 1 then
-    res := subs({N/2=N/2+1,N/2+1=N/2}, res);
+  # Fix: N/2 --> N//2
+  if tp="D" and N//2 mod 2 = 1 then
+    res := subs({N//2=N//2+1,N//2+1=N//2}, res);
   fi;
   res;
 end:

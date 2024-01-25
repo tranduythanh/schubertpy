@@ -352,38 +352,39 @@ def index2partB_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
 
 def index2partD_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
     la = []
-    for j in range(1, n + 2 - k):
+    for j in range(n+1-k):
         count = 0
-        if idx[j - 1] <= n + 1:
-            la.append(n + k + 1 - idx[j - 1])
-        else:
-            for i in range(1, j):
-                if idx[i - 1] + idx[j - 1] > 2 * n + 3:
-                    count += 1
-            la.append(n + k + 2 - idx[j - 1] + count)
+        if idx[j] <= n + 1:
+            la.append(n + k + 1 - idx[j])
+            continue
+        for i in range(j):
+            if idx[i] + idx[j] > 2*n + 3:
+                count += 1
+        la.append(n + k + 2 - idx[j] + count)
     
     la = part_clip(la)
     
     if k not in la:
-        return ['S'] + la
+        return S(*la)
 
-    missing_indices = set(range(1, n + 2)) - set(idx)
+    missing_indices = set(range(1, n+2)) - set(idx)
     if len(missing_indices) % 2 == 1:
         la.append(0)
-    return ['S'] + la
+    return S(*la)
 
 
 def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]]:
-    res = ['S']
-    for i in reversed(idx):
-        res.append(N + 1 - i)
-    if tp == "D" and (N // 2) % 2 == 1:
+    res = []
+    for item in reversed(idx):
+        res.append(N + 1 - item)
+    if tp == "D" and (N / 2) % 2 == 1:
         for i in range(len(res)):
-            if res[i] == N // 2:
-                res[i] = N // 2 + 1
-            elif res[i] == N // 2 + 1:
-                res[i] = N // 2
-    return res
+            if res[i] == N / 2:
+                res[i] = N / 2 + 1
+                continue
+            res[i] == N / 2 + 1
+            res[i] = N / 2
+    return S(*res)
 
 
 # ##################################################################

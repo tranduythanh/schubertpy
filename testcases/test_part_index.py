@@ -258,6 +258,65 @@ class TestIndex2PartBInner(unittest.TestCase):
         self.assertEqual(index2partB_inner(idx, k, n), expected)
 
 
+class TestIndex2PartDInner(unittest.TestCase):
+    
+    def test_case_1(self):
+        idx = [1, 2, 3, 4]
+        k = 2
+        n = 5
+        expected = 'S[7,6,5,4]'
+        self.assertEqual(index2partD_inner(idx, k, n), expected)
+        
+    def test_case_2(self):
+        idx = [1, 2, 3, 70]
+        k = 2
+        n = 5
+        expected = 'S[7,6,5,-58]'
+        self.assertEqual(index2partD_inner(idx, k, n), expected)
+        
+    def test_case_3(self):
+        idx = [4, 4, 6, 7]
+        k = 1
+        n = 2
+        expected = 'S[1,2,0]'
+        self.assertEqual(index2partD_inner(idx, k, n), expected)
+        
+
+class TestDualizeIndexInner(unittest.TestCase):
+    
+    def test_dualize_index_inner_tp_D_even_N(self):
+        idx = [3,2,1]
+        N = 4
+        tp = "D"
+        expected = 'S[4,3,2]'
+        self.assertEqual(dualize_index_inner(idx, N, tp), expected)
+
+    # TODO: duythanh(should confirm with author again
+    #       N/2 is fraction of N, not integer
+    def test_dualize_index_inner_tp_D_odd_N(self):
+        idx = [3,2,1]
+        N = 3
+        tp = "D"
+        expected = 'S[3,2,1]'
+        self.assertEqual(dualize_index_inner(idx, N, tp), expected)
+        
+    def test_dualize_index_inner_tp_not_D(self):
+        idx = [3,2,1]
+        N = 5
+        tp = "not_D"
+        expected = 'S[5,4,3]'
+        self.assertEqual(dualize_index_inner(idx, N, tp), expected)
+        
+    def test_dualize_index_inner_empty_idx(self):
+        idx = []
+        N = 5
+        tp = "D"
+        expected = 'S[]'
+        self.assertEqual(dualize_index_inner(idx, N, tp), expected)
+        
+
+
+
 
 
 if __name__ == '__main__':
