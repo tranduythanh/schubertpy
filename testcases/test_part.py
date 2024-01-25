@@ -62,6 +62,9 @@ class TestPartConj(unittest.TestCase):
     def test_negative_elements(self):
         self.assertEqual(part_conj([-1, -2, -3]), [])
 
+    def test_(self):
+        self.assertEqual(part_conj([4,2,1,0]), [3,2,1,1])
+
 class TestPartItrBetween(unittest.TestCase):
     
     def test_ok(self):
@@ -71,6 +74,7 @@ class TestPartItrBetween(unittest.TestCase):
         self.assertEqual(part_itr_between([4,3,1],[2,2,2],[4,3,2]), [4,3,0])
         self.assertEqual(part_itr_between([2,1,1],[3,2,1],[4,3,2]), [2,0,0])
         self.assertEqual(part_itr_between([9,9],[2,1],[3,2]), [9,2])
+        self.assertEqual(part_itr_between([4],[3],[4]), [3])
         self.assertIsNone(part_itr_between([2,2],[2,2],[3,2]))
         
 

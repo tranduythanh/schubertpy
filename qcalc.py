@@ -121,6 +121,7 @@ def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
 
 
 def part_conj(lambda_: List[int]) -> List[int]:
+    lambda_ = part_clip(lambda_)
     n = len(lambda_)
     if n == 0:
         return []
@@ -485,10 +486,15 @@ def count_comps(lam1: List[int], lam2: List[int], skipfirst: bool, k: int, d: in
 
     return res
 
-def pieri_set(p, lam, k, n, d):
+
+def sort_part(tuples):
+    return sorted(tuples, key=lambda lst: lst, reverse=True)
+
+def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
     rows = n + d - k
     cols = n + k
 
+    # Split up in PR partition pairs (to reuse old code).
     top = part_conj([min(item, k) for item in lam])
     top += [0] * (k - len(top))
     topk = cols if k == 0 else top[k - 1]  # Python lists are 0-indexed
@@ -496,54 +502,65 @@ def pieri_set(p, lam, k, n, d):
     lbot = len(bot) - 1
 
     # Find bounds for new top partition
-    outer = [min(rows, top[j]) for j in range(k)]
+    outer = [min(rows, top[j]+1) for j in range(k)]
     inner = []
     if k != 0:
         inner = [max(lbot, top[j + 1]) for j in range(len(top) - 1)] + [lbot]
     
-    b = 1
-    for i in range(1, k + 1):
-        while b <= lbot and bot[b - 1] + b - 1 > top[i - 1] + k - i - d:
+    print("inner::", inner)
+
+    b = 0
+    for i in range(k):
+        while (b+1) <= lbot and bot[b]+(b+1)-1 > top[i]+k-(i+1)-d:
             b += 1
-        if top[i - 1] + k - i + 2 - b - d <= 0:
-            inner[i - 1] = max(top[i - 1], inner[i - 1])
+        if top[i] + k - (i+1) + 2 - (b+1) - d <= 0:
+            inner[i] = max(top[i], inner[i])
         else:
-            inner[i - 1] = max(bot[b - 1] + b - 1 + i - k + d, inner[i - 1])
+            inner[i] = max(bot[b] + (b+1) - 1 + (i+1) - k + d, inner[i])
 
 
     # Iterate through all possible top partitions
     res = set()
     top_1 = outer.copy()
-
+    
     while isinstance(top_1, list):
-        top1 = top_1
+        print("top_1 before", top_1, inner, outer)
+        top1 = top_1.copy()
         top_1 = part_itr_between(top1, inner, outer)
+        print("top_1 after", top_1)
         p1 = p + sum(top) - sum(top1)
         if p1 < 0:
             continue
 
         # Obvious bounds for bottom partition
         top1k = rows if k == 0 else top1[k-1]
-        inbot = bot[:lbot] + [0] if lbot < top1k else bot[:lbot]
+        inbot = bot[:lbot]
+        outbot = []
+        if lbot < top1k:
+            inbot + [0]
         if lbot == 0:
-            outbot = [cols - k] if top1k > 0 else []
+            if top1k > 0:
+                outbot = [cols - k] 
         else:
-            outbot = [cols - k] + bot[:lbot-1] + ([bot[lbot-1]] if lbot < top1k else [])
+            _delta = []
+            if lbot < top1k:
+                _delta = bot[lbot]
+            outbot = [cols-k] + bot[:lbot-1] + [_delta]
 
         # Find exact bounds for bottom partition, using shift-under conditions
-        b = 1
-        for i in range(1, k+1):
-            while b <= lbot and bot[b-1] + b - 1 > top[i-1] + k - i - d:
+        b = 0
+        for i in range(k):
+            while b+1 <= lbot and bot[b]+(b+1)-1 > top[i] + k - (i+1) - d:
                 b += 1
-            if top1[i-1] < top[i-1]:
-                if b > len(inbot):
+            if top1[i] < top[i]:
+                if b+1 > len(inbot):
                     inbot = False
                     break
-                inbot[b-1] = max(inbot[b-1], top[i-1] + k - i - b + 2 - d)
+                inbot[b] = max(inbot[b], top[i] + k - (i+1) - (b+1) + 2 - d)
 
             b1 = b
-            while b1 < len(outbot) and bot[b1-1] + b1 - 1 <= top[i-1] + k - i - d:
-                outbot[b1] = min(outbot[b1], top1[i-1] + k - i - b1 - d)
+            while b1+1 < len(outbot) and bot[b1] + (b1+1) - 1 <= top[i] + k - (i+1) - d:
+                outbot[b1+1] = min(outbot[b1+1], top1[i] + k - (i+1) - (b1+1) - d)
                 b1 += 1
 
         if inbot == False:
@@ -558,15 +575,24 @@ def pieri_set(p, lam, k, n, d):
 
         bot1 = _pieri_fill(inbot, inbot, outbot, 1, p1)
         top1c = part_conj(top1)
+        print("res_:", res)
         while isinstance(bot1, list):
             if k == 0:
                 res.add(tuple(part_clip(bot1)))
+                print("res__:", res)
             else:
                 j = min(len(top1c), len(bot1))
-                res.add(tuple(top1c[i] + bot1[i] for i in range(j)) + tuple(top1c[j:]))
+                print(top1, top1c, bot1, j)
+                value = [top1c[i] + bot1[i] for i in range(j)] + top1c[j:]
+                res.add(tuple(value))
+                print("res___:", res)
+            print("before", bot1, inbot, outbot)
             bot1 = _pieri_itr(bot1, inbot, outbot)
+            print("after", bot1)
 
-    return res
+    print(res)
+    res = [list(item) for item in res]
+    return sort_part(res)
 
 
 def _pieri_fill(lam: List[int], inner: List[int], outer: List[int], r: int, p: int) -> Union[List[int], None]:
