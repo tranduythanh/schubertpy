@@ -132,6 +132,43 @@ class TestTypeSwapInner(unittest.TestCase):
     def test_swap_needed_with_zero_at_end(self):
         self.assertEqual(type_swap_inner([3,2,1,0], 4), 'S[3,2,1]')
 
+
+class TestPartStar(unittest.TestCase):
+    def test_empty_list(self):
+        self.assertEqual(part_star([], 3), 0)
+        self.assertEqual(part_star([2,1,0], 3), 0)
+        self.assertEqual(part_star([3,2,1,0], 3), 'S[2,1,0]')
+        self.assertEqual(part_star([4,3,2,1,0], 4), 'S[3,2,1,0]')
+
+
+class TestPartTilde(unittest.TestCase):
+    def test_valid_input(self):
+        lam = [2, 1, 0, 0, 0]
+        rows = 3
+        cols = 2
+        expected = 0
+        self.assertEqual(part_tilde(lam, rows, cols), expected)
+
+        lam = [3, 2, 1]
+        rows = 3
+        cols = 3
+        expected = 'S[2,1]'
+        self.assertEqual(part_tilde(lam, rows, cols), expected)
+
+        lam = [3, 2, 1]
+        rows = 3
+        cols = 7
+        expected = 0
+        self.assertEqual(part_tilde(lam, rows, cols), expected)
+
+        lam = [4, 3, 2]
+        rows = 3
+        cols = 7
+        expected = 0
+        self.assertEqual(part_tilde(lam, rows, cols), expected)
+
+
+
         
 if __name__ == '__main__':
     unittest.main()

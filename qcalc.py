@@ -640,25 +640,25 @@ def _pieri_itr(lam: List[int], inner: List[int], outer: List[int]) -> Union[List
 
 
 def _part_star(lam: List[int], cols: int) -> Union[int, List[int]]:
-    if not lam or lam[0] != cols:
+    if not lam or len(lam)==0 or lam[0] != cols:
         return 0
-    return ['S'] + lam[1:]
+    return S(*lam[1:])
 
 def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[str, int]]]:
-    if part_len(lam) != rows or (lam and lam[0] > cols):
+    if part_len(lam) != rows or (lam and len(lam)>0 and lam[0] > cols):
         return 0
     
-    r = rows + lam[0] - cols if lam else -cols
+    r = rows + lam[0] - cols
     
-    if r <= 0:
+    if r < 0:
         return 0
-    if r < rows and len(lam) > r and lam[r] > 1:
+    if r < rows and len(lam) > r and lam[r-1] > 1:
         return 0
 
-    result = ['S'] + lam[1:r]
+    res = lam[1:r]
     if lam and lam[-1] == 0:
-        result.append(0)
-    return result
+        res.append(0)
+    return S(*res)
 
 
 # ##################################################################
@@ -1218,3 +1218,5 @@ pieri_fillA = _pieri_fillA
 pieri_itrA = _pieri_itrA
 first_kstrict = _first_kstrict
 itr_kstrict = _itr_kstrict
+part_star = _part_star
+part_tilde = _part_tilde
