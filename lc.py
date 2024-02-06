@@ -1,3 +1,4 @@
+from functools import total_ordering
 from typing import *
 from schur import *
 import sympy as sp
@@ -5,8 +6,17 @@ import ast
 
 
 class LinearCombination(object):
-    def __init__(self, expr: str):
-        self.expr = sp.sympify(expr)
+    def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination']):
+        if isinstance(expr, str):
+            self.expr = sp.sympify(expr)
+        elif isinstance(expr, sp.Expr):
+            self.expr = expr
+        elif isinstance(expr, int):
+            self.expr = sp.sympify(expr)
+        elif isinstance(expr, LinearCombination):
+            self.expr = expr.expr
+        else:
+            raise ValueError(f"Invalid type for LinearCombination: {type(expr)}")
 
     def __str__(self):
         return translate_schur(self.expr)
@@ -14,11 +24,42 @@ class LinearCombination(object):
     def __repr__(self):
         return self.__str__()
     
+    def __add__(self, other):
+        if isinstance(other, LinearCombination):
+            return LinearCombination(self.expr + other.expr)
+        if isinstance(other, int):
+            return LinearCombination(self.expr + other)
+        if isinstance(other, sp.Expr):
+            return LinearCombination(self.expr + other)
+        raise ValueError(f"Invalid type for addition: {type(other)}")
+    
+    def __mul__(self, other):
+        if isinstance(other, LinearCombination):
+            return LinearCombination(self.expr * other.expr)
+        if isinstance(other, int):
+            return LinearCombination(self.expr * other)
+        if isinstance(other, sp.Expr):
+            return LinearCombination(self.expr * other)
+        raise ValueError(f"Invalid type for addition: {type(other)}")
+    
+    def __pow__(self, other):
+        if isinstance(other, LinearCombination):
+            return LinearCombination(self.expr ** other.expr)
+        if isinstance(other, int):
+            return LinearCombination(self.expr ** other)
+        if isinstance(other, sp.Expr):
+            return LinearCombination(self.expr ** other)
+        raise ValueError(f"Invalid type for addition: {type(other)}")
+    
     def is_operator(self, op: str) -> bool:
         if op == '+':
             return isinstance(self.expr, sp.Add)
+        if op == '-':
+            return isinstance(self.expr, sp.Substr)
         elif op == '*':
             return isinstance(self.expr, sp.Mul)
+        elif op == '/':
+            return isinstance(self.expr, sp.Div)
         elif op == '^':
             return isinstance(self.expr, sp.Pow)
         
