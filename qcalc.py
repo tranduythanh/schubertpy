@@ -22,6 +22,7 @@ from collections import OrderedDict
 from typing import *
 from util import *
 from schur import *
+from lc import *
 
 # qcalc := module()
 # option package;
@@ -52,20 +53,6 @@ from schur import *
 # ##################################################################
 # # Miscellaneous conversions
 # ##################################################################
-
-def _custom_sort_key(item: str):
-    # Extract the numbers from the string representation
-    item = item.replace(' ', '')
-    numbers = [int(n) for n in item[2:-1].split(',') if n]
-    return (len(numbers), numbers)
-
-def _sort_s_list(s_list):
-    # Sort the list using the custom sort key
-    return sorted(s_list, key=_custom_sort_key)
-
-def _unique(arr):
-    return list(OrderedDict.fromkeys(arr).keys())
-
 
 def _first_kstrict(k: int, rows: int, cols: int) -> List[int]:
     return [max(k, cols - i) for i in range(rows)]
@@ -666,29 +653,20 @@ def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[s
 # # General cohomology calculations, depending on Pieri rule.
 # ##################################################################
 
-def spec2num(sc: List[Union[str, List[int]]]) -> int:
-    if not isinstance(sc, list) or sc[0] != 'S' or len(sc) == 0:
+def spec2num(sc: 'Schur') -> int:
+    if not isinstance(sc, Schur):
         raise ValueError("special schubert class expected")
-
-    if len(sc) > 1 and (_type != "D" or sc[1] != 0):
+    if len(sc.p) > 1 and (_type != "D" or sc.p[1] != 0):
         raise ValueError("single part expected")
+    return -sc.p[0] if len(sc.p) > 1 else sc.p[0]
 
-    return -sc[0] if len(sc) > 1 else sc[0]
 
-
-def num2spec(p: int) -> List[Union[int, str]]:
+def num2spec(p: int) -> 'Schur':
     return Schur([p]) if p > 0 else Schur([-p, 0])
 
 
-def apply_lc(f: Callable, lc: Union[int, List[Union[str, int]]]) -> Union[int, List[Union[str, int]]]:
-    # if lc is an integer coefficient
-    if isinstance(lc, int):
-        return lc
-    elif lc and isinstance(lc, list) and lc[0] == 'S':  # if lc is a Schubert class
-        return f(lc[1:])
-    else:  # if lc is a linear combination
-        return [apply_lc(f, item) for item in lc]
-
+def apply_lc(f: Callable, lc: 'LinearCombination') -> 'LinearCombination':
+    return lc.apply(f)
 
 q = sp.symbols('q')
 

@@ -4,21 +4,24 @@ from typing import *
 import sympy as sp
 import ast
 
-ftable = {
-    ',': 'j',
-    '[': 'p',
-    ']': 'q'
-}
+ftable = str.maketrans('[,]', 'fjg')
+btable = str.maketrans('fjg', '[,]')
 
-btable = {value: key for key, value in ftable.items()}
+def isSchur(expr: sp.Expr) -> bool:
+    return expr.is_Symbol and str(expr).startswith('S')
 
 
-def toSchur(sym: sp.Symbol) -> 'Schur':
+def translate_schur(sym: Union[sp.Symbol, str]) -> str:
+    # Convert symbol back to string and translate using reverse table
+    return str(sym).translate(btable)
+
+
+def toSchur(sym: Union[sp.Symbol, str]) -> 'Schur':
         # Convert symbol back to string and translate using reverse table
         parsed_str = str(sym).translate(btable).replace('S', '')
         # Parse the string back into a list structure
         pl = ast.literal_eval(parsed_str)
-        if isinstance(pl, list) and all(isinstance(i, list) for i in pl):
+        if isinstance(pl, list) and all(isinstance(i, list) or isinstance(i, int) for i in pl):
             return Schur(pl)
         raise ValueError("Input string does not represent a list of lists")
 
@@ -54,7 +57,4 @@ class Schur(object):
         return hash(str(self.p))
 
     def symbol(self) -> sp.Symbol:
-        # Return the sympified version of the string representation of the object
         return sp.sympify(self.__str__().translate(ftable))
-
-    
