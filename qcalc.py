@@ -668,15 +668,13 @@ def num2spec(p: int) -> 'Schur':
 def apply_lc(f: Callable, lc: 'LinearCombination') -> 'LinearCombination':
     return lc.apply(f)
 
-q = sp.symbols('q')
-
-def act_lc(expc, lc, pieri: Callable) -> sp.Expr:
-    # Use sympy's function to get the free symbols (variables) in the expression
+def act_lc(expc: sp.Expr, lc: 'LinearCombination', pieri: Callable) -> sp.Expr:
+    q = sp.Symbol('q')
     vars = expc.free_symbols - {q}
     
     # If there are no variables, multiply expc by lc and return
     if len(vars) == 0:
-        return expc * lc
+        return LinearCombination(expc * lc.expr)
 
     v = list(vars)[0]
     
@@ -699,7 +697,7 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> sp.Expr:
     if key in cache:
         return cache[key]
 
-    if not lam:
+    if not lam or len(lam) == 0:
         return 1
 
     p = lam[0]
@@ -713,7 +711,7 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> sp.Expr:
         lam0 = lam[1:-1]
 
     # Assuming pieri and S are previously defined functions or expressions
-    stuff = pieri(p, lam0) - Schur(lam)  # *lam unpacks the list
+    stuff = f"{pieri(p, lam0)} - {Schur(lam).symbol()}"
 
     # Assuming num2spec is a previously defined function
     result = sp.expand(num2spec(p) * giambelli_rec_inner(lam0, pieri, k) -
@@ -739,11 +737,11 @@ def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> sp.Expr:
     inner = padding_right(lam, 0, n-k-len(lam))
     outer = [k] + inner[:-1]
     mu = _pieri_fillA(inner, inner, outer, 1, i)
-    res = 0
+    res = []
     while isinstance(mu, list):
-        res += Schur(part_clip(mu))
+        res.append(Schur(part_clip(mu)))
         mu = _pieri_itrA(mu, inner, outer)
-    return res
+    return sp.Sympify(' + '.join([s.symbol() for s in res]))
 
 
 def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> sp.Expr:
@@ -1143,49 +1141,49 @@ def schub_type(lam: Any) -> int:
         return 2
 
 
-def pieri(i: int, lc: Any) -> Any:
+def pieri(i: int, lc: 'LinearCombination') -> Any:
     if isinstance(lc, list):
         return _pieri(i, lc, _k, _n)
     else:
         return apply_lc(lambda p: _pieri(i, p, _k, _n), lc)
 
 
-def act(expr: Any, lc: Any) -> Any:
+def act(expr: Any, lc: 'LinearCombination') -> Any:
     return act_lc(expr, lc, lambda i, p: _pieri(i, p, _k, _n))
 
 
-def giambelli(lc: Any) -> Any:
+def giambelli(lc: 'LinearCombination') -> Any:
     return giambelli_rec(lc, lambda i, p: _pieri(i, p, _k, _n), _k)
 
 
-def mult(lc1: Any, lc2: Any) -> Any:
+def mult(lc1: 'LinearCombination', lc2: 'LinearCombination') -> Any:
     return act(giambelli(lc1), lc2)
 
 
-def toS(lc: Any) -> Any:
+def toS(lc: 'LinearCombination') -> Any:
     return act(giambelli(lc), Schur([]))
 
 
-def qpieri(i: int, lc: Any) -> Any:
+def qpieri(i: int, lc: 'LinearCombination') -> Any:
     if isinstance(lc, list):
         return _qpieri(i, lc, _k, _n)
     else:
         return apply_lc(lambda p: _qpieri(i, p, _k, _n), lc)
 
 
-def qact(expr: Any, lc: Any) -> Any:
+def qact(expr: Any, lc: 'LinearCombination') -> Any:
     return act_lc(expr, lc, lambda i, p: _qpieri(i, p, _k, _n))
 
 
-def qgiambelli(lc: Any) -> Any:
+def qgiambelli(lc: 'LinearCombination') -> Any:
     return giambelli_rec(lc, lambda i, p: _qpieri(i, p, _k, _n), _k)
 
 
-def qmult(lc1: Any, lc2: Any) -> Any:
+def qmult(lc1: 'LinearCombination', lc2: 'LinearCombination') -> Any:
     return qact(qgiambelli(lc1), lc2)
 
 
-def qtoS(lc: Any) -> Any:
+def qtoS(lc: 'LinearCombination') -> Any:
     return qact(qgiambelli(lc), Schur([]))
 
 pieri_fillA = _pieri_fillA
