@@ -21,6 +21,7 @@ import sympy as sp
 from collections import OrderedDict
 from typing import *
 from util import *
+from schur import *
 
 # qcalc := module()
 # option package;
@@ -209,14 +210,14 @@ def part2pair_inner(lam: List[int], k: int) -> Tuple[List[int], List[int]]:
     if len(lam) > 0 and lam[-1] == 0:
         bot.append(0)
 
-    return S(top,bot)
+    return Schur([top,bot])
 
 
 def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[int]:
     p1, p2 = pair  # unpacking the pair
     
     if p1 is None or len(p1)==0:  # if the first element of the pair is empty
-        return S(*p2)
+        return Schur(p2)
     
     lam = part_conj(p1)
     np2 = len(p2)
@@ -228,44 +229,44 @@ def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[int]:
     if np2 > 0 and p2[-1] == 0:
         a.append(0)
 
-    return S(*a)
+    return Schur(a)
 
 
 def miami_swap_inner(lam: List[int], k: int) -> str:
     # Check if k is not a member of lam
     if k not in lam:
-        return S(*lam)
+        return Schur(lam)
     
     # Check if the number of elements in lam greater than k is even
     count = sum(1 for lam_i in lam if lam_i > k)
     if count % 2 == 0:
-        return S(*lam)
+        return Schur(lam)
     
     # Check if the last element of lam is 0
     if lam[-1] == 0:
-        return S(*lam[:-1])
+        return Schur(lam[:-1])
     else:
         a = lam.copy()+[0]
-        return S(*a)
+        return Schur(a)
 
 
 def type_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
     if lam is None or len(lam) == 0:
-        return S(*[])
+        return Schur([])
     if k not in lam:
         if lam[-1] == 0:
-            return S(*lam[:-1])
-        return S(*lam)
+            return Schur(lam[:-1])
+        return Schur(lam)
     if lam[-1] == 0:
-        return S(*lam[:-1])
+        return Schur(lam[:-1])
     a = lam + [0]
-    return S(*a)
+    return Schur(a)
 
 
 def part2indexA_inner(lam: List[int], k: int, n: int) -> List[int]:
     la = lam + [0] * (n - k)
     a = [k + j - la[j] + 1 for j in range(n - k)]
-    return S(*a)
+    return Schur(a)
 
 
 def _count_inner(la: List[int], k: int, j:int, delta:int=0) -> int:
@@ -286,7 +287,7 @@ def part2indexB_inner(lam: List[int], k: int, n: int) -> List[int]:
         count = _count_inner(la, k, j)
         a = n + k + 2 - la[j] + count
         res.append(a)
-    return S(*res)
+    return Schur(res)
 
 
 def part2indexC_inner(lam: List[int], k: int, n: int) -> List[int]:
@@ -295,7 +296,7 @@ def part2indexC_inner(lam: List[int], k: int, n: int) -> List[int]:
     for j in range(n - k):
         count = _count_inner(la, k, j)
         res.append(n + k + 1 - la[j] + count)
-    return S(*res)
+    return Schur(res)
 
 
 def part2indexD_inner(lam: List[int], k: int, n: int) -> List[int]:
@@ -315,14 +316,14 @@ def part2indexD_inner(lam: List[int], k: int, n: int) -> List[int]:
             continue
         value += 2
         res.append(value)
-    return S(*res)
+    return Schur(res)
 
 
 def index2partA_inner(idx: List[int], k: int, n: int) -> List[int]:
     la = []
     for j in range(n - k):
         la.append(k + j+1 - idx[j])
-    return S(*part_clip(la))
+    return Schur(part_clip(la))
 
 
 def index2partC_inner(idx: List[int], k: int, n: int) -> List[int]:
@@ -333,7 +334,7 @@ def index2partC_inner(idx: List[int], k: int, n: int) -> List[int]:
             if idx[i] + idx[j] > 2*n+1:
                 count += 1
         la.append(n+k+1 - idx[j] + count)
-    return S(*part_clip(la))
+    return Schur(part_clip(la))
 
 
 def index2partB_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
@@ -348,7 +349,7 @@ def index2partB_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
             if idx[i] + idx[j] > 2*n + 2:
                 count += 1
         la.append(n+k+2 - idx[j] + count)
-    return S(*part_clip(la))
+    return Schur(part_clip(la))
 
 
 def index2partD_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
@@ -366,12 +367,12 @@ def index2partD_inner(idx: List[int], k: int, n: int) -> List[Union[str, int]]:
     la = part_clip(la)
     
     if k not in la:
-        return S(*la)
+        return Schur(la)
 
     missing_indices = set(range(1, n+2)) - set(idx)
     if len(missing_indices) % 2 == 1:
         la.append(0)
-    return S(*la)
+    return Schur(la)
 
 
 def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]]:
@@ -385,7 +386,7 @@ def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]
                 continue
             res[i] == N / 2 + 1
             res[i] = N / 2
-    return S(*res)
+    return Schur(res)
 
 
 # ##################################################################
@@ -642,7 +643,7 @@ def _pieri_itr(lam: List[int], inner: List[int], outer: List[int]) -> Union[List
 def _part_star(lam: List[int], cols: int) -> Union[int, List[int]]:
     if not lam or len(lam)==0 or lam[0] != cols:
         return 0
-    return S(*lam[1:])
+    return Schur(lam[1:])
 
 def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[str, int]]]:
     if part_len(lam) != rows or (lam and len(lam)>0 and lam[0] > cols):
@@ -658,14 +659,14 @@ def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[s
     res = lam[1:r]
     if lam and lam[-1] == 0:
         res.append(0)
-    return S(*res)
+    return Schur(res)
 
 
 # ##################################################################
 # # General cohomology calculations, depending on Pieri rule.
 # ##################################################################
 
-def spec2num(sc: List[Union[str, int]]) -> int:
+def spec2num(sc: List[Union[str, List[int]]]) -> int:
     if not isinstance(sc, list) or sc[0] != 'S' or len(sc) == 0:
         raise ValueError("special schubert class expected")
 
@@ -676,7 +677,7 @@ def spec2num(sc: List[Union[str, int]]) -> int:
 
 
 def num2spec(p: int) -> List[Union[int, str]]:
-    return [p] if p > 0 else [-p, 0]
+    return Schur([p]) if p > 0 else Schur([-p, 0])
 
 
 def apply_lc(f: Callable, lc: Union[int, List[Union[str, int]]]) -> Union[int, List[Union[str, int]]]:
@@ -734,7 +735,7 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> sp.Expr:
         lam0 = lam[1:-1]
 
     # Assuming pieri and S are previously defined functions or expressions
-    stuff = pieri(p, lam0) - S(*lam)  # *lam unpacks the list
+    stuff = pieri(p, lam0) - Schur(lam)  # *lam unpacks the list
 
     # Assuming num2spec is a previously defined function
     result = sp.expand(num2spec(p) * giambelli_rec_inner(lam0, pieri, k) -
@@ -762,7 +763,7 @@ def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> sp.Expr:
     mu = _pieri_fillA(inner, inner, outer, 1, i)
     res = 0
     while isinstance(mu, list):
-        res += S(*part_clip(mu))
+        res += Schur(part_clip(mu))
         mu = _pieri_itrA(mu, inner, outer)
     return res
 
@@ -771,7 +772,7 @@ def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> sp.Expr:
     res = pieriA_inner(i, lam, k, n)
     if len(lam) == n - k and lam[n - k] > 0:
         if k == 1:
-            return q * S()
+            return q * Schur()
         lab = [(lam[j] - 1) if lam[j] > 1 else None for j in range(len(lam))]
         res += q * sp.expand(apply_lc(lambda x: _part_star(x, k - 1), pieriA_inner(i - 1, lab, k - 1, n)))
     return res
@@ -785,7 +786,7 @@ def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> sp.Expr:
     result = sp.Integer(0)
     b = 0 if p <= k else 1
     for mu in pieri_set(p, lam, k, n, 0):
-        result += 2**(count_comps(lam, mu, False, k, 0) - b) * S(*mu)
+        result += 2**(count_comps(lam, mu, False, k, 0) - b) * Schur(mu)
     return result
 
 def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> sp.Expr:
@@ -809,7 +810,7 @@ def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> sp.Expr:
 def pieriC_inner(i: int, lam: List[int], k: int, n: int) -> sp.Expr:
     result = sp.Integer(0)
     for x in pieri_set(i, lam, k, n, 0):
-        result += 2**count_comps(lam, x, True, k, 0) * S(*x)
+        result += 2**count_comps(lam, x, True, k, 0) * Schur(x)
     return result
 
 
@@ -834,11 +835,11 @@ def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> 
     cc = count_comps(lam, mu, False, k, 1) - (0 if abs(p) < k else 1)
     if cc >= 0:
         if k not in mu or tlam == 1:
-            return 2**cc * S(*mu)
+            return 2**cc * Schur(mu)
         elif tlam == 2:
-            return 2**cc * S(*mu, 0)
+            return 2**cc * Schur(mu, 0)
         else:
-            return 2**cc * (S(*mu) + S(*mu, 0))
+            return 2**cc * (Schur(mu) + Schur(mu, 0))
     else:
         # Tie breaking
         h = k + tlam + (1 if p < 0 else 0)
@@ -850,11 +851,11 @@ def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> 
             pmu = mu[i]
         h %= 2
         if tlam == 0 and k in mu:
-            return S(*mu, 0 if h == 0 else 1)
+            return Schur(mu, 0 if h == 0 else 1)
         elif h == 0:
             return 0
         else:
-            return S(*mu, 0 if (tlam == 2 and k in mu) else None)
+            return Schur(mu, 0 if (tlam == 2 and k in mu) else None)
 
 
 def qpieriD_inner(p, lam, k, n):
@@ -867,14 +868,14 @@ def qpieriD_inner(p, lam, k, n):
     elif k == 1:
         if len(lam) >= n and lam[n-1] > 0:
             lb = [max(x - 1, 0) for x in lam]
-            cprd = pieriD_inner(abs(p) - 1, lb, 0, n) if abs(p) > 1 else S(*lb)
+            cprd = pieriD_inner(abs(p) - 1, lb, 0, n) if abs(p) > 1 else Schur(lb)
             intn = set(range(1, n+1))
-            cprd = apply_lc(lambda mu: S(*(list(intn - set(mu))[::-1])), cprd)
+            cprd = apply_lc(lambda mu: Schur((list(intn - set(mu))[::-1])), cprd)
             res1 = 0
             if lam[-1] > 0 and p > 0:
-                res1 += q1 * apply_lc(lambda mu: S(*[x+1 for x in mu] + [1]*(n-len(mu))), cprd)
+                res1 += q1 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu))), cprd)
             if lam[-1] == 0 or k not in lam and (p == -1 or p > 1):
-                res1 += q2 * apply_lc(lambda mu: S(*[x+1 for x in mu] + [1]*(n-len(mu)), 0), cprd)
+                res1 += q2 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu)), 0), cprd)
             res += dualize(res1)
         if len(lam) > 0 and lam[0] == n + k:
             res += q1 * q2 * apply_lc(lambda x: _part_star(x, n + k), pieriD_inner(p, lam[1:], k, n))
@@ -1000,37 +1001,32 @@ def OG(m: int, N: int) -> None:
         set_type("D", N // 2 - m, N // 2 - 1)
 
 
-def S(*args: int) -> str:
-    mu = ','.join(map(str, args))
-    return f"S[{mu}]".replace(' ', '')
-
-
-def schub_classes() -> List[str]:
+def schub_classes() -> List['Schur']:
     if not isinstance(_type, str):
         fail_no_type()
 
     if _type == "A":
         mu = [_k] * (_n - _k)
         partitions = part_gen(mu)
-
-        res = [S(*lam) for lam in partitions]
-        res = _unique(res)
-        return _sort_s_list(res)
+        partitions.sort()
+        res = [Schur(lam) for lam in partitions]
+        res = unique_schur_list(res)
+        return res
 
     if _type == "D":
         res = []
         for mu in all_kstrict(_k, _n + 1 - _k, _n + _k):
             if _k in mu:
-                res.append(S(*mu))
-                res.append(S(*mu, 0))
+                res.append(Schur(mu))
+                res.append(Schur(mu+[0]))
             else:
-                res.append(S(*mu))
-        res = _unique(res)
-        return _sort_s_list(res)
+                res.append(Schur(mu))
+        res = unique_schur_list(res)
+        return res
 
-    res = [S(*lam) for lam in all_kstrict(_k, _n - _k, _n + _k)]
-    res = _unique(res)
-    return _sort_s_list(res)
+    res = [Schur(lam) for lam in all_kstrict(_k, _n - _k, _n + _k)]
+    res = unique_schur_list(res)
+    return res
 
 
 def generators() -> List[str]:
@@ -1040,23 +1036,23 @@ def generators() -> List[str]:
     if _type != "D" and _k == _n:
         return []
 
-    gen_list = [S(i) for i in range(1, _k + 1)]
+    gen_list = [Schur([i]) for i in range(1, _k + 1)]
 
     if _type == "D" and _k > 0:
-        gen_list.append(S(_k, 0))
+        gen_list.append(Schur([_k, 0]))
 
     if _type != "A":
-        gen_list.extend([S(i) for i in range(_k + 1, _n + _k + 1)])
+        gen_list.extend([Schur([i]) for i in range(_k + 1, _n + _k + 1)])
 
     return gen_list
 
-def point_class() -> str:
+def point_class() -> Schur:
     if not isinstance(_type, str):
         fail_no_type()
 
     if _type == "A":
         if _k > 0:
-            return S(*(([_k] * (_n - _k))))
+            return Schur((([_k] * (_n - _k))))
         return []
 
     delta = 1
@@ -1067,7 +1063,7 @@ def point_class() -> str:
     for i in range(0, _n - _k - delta + 1):
         result.append(_n + _k - i)
     
-    return S(*result)
+    return Schur(result)
 
 
 def part2pair(lc: Any) -> Any:
@@ -1092,7 +1088,7 @@ def pair2part(lc: Any) -> Any:
 
 def part2index(lc: Any) -> Any:
     if isinstance(lc, list):
-        return part2index(S(*lc))
+        return part2index(Schur(lc))
     
     if _type == "A":
         return apply_lc(lambda lam: part2indexA_inner(lam, _k, _n), lc)
@@ -1109,7 +1105,7 @@ def part2index(lc: Any) -> Any:
 
 def index2part(lc: Any) -> Any:
     if isinstance(lc, list):
-        return index2part(S(*lc))
+        return index2part(Schur(lc))
     
     if _type == "A":
         return apply_lc(lambda idx: index2partA_inner(idx, _k, _n), lc)
@@ -1137,7 +1133,7 @@ def dualize(lc: Any) -> Any:
 
 def type_swap(lc: Any) -> Any:
     if isinstance(lc, list):
-        return type_swap(S(*lc))
+        return type_swap(Schur(lc))
     
     if _type == "D":
         return apply_lc(lambda lam: type_swap_inner(lam, _k), lc)
@@ -1146,7 +1142,7 @@ def type_swap(lc: Any) -> Any:
 
 def miami_swap(lc: Any) -> Any:
     if isinstance(lc, list):
-        return miami_swap(S(*lc))
+        return miami_swap(Schur(lc))
     
     if _type == "D":
         return apply_lc(lambda lam: miami_swap_inner(lam, _k), lc)
@@ -1189,7 +1185,7 @@ def mult(lc1: Any, lc2: Any) -> Any:
 
 
 def toS(lc: Any) -> Any:
-    return act(giambelli(lc), S())
+    return act(giambelli(lc), Schur([]))
 
 
 def qpieri(i: int, lc: Any) -> Any:
@@ -1212,7 +1208,7 @@ def qmult(lc1: Any, lc2: Any) -> Any:
 
 
 def qtoS(lc: Any) -> Any:
-    return qact(qgiambelli(lc), S())
+    return qact(qgiambelli(lc), Schur([]))
 
 pieri_fillA = _pieri_fillA
 pieri_itrA = _pieri_itrA

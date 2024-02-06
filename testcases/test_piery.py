@@ -56,38 +56,3 @@ class TestPieriSet(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
-# top_1 before [3, 3, 1, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [3, 2, 2, 1]
-# before [] [] []
-# after None
-# top_1 before [3, 2, 2, 1] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [3, 2, 2, 0]
-# top_1 before [3, 2, 2, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [3, 2, 1, 1]
-# before [] [] []
-# after None
-# top_1 before [3, 2, 1, 1] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [3, 2, 1, 0]
-# before [] [] [6]
-# after None
-# top_1 before [3, 2, 1, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [3, 1, 1, 1]
-# top_1 before [3, 1, 1, 1] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [3, 1, 1, 0]
-# top_1 before [3, 1, 1, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [2, 2, 2, 1]
-# top_1 before [2, 2, 2, 1] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [2, 2, 2, 0]
-# top_1 before [2, 2, 2, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [2, 2, 1, 1]
-# top_1 before [2, 2, 1, 1] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [2, 2, 1, 0]
-# top_1 before [2, 2, 1, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [2, 1, 1, 1]
-# top_1 before [2, 1, 1, 1] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after [2, 1, 1, 0]
-# top_1 before [2, 1, 1, 0] [2, 1, 1, 0] [4, 3, 2, 1]
-# top_1 after None
-# {(4, 4, 4), (4, 4, 4, 4), (4, 2, 1)}
