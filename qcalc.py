@@ -23,6 +23,7 @@ from typing import *
 from util import *
 from schur import *
 from lc import *
+from functools import lru_cache
 
 # qcalc := module()
 # option package;
@@ -688,14 +689,8 @@ def act_lc(expc: sp.Expr, lc: LinearCombination, pieri: Callable) -> LinearCombi
     return apply_lc(lambda p: pieri(i, p), act_lc(expc1, lc, pieri)) + act_lc(expc0, lc, pieri)
 
 
-cache = {}
-
+@lru_cache(maxsize=None)
 def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombination:
-    # Convert to tuple for using as dictionary key (since lists are not hashable)
-    key = (tuple(lam), k)
-    if key in cache:
-        return cache[key]
-
     if not lam or len(lam) == 0:
         return 1
 
@@ -717,7 +712,6 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombin
                        giambelli_rec(stuff, pieri, k))
 
     # Store result in cache before returning
-    cache[key] = result
     return result
 
 def giambelli_rec(lc: LinearCombination, pieri: Callable, k: int) -> LinearCombination:
@@ -732,6 +726,7 @@ def giambelli_rec(lc: LinearCombination, pieri: Callable, k: int) -> LinearCombi
 # ##################################################################
 
 # DO NOT MODIFY THIS FUNCTION
+@lru_cache(maxsize=None)
 def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
     inner = padding_right(lam, 0, n-k-len(lam))
     outer = [k] + inner[:-1]
@@ -751,13 +746,13 @@ def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
             return LinearCombination(q * Schur())
         lab = [(lam[j] - 1) if lam[j] > 1 else None for j in range(len(lam))]
         res += q * sp.expand(apply_lc(lambda x: _part_star(x, k - 1), pieriA_inner(i - 1, lab, k - 1, n)))
-    return res
+    return LinearCombination(res)
 
 
 # ##################################################################
 # # Type B: Quantum cohomology of odd orthogonal OG(n-k,2n+1).
 # ##################################################################
-
+@lru_cache(maxsize=None)
 def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     result = sp.Integer(0)
     b = 0 if p <= k else 1
@@ -782,7 +777,7 @@ def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 # # Type C: Quantum cohomology of symplectic IG(n-k,2n).
 # ##################################################################
-
+@lru_cache(maxsize=None)
 def pieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
     result = sp.Integer(0)
     for x in pieri_set(i, lam, k, n, 0):
@@ -799,7 +794,7 @@ def qpieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 # # Type D: Quantum cohomology of even orthogonal OG(n+1-k,2n+2).
 # ##################################################################
-
+@lru_cache(maxsize=None)
 def pieriD_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     tlam = 0 if k not in lam else (2 if lam[-1] == 0 else 1)
     result = sp.Integer(0)
