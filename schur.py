@@ -2,10 +2,8 @@ from functools import total_ordering
 
 from typing import *
 import sympy as sp
+from const import *
 import ast
-
-ftable = str.maketrans('[,]', 'fjg')
-btable = str.maketrans('fjg', '[,]')
 
 def isSchur(expr: sp.Expr) -> bool:
     return expr.is_Symbol and str(expr).startswith('S')
@@ -14,7 +12,6 @@ def isSchur(expr: sp.Expr) -> bool:
 def translate_schur(sym: Union[sp.Symbol, str]) -> str:
     # Convert symbol back to string and translate using reverse table
     return str(sym).translate(btable)
-
 
 def toSchur(sym: Union[sp.Symbol, str]) -> 'Schur':
         # Convert symbol back to string and translate using reverse table

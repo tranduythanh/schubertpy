@@ -1,6 +1,7 @@
 from functools import total_ordering
 from typing import *
 from schur import *
+from const import *
 import sympy as sp
 import ast
 
@@ -8,6 +9,7 @@ import ast
 class LinearCombination(object):
     def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination']):
         if isinstance(expr, str):
+            expr = expr.translate(btable)
             self.expr = sp.sympify(expr)
         elif isinstance(expr, sp.Expr):
             self.expr = expr

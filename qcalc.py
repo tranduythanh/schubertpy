@@ -495,8 +495,6 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
     inner = []
     if k != 0:
         inner = [max(lbot, top[j + 1]) for j in range(len(top) - 1)] + [lbot]
-    
-    print("inner::", inner)
 
     b = 0
     for i in range(k):
@@ -513,10 +511,8 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
     top_1 = outer.copy()
     
     while isinstance(top_1, list):
-        print("top_1 before", top_1, inner, outer)
         top1 = top_1.copy()
         top_1 = part_itr_between(top1, inner, outer)
-        print("top_1 after", top_1)
         p1 = p + sum(top) - sum(top1)
         if p1 < 0:
             continue
@@ -564,22 +560,15 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
 
         bot1 = _pieri_fill(inbot, inbot, outbot, 1, p1)
         top1c = part_conj(top1)
-        print("res_:", res)
         while isinstance(bot1, list):
             if k == 0:
                 res.add(tuple(part_clip(bot1)))
-                print("res__:", res)
             else:
                 j = min(len(top1c), len(bot1))
-                print(top1, top1c, bot1, j)
                 value = [top1c[i] + bot1[i] for i in range(j)] + top1c[j:]
                 res.add(tuple(value))
-                print("res___:", res)
-            print("before", bot1, inbot, outbot)
             bot1 = _pieri_itr(bot1, inbot, outbot)
-            print("after", bot1)
-
-    print(res)
+        
     res = [list(item) for item in res]
     return sort_part(res)
 
