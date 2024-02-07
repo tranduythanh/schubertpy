@@ -10,11 +10,11 @@ class LinearCombination(object):
     def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination']):
         if isinstance(expr, str):
             expr = expr.translate(ftable)
-            self.expr = sp.sympify(expr)
+            self.expr = sp.parse_expr(expr)
         elif isinstance(expr, sp.Expr):
             self.expr = expr
         elif isinstance(expr, int):
-            self.expr = sp.sympify(expr)
+            self.expr = sp.parse_expr(expr)
         elif isinstance(expr, LinearCombination):
             self.expr = expr.expr
         else:
@@ -33,6 +33,8 @@ class LinearCombination(object):
             return LinearCombination(self.expr + other)
         if isinstance(other, sp.Expr):
             return LinearCombination(self.expr + other)
+        if isinstance(other, sp.Number):
+            return LinearCombination(self.expr + other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
     def __mul__(self, other):
@@ -42,6 +44,8 @@ class LinearCombination(object):
             return LinearCombination(self.expr * other)
         if isinstance(other, sp.Expr):
             return LinearCombination(self.expr * other)
+        if isinstance(other, sp.Number):
+            return LinearCombination(self.expr + other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
     def __pow__(self, other):
@@ -51,6 +55,8 @@ class LinearCombination(object):
             return LinearCombination(self.expr ** other)
         if isinstance(other, sp.Expr):
             return LinearCombination(self.expr ** other)
+        if isinstance(other, sp.Number):
+            return LinearCombination(self.expr + other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
     def __len__(self):
@@ -88,17 +94,27 @@ class LinearCombination(object):
 
 
     def apply(self, func: Callable) -> 'LinearCombination':
-        def recursive_apply(expr: sp.Expr) -> sp.Expr:
-            if expr.is_Add or expr.is_Mul or expr.is_Pow:
-                ret1 = expr.func(*[recursive_apply(arg) for arg in expr.args])
+        def recursive_apply(_expr: sp.Expr) -> sp.Expr:
+            if isinstance(_expr, LinearCombination):
+                _expr = _expr.expr
+
+            if _expr.is_Add or _expr.is_Mul or _expr.is_Pow:
+                ret1_args = []
+                for arg in _expr.args:
+                    x = recursive_apply(arg)
+                    ret1_args.append(x)
+                ret1 = _expr.func(*ret1_args)
                 return sp.expand(ret1)
-            if isSchur(expr):
-                s = toSchur(str(expr))
+            
+            if isSchur(_expr):
+                s = toSchur(str(_expr))
                 res = func(s.p)
                 if isinstance(res, Schur):
                     return res.symbol()
+                if isinstance(res, LinearCombination):
+                    return res.expr
                 return res
-            return expr
+            return _expr
         
         new_expr = recursive_apply(self.expr)
         return LinearCombination(str(new_expr))

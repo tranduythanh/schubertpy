@@ -20,26 +20,26 @@ lam = []
 if not lam:
     print('Empty list')
 
-from sympy import Function, IndexedBase, Indexed, sympify, symbols, Add, Mul, Pow
+from sympy import Function, IndexedBase, Indexed, sympify, symbols, Add, Mul, Pow, parse_expr
 
 # Example usage
 expr_str = "S_3j2j1 + S_2j1"
-expr = sympify(expr_str)
+expr = parse_expr(expr_str)
 print(expr, isinstance(expr, Add))
 print(expr.args)
 
 expr_str = "-S_3j2j1 - S_2j1"
-expr = sympify(expr_str)
+expr = parse_expr(expr_str)
 print(expr, isinstance(expr, Add))
 print(expr.args)
 
 expr_str = "S_3j2j1**S_2j1"
-expr = sympify(expr_str)
+expr = parse_expr(expr_str)
 print(expr, isinstance(expr, Pow))
 print(expr.args)
 
 expr_str = "S_3j2j1*S_2j1"
-expr = sympify(expr_str)
+expr = parse_expr(expr_str)
 print(expr, isinstance(expr, Mul))
 print(expr.args)
 

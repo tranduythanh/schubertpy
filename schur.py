@@ -66,7 +66,7 @@ class Schur(object):
         raise ValueError(f"Invalid type for addition: {type(other)}")
 
     def symbol(self) -> sp.Symbol:
-        return sp.sympify(self.__str__().translate(ftable))
+        return sp.parse_expr(self.__str__().translate(ftable))
 
 
 def unique_schur_list(schur_list: List[Schur]):

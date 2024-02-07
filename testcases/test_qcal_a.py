@@ -6,15 +6,15 @@ class Test_qcal(unittest.TestCase):
     
     def test_type_A_simple(self):
         Gr(2,5)
-        txt = 'S[2,2] + S[3,1]'
         res = qpieri(1, 'S[2,1]')
-        print(res)
+        txt = 'S[2,2] + S[3,1]'
         self.assertEqual(str(res), txt)
 
-    # def test_type_A_complex(self):
-    #     Gr(2,5)
-    #     res = qpieri(1, 'S[2,1]+S[3,2]')
-    #     self.assertEqual(str(res), 'S[3,1] + S[2,2] + S[3,3] + S[1]*q')
+    def test_type_A_with_minus(self):
+        Gr(2,5)
+        res = qpieri(1, 'S[2,1] + S[3,2]')
+        txt = 'S[1]*q + S[2,2] + S[3,1] + S[3,3]'
+        self.assertEqual(str(res), txt)
         
         # > qact(S[1]+S[2]*S[3], S[2,1]+S[3,2]);
         # S[3, 1] + S[2, 2] + S[3, 3] + q S[1] + q S[3] + q S[2, 1] + q S[3, 2]

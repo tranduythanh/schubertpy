@@ -741,28 +741,21 @@ def giambelli_rec(lc: LinearCombination, pieri: Callable, k: int) -> LinearCombi
 # DO NOT MODIFY THIS FUNCTION
 @hashable_lru_cache(maxsize=None)
 def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
-    print("pieriA_inner ->>>>>")
     lam = list(lam)
 
     inner = padding_right(lam, 0, n-k-len(lam))
     outer = [k] + inner[:-1]
-    print(inner, outer, 0, i)
     mu = _pieri_fillA(inner, inner, outer, row_index=0, p=i)
-    print("-------------mu")
-    print(mu)
-    print("-------------++")
     res = 0
     while isinstance(mu, list):
         res = Schur(part_clip(mu)) + res
-        print("-------------mu,inner,outer")
-        print(mu, inner, outer)
         mu = _pieri_itrA(mu, inner, outer)
-        print(mu)
-        print("-------------++")
     return LinearCombination(res)
 
 
 def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    print("=====>>>>>>")
+    print(i, lam, k, n)
     q = sp.Symbol('q')
     res = pieriA_inner(i, lam, k, n)
     if len(lam) == n-k and lam[-1] > 0:
@@ -775,7 +768,11 @@ def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
             if lam[j] > 1:
                 lab.append(lam[j] - 1)
 
-        res += q * sp.expand(apply_lc(lambda x: _part_star(x, k - 1), pieriA_inner(i - 1, lab, k - 1, n)))
+        z = apply_lc(lambda x: _part_star(x, k - 1), pieriA_inner(i - 1, lab, k - 1, n))
+        print("z-type(z)", z, type(z))
+        if isinstance(z, sp.Number):
+            z = LinearCombination(z)
+        res += q * sp.expand(z.expr)
     return LinearCombination(res)
 
 
@@ -1208,9 +1205,7 @@ def qpieri(i: int, lc: Union[LinearCombination, str]) -> LinearCombination:
     if isSchur(lc.expr):
         lam = toSchur(lc.expr).p
         return _qpieri(i, lam, _k, _n)
-    else:
-        
-        return apply_lc(lambda p: _qpieri(i, p, _k, _n), lc)
+    return apply_lc(lambda p: _qpieri(i, p, _k, _n), lc)
 
 
 def qact(expr: Any, lc: LinearCombination) -> LinearCombination:
