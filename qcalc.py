@@ -688,10 +688,9 @@ def act_lc(expc: sp.Expr, lc: LinearCombination, pieri: Callable) -> LinearCombi
     return apply_lc(lambda p: pieri(i, p), act_lc(expc1, lc, pieri)) + act_lc(expc0, lc, pieri)
 
 
+cache = {}
+
 def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombination:
-    # Use memoization with a cache
-    cache = {}
-    
     # Convert to tuple for using as dictionary key (since lists are not hashable)
     key = (tuple(lam), k)
     if key in cache:

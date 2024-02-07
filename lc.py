@@ -69,7 +69,8 @@ class LinearCombination(object):
     def apply(self, func: Callable) -> 'LinearCombination':
         def recursive_apply(expr: sp.Expr) -> sp.Expr:
             if expr.is_Add or expr.is_Mul or expr.is_Pow:
-                return expr.func(*[recursive_apply(arg) for arg in expr.args])
+                ret1 = expr.func(*[recursive_apply(arg) for arg in expr.args])
+                return sp.expand(ret1)
             if isSchur(expr):
                 s = toSchur(str(expr))
                 res = func(s.p)
