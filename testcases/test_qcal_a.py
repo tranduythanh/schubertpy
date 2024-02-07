@@ -10,10 +10,22 @@ class Test_qcal(unittest.TestCase):
         txt = 'S[2,2] + S[3,1]'
         self.assertEqual(str(res), txt)
 
-    def test_type_A_with_minus(self):
+    def test_type_A_with_plus(self):
         Gr(2,5)
         res = qpieri(1, 'S[2,1] + S[3,2]')
         txt = 'S[1]*q + S[2,2] + S[3,1] + S[3,3]'
+        self.assertEqual(str(res), txt)
+
+    def test_type_A_with_minus(self):
+        Gr(2,5)
+        res = qpieri(1, 'S[2,1] - S[3,2]')
+        txt = '-S[1]*q + S[2,2] + S[3,1] - S[3,3]'
+        self.assertEqual(str(res), txt)
+
+    def test_type_A_with_minus_and_coef(self):
+        Gr(2,5)
+        res = qpieri(1, 'S[2,1] - 7*S[3,2]')
+        txt = '-7*S[1]*q + S[2,2] + S[3,1] - 7*S[3,3]'
         self.assertEqual(str(res), txt)
         
         # > qact(S[1]+S[2]*S[3], S[2,1]+S[3,2]);

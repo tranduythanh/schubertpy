@@ -769,7 +769,6 @@ def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
                 lab.append(lam[j] - 1)
 
         z = apply_lc(lambda x: _part_star(x, k - 1), pieriA_inner(i - 1, lab, k - 1, n))
-        print("z-type(z)", z, type(z))
         if isinstance(z, sp.Number):
             z = LinearCombination(z)
         res += q * sp.expand(z.expr)
