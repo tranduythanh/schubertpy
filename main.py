@@ -28,6 +28,11 @@ expr = sympify(expr_str)
 print(expr, isinstance(expr, Add))
 print(expr.args)
 
+expr_str = "-S_3j2j1 - S_2j1"
+expr = sympify(expr_str)
+print(expr, isinstance(expr, Add))
+print(expr.args)
+
 expr_str = "S_3j2j1**S_2j1"
 expr = sympify(expr_str)
 print(expr, isinstance(expr, Pow))

@@ -9,7 +9,7 @@ import ast
 class LinearCombination(object):
     def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination']):
         if isinstance(expr, str):
-            expr = expr.translate(btable)
+            expr = expr.translate(ftable)
             self.expr = sp.sympify(expr)
         elif isinstance(expr, sp.Expr):
             self.expr = expr
@@ -53,20 +53,39 @@ class LinearCombination(object):
             return LinearCombination(self.expr ** other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
+    def __len__(self):
+        # Counting the number of top-level operands in the expression
+        if self.expr.is_Add or self.expr.is_Mul:
+            return len(self.expr.args)
+        elif isinstance(self.expr, sp.Pow):
+            # For a power expression, you might count it as a single term
+            return 1
+        else:
+            # For other types of expressions, such as a single symbol or number,
+            # you might also consider them as having a length of 1
+            return 1
+    
     def is_operator(self, op: str) -> bool:
         if op == '+':
             return isinstance(self.expr, sp.Add)
-        if op == '-':
-            return isinstance(self.expr, sp.Substr)
         elif op == '*':
             return isinstance(self.expr, sp.Mul)
-        elif op == '/':
-            return isinstance(self.expr, sp.Div)
         elif op == '^':
             return isinstance(self.expr, sp.Pow)
         
         raise ValueError(f"Invalid operator: {op}")
     
+
+    def list_schur_oprands(self) -> List[Schur]:
+        def recursive_list(expr: sp.Expr) -> List[Schur]:
+            if expr.is_Add or expr.is_Mul or expr.is_Pow:
+                return [recursive_list(arg) for arg in expr.args]
+            if isSchur(expr):
+                return toSchur(str(expr))
+            return None
+        
+        return recursive_list(self.expr)
+
 
     def apply(self, func: Callable) -> 'LinearCombination':
         def recursive_apply(expr: sp.Expr) -> sp.Expr:

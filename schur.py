@@ -5,28 +5,6 @@ import sympy as sp
 from const import *
 import ast
 
-def isSchur(expr: sp.Expr) -> bool:
-    return expr.is_Symbol and str(expr).startswith('S')
-
-
-def translate_schur(sym: Union[sp.Symbol, str]) -> str:
-    # Convert symbol back to string and translate using reverse table
-    return str(sym).translate(btable)
-
-def toSchur(sym: Union[sp.Symbol, str]) -> 'Schur':
-        # Convert symbol back to string and translate using reverse table
-        parsed_str = str(sym).translate(btable).replace('S', '')
-        # Parse the string back into a list structure
-        pl = ast.literal_eval(parsed_str)
-        if isinstance(pl, list) and all(isinstance(i, list) or isinstance(i, int) for i in pl):
-            return Schur(pl)
-        raise ValueError("Input string does not represent a list of lists")
-
-
-def unique_schur_list(schur_list: List['Schur']):
-    return  sorted(list(set(schur_list)))
-
-
 class Schur(object):
     def __init__(self, p):
         # Set self.p to p or [] if p is None
@@ -55,7 +33,7 @@ class Schur(object):
     
 
     def __add__(self, other):
-        if isinstance(other, 'Schur'):
+        if isinstance(other, Schur):
             return self.symbol() + other.symbol()
         if isinstance(other, int):
             return self.symbol() + other
@@ -66,7 +44,7 @@ class Schur(object):
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
     def __mul__(self, other):
-        if isinstance(other, 'Schur'):
+        if isinstance(other, Schur):
             return self.symbol() * other.symbol()
         if isinstance(other, int):
             return self.symbol() * other
@@ -77,7 +55,7 @@ class Schur(object):
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
     def __pow__(self, other):
-        if isinstance(other, 'Schur'):
+        if isinstance(other, Schur):
             return self.symbol() ** other.symbol()
         if isinstance(other, int):
             return self.symbol() ** other
@@ -89,3 +67,27 @@ class Schur(object):
 
     def symbol(self) -> sp.Symbol:
         return sp.sympify(self.__str__().translate(ftable))
+
+
+def unique_schur_list(schur_list: List[Schur]):
+    return  sorted(list(set(schur_list)))
+
+
+
+def isSchur(expr: sp.Expr) -> bool:
+    return expr.is_Symbol and str(expr).startswith('S')
+
+
+def translate_schur(sym: Union[sp.Symbol, str]) -> str:
+    # Convert symbol back to string and translate using reverse table
+    return str(sym).translate(btable)
+
+def toSchur(sym: Union[sp.Symbol, str]) -> Schur:
+        # Convert symbol back to string and translate using reverse table
+        parsed_str = str(sym).translate(btable).replace('S', '')
+        # Parse the string back into a list structure
+        pl = ast.literal_eval(parsed_str)
+        if isinstance(pl, list) and all(isinstance(i, list) or isinstance(i, int) for i in pl):
+            return Schur(pl)
+        raise ValueError("Input string does not represent a list of lists")
+        

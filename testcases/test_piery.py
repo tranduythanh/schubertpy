@@ -9,7 +9,8 @@ class TestPieriFillA(unittest.TestCase):
         self.assertIsNone(pieri_fillA([2,1,0,0,0], [2,1,0,0,0], [2,2,1,0,0], 5, 1))
         self.assertEqual(pieri_fillA([2,1,0,0,0], [2,1,0,0,0], [5,2,1,0,0], 2, 1), [2,1,1,0,0])
         self.assertIsNone(pieri_fillA(None, [2,1,0,0,0], [5,2,1,0,0], 2, 1))
-        self.assertIsNone(pieri_fillA([], [2,1,0,0,0], [5,2,1,0,0], 2, 1))
+        self.assertEqual(pieri_fillA([], [2,1,0,0,0], [5,2,1,0,0], 2, 1), [])
+        self.assertEqual(pieri_fillA([2,1], [2,1], [3,2], row_index=0, p=1), [3,1])
 
     
 class TestPieriItrA(unittest.TestCase):

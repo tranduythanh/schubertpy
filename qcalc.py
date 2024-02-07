@@ -23,7 +23,23 @@ from typing import *
 from util import *
 from schur import *
 from lc import *
-from functools import lru_cache
+from functools import lru_cache, wraps
+
+def hashable_lru_cache(maxsize=128, typed=False):
+    def decorator(func):
+        # Create a cached version of the original function with lru_cache
+        cached_func = lru_cache(maxsize=maxsize, typed=typed)(func)
+        
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Convert all list arguments to tuples so they are hashable
+            hashable_args = tuple(tuple(arg) if isinstance(arg, list) else arg for arg in args)
+            hashable_kwargs = {k: tuple(v) if isinstance(v, list) else v for k, v in kwargs.items()}
+            # Call the cached function with the hashable arguments
+            return cached_func(*hashable_args, **hashable_kwargs)
+        
+        return wrapper
+    return decorator
 
 # qcalc := module()
 # option package;
@@ -382,8 +398,14 @@ def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]
 # ##################################################################
 
 def _pieri_fillA(lam: List[int], inner: List[int], outer: List[int], row_index: int, p: int) -> Optional[List[int]]:    
+    # print("-------------------------")
+    # print("lam", lam)
+    # print("inner", inner)
+    # print("outer", outer)
+    # print("row_index", row_index)
+    # print("p", p)
     if not lam or len(lam) == 0:
-        return None
+        return lam
     
     res = lam.copy()
     pp = p
@@ -678,8 +700,10 @@ def act_lc(expc: sp.Expr, lc: LinearCombination, pieri: Callable) -> LinearCombi
     return apply_lc(lambda p: pieri(i, p), act_lc(expc1, lc, pieri)) + act_lc(expc0, lc, pieri)
 
 
-@lru_cache(maxsize=None)
+@hashable_lru_cache(maxsize=None)
 def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombination:
+    lam = list(lam)
+
     if not lam or len(lam) == 0:
         return 1
 
@@ -715,25 +739,42 @@ def giambelli_rec(lc: LinearCombination, pieri: Callable, k: int) -> LinearCombi
 # ##################################################################
 
 # DO NOT MODIFY THIS FUNCTION
-@lru_cache(maxsize=None)
+@hashable_lru_cache(maxsize=None)
 def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    print("pieriA_inner ->>>>>")
+    lam = list(lam)
+
     inner = padding_right(lam, 0, n-k-len(lam))
     outer = [k] + inner[:-1]
-    mu = _pieri_fillA(inner, inner, outer, 1, i)
+    print(inner, outer, 0, i)
+    mu = _pieri_fillA(inner, inner, outer, row_index=0, p=i)
+    print("-------------mu")
+    print(mu)
+    print("-------------++")
     res = 0
     while isinstance(mu, list):
-        res += Schur(part_clip(mu))
+        res = Schur(part_clip(mu)) + res
+        print("-------------mu,inner,outer")
+        print(mu, inner, outer)
         mu = _pieri_itrA(mu, inner, outer)
+        print(mu)
+        print("-------------++")
     return LinearCombination(res)
 
 
 def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
     q = sp.Symbol('q')
     res = pieriA_inner(i, lam, k, n)
-    if len(lam) == n - k and lam[n - k] > 0:
+    if len(lam) == n-k and lam[-1] > 0:
         if k == 1:
             return LinearCombination(q * Schur())
-        lab = [(lam[j] - 1) if lam[j] > 1 else None for j in range(len(lam))]
+        
+        # gen new lab
+        lab = []
+        for j in range(len(lam)):
+            if lam[j] > 1:
+                lab.append(lam[j] - 1)
+
         res += q * sp.expand(apply_lc(lambda x: _part_star(x, k - 1), pieriA_inner(i - 1, lab, k - 1, n)))
     return LinearCombination(res)
 
@@ -741,8 +782,10 @@ def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 # # Type B: Quantum cohomology of odd orthogonal OG(n-k,2n+1).
 # ##################################################################
-@lru_cache(maxsize=None)
+@hashable_lru_cache(maxsize=None)
 def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    lam = list(lam)
+
     result = sp.Integer(0)
     b = 0 if p <= k else 1
     for mu in pieri_set(p, lam, k, n, 0):
@@ -750,6 +793,7 @@ def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     return result
 
 def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    q = sp.Symbol('q')
     res = pieriB_inner(p, lam, k, n)
     
     if k == 0:
@@ -766,8 +810,10 @@ def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 # # Type C: Quantum cohomology of symplectic IG(n-k,2n).
 # ##################################################################
-@lru_cache(maxsize=None)
+@hashable_lru_cache(maxsize=None)
 def pieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    lam = list(lam)
+
     result = sp.Integer(0)
     for x in pieri_set(i, lam, k, n, 0):
         result += 2**count_comps(lam, x, True, k, 0) * Schur(x)
@@ -775,6 +821,7 @@ def pieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 
 
 def qpieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    q = sp.Symbol('q')
     inner_result = pieriC_inner(i, lam, k, n)
     second_term = q/2 * apply_lc(lambda x: _part_star(x, n+k+1), pieriC_inner(i, lam, k, n+1))
     return inner_result + second_term
@@ -783,8 +830,10 @@ def qpieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 # # Type D: Quantum cohomology of even orthogonal OG(n+1-k,2n+2).
 # ##################################################################
-@lru_cache(maxsize=None)
+@hashable_lru_cache(maxsize=None)
 def pieriD_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    lam = list(lam)
+
     tlam = 0 if k not in lam else (2 if lam[-1] == 0 else 1)
     result = sp.Integer(0)
     for mu in pieri_set(abs(p), lam, k, n, 1):
@@ -811,14 +860,19 @@ def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> 
             pmu = mu[i]
         h %= 2
         if tlam == 0 and k in mu:
-            return Schur(mu, 0 if h == 0 else 1)
+            return Schur(mu + [0 if h == 0 else 1])
         elif h == 0:
             return 0
         else:
-            return Schur(mu, 0 if (tlam == 2 and k in mu) else None)
+            if (tlam == 2 and k in mu):
+                mu = mu + [0]
+            return Schur(mu)
 
-
+@hashable_lru_cache(maxsize=None)
 def qpieriD_inner(p, lam, k, n):
+    lam = list(lam)
+
+    q, q1, q2 = sp.Symbol('q q1 q2')
     res = pieriD_inner(p, lam, k, n)
 
     if k == 0:
@@ -1148,10 +1202,14 @@ def toS(lc: LinearCombination) -> LinearCombination:
     return act(giambelli(lc), Schur([]))
 
 
-def qpieri(i: int, lc: LinearCombination) -> LinearCombination:
-    if isinstance(lc, list):
-        return _qpieri(i, lc, _k, _n)
+def qpieri(i: int, lc: Union[LinearCombination, str]) -> LinearCombination:
+    if isinstance(lc, str):
+        lc = LinearCombination(lc)
+    if isSchur(lc.expr):
+        lam = toSchur(lc.expr).p
+        return _qpieri(i, lam, _k, _n)
     else:
+        
         return apply_lc(lambda p: _qpieri(i, p, _k, _n), lc)
 
 
