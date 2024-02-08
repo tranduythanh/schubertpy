@@ -54,6 +54,27 @@ class LinearCombination(object):
             return LinearCombination(self.expr ** other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
+
+    def __sub__(self, other):
+        # Handle subtraction when LinearCombination is on the left
+        if isinstance(other, (int, float, sp.Symbol, sp.Expr)):
+            # Assuming you have a method to create a new LinearCombination from a scalar
+            return self.expr - other
+        if isinstance(other, LinearCombination):
+            return LinearCombination(self.expr - other.expr)
+        else:
+            raise TypeError(f"Unsupported operand type(s) for -: '{type(self)}' and '{type(other)}'")
+    
+    def __rsub__(self, other):
+        # Handle subtraction when LinearCombination is on the right
+        if isinstance(other, (int, float, sp.Symbol, sp.Expr)):
+            return other - self.expr
+        if isinstance(other, LinearCombination):
+            return LinearCombination(other.expr - self.expr)
+        else:
+            raise TypeError(f"Unsupported operand type(s) for -: '{type(other)}' and '{type(self)}'")
+    
+    
     def __len__(self):
         # Counting the number of top-level operands in the expression
         if self.expr.is_Add or self.expr.is_Mul:

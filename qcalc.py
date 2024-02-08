@@ -679,10 +679,13 @@ def num2spec(p: int) -> Schur:
     return Schur([p]) if p > 0 else Schur([-p, 0])
 
 
-def apply_lc(f: Callable, lc: LinearCombination) -> LinearCombination:
+def apply_lc(f: Callable, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc = LinearCombination(lc)
     return lc.apply(f)
 
-def act_lc(expc: sp.Expr, lc: LinearCombination, pieri: Callable) -> LinearCombination:
+def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Callable) -> LinearCombination:
+    lc = LinearCombination(lc)
+
     q = sp.Symbol('q')
     vars = expc.free_symbols - {q}
     
@@ -706,29 +709,27 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombin
     lam = list(lam)
 
     if not lam or len(lam) == 0:
-        return 1
+        return LinearCombination(1)
 
     p = lam[0]
     if p == k and lam[-1] == 0:
         p = -k
 
     # Using list slicing for the equivalent of Maple's `op` function
+    lam0 = lam[1:]
     if lam[-1] == 0 and lam[1] < k:
-        lam0 = lam[1:-2]
-    else:
         lam0 = lam[1:-1]
 
-    # Assuming pieri and S are previously defined functions or expressions
-    stuff = f"{pieri(p, lam0)} - {Schur(lam).symbol()}"
-
+    stuff = pieri(p, lam0) - LinearCombination(Schur(lam).symbol())
+    
     # Assuming num2spec is a previously defined function
-    result = sp.expand(num2spec(p) * giambelli_rec_inner(lam0, pieri, k) -
-                       giambelli_rec(stuff, pieri, k))
+    a = giambelli_rec_inner(lam0, pieri, k)
+    b = giambelli_rec(stuff, pieri, k)
+    res = sp.expand(num2spec(p) * a.expr - b.expr)
+    return LinearCombination(res)
 
-    # Store result in cache before returning
-    return result
-
-def giambelli_rec(lc: LinearCombination, pieri: Callable, k: int) -> LinearCombination:
+def giambelli_rec(lc: Union[sp.Expr, LinearCombination, str], pieri: Callable, k: int) -> LinearCombination:
+    lc = LinearCombination(lc)
     # Assuming apply_lc is a previously defined function
     return apply_lc(lambda x: giambelli_rec_inner(x, pieri, k), lc)
 
@@ -1214,7 +1215,6 @@ def qpieri(i: int, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombinat
 def qact(expr: Union[sp.Expr, LinearCombination, str], lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     expr = LinearCombination(expr).expr
     lc = LinearCombination(lc)
-    print("expr, lc", expr, lc)
     return act_lc(expr, lc, lambda i, p: _qpieri(i, p, _k, _n))
 
 
