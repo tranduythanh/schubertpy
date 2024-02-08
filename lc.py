@@ -14,14 +14,14 @@ class LinearCombination(object):
         elif isinstance(expr, sp.Expr):
             self.expr = expr
         elif isinstance(expr, int):
-            self.expr = sp.parse_expr(expr)
+            self.expr = sp.sympify(expr)
         elif isinstance(expr, LinearCombination):
             self.expr = expr.expr
         else:
             raise ValueError(f"Invalid type for LinearCombination: {type(expr)}")
 
     def __str__(self):
-        return translate_schur(self.expr)
+        return translate_schur(self.expr).replace('**', '^')
 
     def __repr__(self):
         return self.__str__()
@@ -29,34 +29,29 @@ class LinearCombination(object):
     def __add__(self, other):
         if isinstance(other, LinearCombination):
             return LinearCombination(self.expr + other.expr)
-        if isinstance(other, int):
-            return LinearCombination(self.expr + other)
-        if isinstance(other, sp.Expr):
-            return LinearCombination(self.expr + other)
-        if isinstance(other, sp.Number):
+        if isinstance(other, (int, float, sp.Expr, sp.Number)):
             return LinearCombination(self.expr + other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
+    __radd__ = __add__
+
     def __mul__(self, other):
+        # Handle scalar multiplication
         if isinstance(other, LinearCombination):
             return LinearCombination(self.expr * other.expr)
-        if isinstance(other, int):
+        if isinstance(other, (int, float, sp.Expr, sp.Number)):
             return LinearCombination(self.expr * other)
-        if isinstance(other, sp.Expr):
-            return LinearCombination(self.expr * other)
-        if isinstance(other, sp.Number):
-            return LinearCombination(self.expr + other)
-        raise ValueError(f"Invalid type for addition: {type(other)}")
+        else:
+            raise TypeError(f"Unsupported operand type(s) for *: '{type(self)}' and '{type(other)}'")
+    
+    __rmul__ = __mul__
+
     
     def __pow__(self, other):
         if isinstance(other, LinearCombination):
             return LinearCombination(self.expr ** other.expr)
-        if isinstance(other, int):
+        if isinstance(other, (int, float, sp.Expr, sp.Number)):
             return LinearCombination(self.expr ** other)
-        if isinstance(other, sp.Expr):
-            return LinearCombination(self.expr ** other)
-        if isinstance(other, sp.Number):
-            return LinearCombination(self.expr + other)
         raise ValueError(f"Invalid type for addition: {type(other)}")
     
     def __len__(self):

@@ -692,7 +692,6 @@ def act_lc(expc: sp.Expr, lc: LinearCombination, pieri: Callable) -> LinearCombi
 
     v = list(vars)[0]
     
-    # Assuming spec2num is a previously defined function
     i = spec2num(v)
 
     expc0 = expc.subs(v, 0)  # Replaces v with 0 in expc
