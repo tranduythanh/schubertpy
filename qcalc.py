@@ -665,7 +665,9 @@ def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[s
 # # General cohomology calculations, depending on Pieri rule.
 # ##################################################################
 
-def spec2num(sc: Schur) -> int:
+def spec2num(sc: Union[Schur, sp.Expr]) -> int:
+    if isinstance(sc, sp.Expr):
+        sc = toSchur(sc)
     if not isinstance(sc, Schur):
         raise ValueError("special schubert class expected")
     if len(sc.p) > 1 and (_type != "D" or sc.p[1] != 0):
@@ -754,8 +756,6 @@ def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 
 
 def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
-    print("=====>>>>>>")
-    print(i, lam, k, n)
     q = sp.Symbol('q')
     res = pieriA_inner(i, lam, k, n)
     if len(lam) == n-k and lam[-1] > 0:
@@ -1175,51 +1175,63 @@ def schub_type(lam: Any) -> int:
         return 2
 
 
-def pieri(i: int, lc: LinearCombination) -> LinearCombination:
+def pieri(i: int, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     if isinstance(lc, list):
         return _pieri(i, lc, _k, _n)
     else:
         return apply_lc(lambda p: _pieri(i, p, _k, _n), lc)
 
 
-def act(expr: Any, lc: LinearCombination) -> LinearCombination:
+def act(expr: Union[sp.Expr, LinearCombination, str], lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    expr = LinearCombination(expr).expr
+    lc = LinearCombination(lc)
     return act_lc(expr, lc, lambda i, p: _pieri(i, p, _k, _n))
 
 
-def giambelli(lc: LinearCombination) -> LinearCombination:
+def giambelli(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc = LinearCombination(lc)
     return giambelli_rec(lc, lambda i, p: _pieri(i, p, _k, _n), _k)
 
 
-def mult(lc1: LinearCombination, lc2: LinearCombination) -> LinearCombination:
+def mult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc1 = LinearCombination(lc1)
+    lc2 = LinearCombination(lc2)
     return act(giambelli(lc1), lc2)
 
 
-def toS(lc: LinearCombination) -> LinearCombination:
+def toS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc = LinearCombination(lc)
     return act(giambelli(lc), Schur([]))
 
 
-def qpieri(i: int, lc: Union[LinearCombination, str]) -> LinearCombination:
-    if isinstance(lc, str):
-        lc = LinearCombination(lc)
+def qpieri(i: int, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc = LinearCombination(lc)
     if isSchur(lc.expr):
         lam = toSchur(lc.expr).p
         return _qpieri(i, lam, _k, _n)
     return apply_lc(lambda p: _qpieri(i, p, _k, _n), lc)
 
 
-def qact(expr: Any, lc: LinearCombination) -> LinearCombination:
+def qact(expr: Union[sp.Expr, LinearCombination, str], lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    expr = LinearCombination(expr).expr
+    lc = LinearCombination(lc)
+    print("expr, lc", expr, lc)
     return act_lc(expr, lc, lambda i, p: _qpieri(i, p, _k, _n))
 
 
-def qgiambelli(lc: LinearCombination) -> LinearCombination:
+def qgiambelli(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc = LinearCombination(lc)
     return giambelli_rec(lc, lambda i, p: _qpieri(i, p, _k, _n), _k)
 
 
-def qmult(lc1: LinearCombination, lc2: LinearCombination) -> LinearCombination:
+def qmult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc1 = LinearCombination(lc1)
+    lc2 = LinearCombination(lc2)
     return qact(qgiambelli(lc1), lc2)
 
 
-def qtoS(lc: LinearCombination) -> LinearCombination:
+def qtoS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    lc = LinearCombination(lc)
     return qact(qgiambelli(lc), Schur([]))
 
 pieri_fillA = _pieri_fillA

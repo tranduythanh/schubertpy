@@ -6,7 +6,7 @@ from const import *
 import ast
 
 class Schur(object):
-    def __init__(self, p):
+    def __init__(self, p: List[int]):
         # Set self.p to p or [] if p is None
         self.p = p if p is not None else []
 
