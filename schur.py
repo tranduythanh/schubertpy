@@ -35,33 +35,31 @@ class Schur(object):
     def __add__(self, other):
         if isinstance(other, Schur):
             return self.symbol() + other.symbol()
-        if isinstance(other, int):
+        if isinstance(other, (int, float, sp.Expr, sp.Number)):
             return self.symbol() + other
-        if isinstance(other, sp.Expr):
-            return self.symbol() + other
-        if other.expr is None and isinstance(other.expr, sp.Expr):
+        if other.expr and isinstance(other.expr, sp.Expr):
             return self.symbol() + other.expr
         raise ValueError(f"Invalid type for addition: {type(other)}")
+    
+    __radd__ = __add__
     
     def __mul__(self, other):
         if isinstance(other, Schur):
             return self.symbol() * other.symbol()
-        if isinstance(other, int):
+        if isinstance(other, (int, float, sp.Expr, sp.Number)):
             return self.symbol() * other
-        if isinstance(other, sp.Expr):
-            return self.symbol() * other
-        if other.expr is None and isinstance(other.expr, sp.Expr):
+        if other.expr and isinstance(other.expr, sp.Expr):
             return self.symbol() * other.expr
         raise ValueError(f"Invalid type for addition: {type(other)}")
+    
+    __rmul__ = __mul__
     
     def __pow__(self, other):
         if isinstance(other, Schur):
             return self.symbol() ** other.symbol()
-        if isinstance(other, int):
+        if isinstance(other, (int, float, sp.Expr, sp.Number)):
             return self.symbol() ** other
-        if isinstance(other, sp.Expr):
-            return self.symbol() ** other
-        if other.expr is None and isinstance(other.expr, sp.Expr):
+        if other.expr and isinstance(other.expr, sp.Expr):
             return self.symbol() ** other.expr
         raise ValueError(f"Invalid type for addition: {type(other)}")
 

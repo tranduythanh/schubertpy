@@ -52,6 +52,14 @@ class TestPieriSet(unittest.TestCase):
         expected = [[4,2,1],[3,3,1],[3,2,2],[3,2,1,1]]
         self.assertEqual(pieri_set(p, lam, k, n, d), expected)
 
+    def test_4(self):
+        expected = [[4,2]]
+        self.assertEqual(pieri_set(3, [2,1],1, 3, 0), expected)
+    
+    def test_5(self):
+        expected = [[5,1],[4,2],[4,1,1],[3,2,1]]
+        self.assertEqual(pieri_set(3, [2,1],1, 4, 0), expected)
+
 
 
 

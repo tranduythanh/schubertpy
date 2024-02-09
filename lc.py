@@ -11,9 +11,9 @@ class LinearCombination(object):
         if isinstance(expr, str):
             expr = expr.translate(ftable)
             self.expr = sp.parse_expr(expr)
-        elif isinstance(expr, sp.Expr):
+        elif isinstance(expr, (sp.Expr, sp.Number, sp.Symbol)):
             self.expr = expr
-        elif isinstance(expr, int):
+        elif isinstance(expr, (int, float)):
             self.expr = sp.sympify(expr)
         elif isinstance(expr, LinearCombination):
             self.expr = expr.expr

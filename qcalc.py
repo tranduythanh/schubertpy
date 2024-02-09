@@ -544,16 +544,17 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
         inbot = bot[:lbot]
         outbot = []
         if lbot < top1k:
-            inbot + [0]
+            inbot += [0]
+        
         if lbot == 0:
             if top1k > 0:
                 outbot = [cols - k] 
         else:
             _delta = []
             if lbot < top1k:
-                _delta = bot[lbot]
-            outbot = [cols-k] + bot[:lbot-1] + [_delta]
-
+                _delta = [bot[lbot-1]]
+            outbot = [cols-k] + bot[:lbot-1] + _delta
+        
         # Find exact bounds for bottom partition, using shift-under conditions
         b = 0
         for i in range(k):
@@ -582,13 +583,16 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
 
         bot1 = _pieri_fill(inbot, inbot, outbot, 1, p1)
         top1c = part_conj(top1)
+        
         while isinstance(bot1, list):
             if k == 0:
                 res.add(tuple(part_clip(bot1)))
+                print("flow1")
             else:
                 j = min(len(top1c), len(bot1))
                 value = [top1c[i] + bot1[i] for i in range(j)] + top1c[j:]
                 res.add(tuple(value))
+                print("flow2")
             bot1 = _pieri_itr(bot1, inbot, outbot)
         
     res = [list(item) for item in res]
@@ -639,20 +643,19 @@ def _pieri_itr(lam: List[int], inner: List[int], outer: List[int]) -> Union[List
     return None
 
 
-def _part_star(lam: List[int], cols: int) -> Union[int, List[int]]:
+def _part_star(lam: List[int], cols: int) -> Union[int, Schur]:
     if not lam or len(lam)==0 or lam[0] != cols:
         return 0
     return Schur(lam[1:])
 
-def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, List[Union[str, int]]]:
+def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, Schur]:
     if part_len(lam) != rows or (lam and len(lam)>0 and lam[0] > cols):
         return 0
     
     r = rows + lam[0] - cols
-    
     if r < 0:
         return 0
-    if r < rows and len(lam) > r and lam[r-1] > 1:
+    if r < rows and len(lam) > r and lam[r] > 1:
         return 0
 
     res = lam[1:r]
@@ -688,6 +691,7 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
 
     q = sp.Symbol('q')
     vars = expc.free_symbols - {q}
+    vars = sorted(vars, key=lambda x: str(x))
     
     # If there are no variables, multiply expc by lc and return
     if len(vars) == 0:
@@ -700,8 +704,12 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
     expc0 = expc.subs(v, 0)  # Replaces v with 0 in expc
     expc1 = sp.expand((expc - expc0) / v)
 
+    lc_p1 = act_lc(expc1, lc, pieri)
+    lc_p2 = act_lc(expc0, lc, pieri)
+    print("lc_p1", lc_p1)
+    print("lc_p2", lc_p2)
     # Assuming apply_lc is a previously defined function
-    return apply_lc(lambda p: pieri(i, p), act_lc(expc1, lc, pieri)) + act_lc(expc0, lc, pieri)
+    return apply_lc(lambda p: pieri(i, p), lc_p1) + lc_p2
 
 
 @hashable_lru_cache(maxsize=None)
@@ -784,7 +792,11 @@ def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
 
     result = sp.Integer(0)
     b = 0 if p <= k else 1
-    for mu in pieri_set(p, lam, k, n, 0):
+    pset = pieri_set(p, lam, k, n, 0)
+    print("p, lam, k, n, d: ")
+    print(p, lam, k, n, 0)
+    print("pieri_set: ", pset)
+    for mu in pset:
         result += 2**(count_comps(lam, mu, False, k, 0) - b) * Schur(mu)
     return result
 
@@ -794,14 +806,20 @@ def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     
     if k == 0:
         if len(lam) > 0 and lam[0] == n + k:
+            print("case1")
             res += q * apply_lc(lambda x: _part_star(x, n+k), pieriB_inner(p, lam[1:], k, n))
     else:
-        if len(lam) == n - k and lam[n - k] > 0:
-            res += q * apply_lc(lambda x: _part_tilde(x, n - k + 1, n + k), pieriB_inner(p, lam, k, n + 1))
+        if len(lam) == n - k and lam[-1] > 0:
+            print("case2")
+            res += q * apply_lc(lambda x: _part_tilde(x, n-k+1, n+k), pieriB_inner(p, lam, k, n + 1))
         if len(lam) > 0 and lam[0] == n + k:
+            print("case3")
+            print(pieriB_inner(p, lam[1:], k, n))
+            print(apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n)))
             res += q**2 * apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n))
-    
-    return sp.expand(res)
+
+    res = LinearCombination(res)
+    return LinearCombination(sp.expand(res.expr))
 
 # ##################################################################
 # # Type C: Quantum cohomology of symplectic IG(n-k,2n).
@@ -831,38 +849,42 @@ def pieriD_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     lam = list(lam)
 
     tlam = 0 if k not in lam else (2 if lam[-1] == 0 else 1)
-    result = sp.Integer(0)
+    res = sp.Integer(0)
     for mu in pieri_set(abs(p), lam, k, n, 1):
-        result += _dcoef(p, lam, mu, tlam, k, n)
-    return result
+        res += _dcoef(p, lam, mu, tlam, k, n)
+    return res
 
 def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> LinearCombination:
     cc = count_comps(lam, mu, False, k, 1) - (0 if abs(p) < k else 1)
     if cc >= 0:
+        _schur = None
         if k not in mu or tlam == 1:
-            return 2**cc * Schur(mu)
+            _schur =  Schur(mu)
         elif tlam == 2:
-            return 2**cc * Schur(mu, 0)
+            _schur = Schur(mu, 0)
         else:
-            return 2**cc * (Schur(mu) + Schur(mu, 0))
-    else:
-        # Tie breaking
-        h = k + tlam + (1 if p < 0 else 0)
-        pmu = 0
-        for i in range(len(mu) - 1, -1, -1):
-            lami = lam[i] if i < len(lam) else 0
-            if lami < min(mu[i], k):
-                h = h - (min(mu[i], k) - max(pmu, lami))
-            pmu = mu[i]
-        h %= 2
-        if tlam == 0 and k in mu:
-            return Schur(mu + [0 if h == 0 else 1])
-        elif h == 0:
-            return 0
-        else:
-            if (tlam == 2 and k in mu):
-                mu = mu + [0]
-            return Schur(mu)
+            _schur =  Schur(mu).symbol() + Schur(mu, 0).symbol()
+        return 2**cc * LinearCombination(_schur)
+    
+    # Tie breaking
+    h = k + tlam + (1 if p < 0 else 0)
+    pmu = 0
+    for i in range(len(mu) - 1, -1, -1):
+        lami = lam[i] if i < len(lam) else 0
+        if lami < min(mu[i], k):
+            h = h - (min(mu[i], k) - max(pmu, lami))
+        pmu = mu[i]
+    
+    h %= 2
+    if tlam == 0 and k in mu:
+        if h == 0:
+            return LinearCombination(Schur(mu + [0]))
+        return LinearCombination(Schur(mu + [1]))
+    if h == 0:
+        return LinearCombination(0)
+    if (tlam == 2 and k in mu):
+        mu = mu + [0]
+    return LinearCombination(Schur(mu).symbol())
 
 @hashable_lru_cache(maxsize=None)
 def qpieriD_inner(p, lam, k, n):
@@ -896,7 +918,8 @@ def qpieriD_inner(p, lam, k, n):
         if len(lam) > 0 and lam[0] == n + k:
             res += q**2 * apply_lc(lambda x: _part_star(x, n + k), pieriD_inner(p, lam[1:], k, n))
     
-    return sp.expand(res)
+    res = LinearCombination(res)
+    return LinearCombination(sp.expand(res.expr))
 
 
 
@@ -1201,7 +1224,7 @@ def mult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, Linear
 
 def toS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     lc = LinearCombination(lc)
-    return act(giambelli(lc), Schur([]))
+    return act(giambelli(lc), Schur([]).symbol())
 
 
 def qpieri(i: int, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
@@ -1231,7 +1254,7 @@ def qmult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, Linea
 
 def qtoS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     lc = LinearCombination(lc)
-    return qact(qgiambelli(lc), Schur([]))
+    return qact(qgiambelli(lc), Schur([]).symbol())
 
 pieri_fillA = _pieri_fillA
 pieri_itrA = _pieri_itrA
