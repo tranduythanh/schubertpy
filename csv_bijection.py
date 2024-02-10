@@ -15,7 +15,6 @@ def _read_csv_transformed(filename):
                 col3 = sp.expand(col3).simplify()
                 col3 = decode(str(col3))
                 transformed_row = (row[0], row[1], col3)
-                print(transformed_row)
                 transformed_set.add(transformed_row)
         return transformed_set
 
@@ -23,10 +22,6 @@ def check_bijection_with_permutation(file1, file2):
     set1 = _read_csv_transformed(file1)
     set2 = _read_csv_transformed(file2)
 
-    print(set1, len(set1))
-    print(set2, len(set2))
-    print(set1.intersection(set2), len(set1.intersection(set2)))
-    
     # Check if there's a bijection
     if len(set1) == len(set2) and len(set1.intersection(set2)) == len(set1):
         return True
