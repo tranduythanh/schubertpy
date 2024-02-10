@@ -732,11 +732,11 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
 def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombination:
     
     lam = list(lam)
-    print("----------------------giambelli_rec_inner\n", lam, k)
-    print("len(lam): ", len(lam))
+    # print("----------------------giambelli_rec_inner\n", lam, k)
+    # print("len(lam): ", len(lam))
 
     if not lam or len(lam) == 0:
-        print("return 1")
+        # print("return 1")
         return LinearCombination(1)
 
     p = lam[0]
@@ -748,20 +748,20 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombin
     if lam[-1] == 0 and lam[1] < k:
         lam0 = lam[1:-2]
 
-    print("lam, lam0,  pieri(p, lam0): ", lam, lam0,  pieri(p, lam0))
+    # print("lam, lam0,  pieri(p, lam0): ", lam, lam0,  pieri(p, lam0))
     stuff = pieri(p, lam0) - LinearCombination(Schur(lam).symbol())
     
     # Assuming num2spec is a previously defined function
     a = giambelli_rec_inner(lam0, pieri, k)
     b = giambelli_rec(stuff, pieri, k)
-    print("a, b: ", a, b)
+    # print("a, b: ", a, b)
 
     res = sp.expand(num2spec(p) * a.expr - b.expr)
     return LinearCombination(res)
 
 def giambelli_rec(lc: Union[sp.Expr, LinearCombination, str], pieri: Callable, k: int) -> LinearCombination:
     lc = LinearCombination(lc)
-    print("giambelli_rec lc: ", lc)
+    # print("giambelli_rec lc: ", lc)
     return apply_lc(lambda x: giambelli_rec_inner(x, pieri, k), lc)
 
 
@@ -935,32 +935,32 @@ def qpieriD_inner(p, lam, k, n):
         if len(lam) >= n and lam[n-1] > 0:
             print("case k==1, if1")
             lb = part_clip([max(x - 1, 0) for x in lam])
-            # print("lb: ", lb)
+            print("lb: ", lb)
             
             cprd = LinearCombination(Schur(lb).symbol())
             if abs(p) > 1:
                 cprd = pieriD_inner(abs(p) - 1, lb, 0, n) 
-            # print("cprd: ", cprd)
+            print("cprd: ", cprd)
             
             intn = set(range(1, n+1))
-            # print("intn: ", intn)
+            print("intn: ", intn)
 
             cprd = apply_lc(lambda mu: _toSchurFromIntnMu(intn, mu), cprd)
-            # print("cprd: ", cprd)
+            print("cprd: ", cprd)
             
             res1 = 0
             if lam[-1] > 0 and p > 0:
-                res1 += q1 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu))), cprd)
-            if lam[-1] == 0 or k not in lam and (p == -1 or p > 1):
+                res1 = q1 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu))), cprd)
+            if (lam[-1] == 0 or k not in lam) and (p == -1 or p > 1):
                 res1 += q2 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu)) + [0]), cprd)
             
-            # print("res: ", res)
-            # print("res1: ", res1)
-            # print("dualize_res1: ", dualize(res1))
+            print("res: ", res)
+            print("res1: ", res1)
+            print("dualize_res1: ", dualize(res1))
             
             res += dualize(res1)
 
-            # print("res: ", res)
+            print("res: ", res)
 
         if len(lam) > 0 and lam[0] == n + k:
             print("case k==1, if2")
@@ -1218,7 +1218,7 @@ def dualize(lc: Union[sp.Expr, LinearCombination, str]) -> Any:
     }.get(_type, _n)
     
     index = part2index(lc)
-    print("index:", index)
+    print("lc, index:", lc, index)
 
     return index2part(apply_lc(lambda idx: dualize_index_inner(idx, N, _type), index))
 

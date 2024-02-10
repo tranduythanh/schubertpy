@@ -120,22 +120,22 @@ class LinearCombination(object):
                     ret1_args.append(x)
                 ret1 = _expr.func(*ret1_args)
                 ret2 = sp.expand(ret1)
-                print("case1: ", ret2)
+                # print("case1: ", ret2)
                 return ret2
             
             if isSchur(_expr):
                 s = toSchur(str(_expr))
                 res = func(s.p)
                 if isinstance(res, Schur):
-                    print("case2: ", res)
+                    # print("case2: ", res)
                     return res.symbol()
                 if isinstance(res, LinearCombination):
-                    print("case2: ", res)
+                    # print("case2: ", res)
                     return res.expr
-                print("case2: ", res)
+                # print("case2: ", res)
                 return res
             
-            print("case3: ", _expr)
+            # print("case3: ", _expr)
             return _expr
         
         new_expr = recursive_apply(self.expr)
