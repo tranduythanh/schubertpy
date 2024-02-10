@@ -383,13 +383,16 @@ def dualize_index_inner(idx: List[int], N: int, tp: str) -> List[Union[str, int]
     res = []
     for item in reversed(idx):
         res.append(N + 1 - item)
+
     if tp == "D" and (N / 2) % 2 == 1:
         for i in range(len(res)):
-            if res[i] == N / 2:
-                res[i] = N / 2 + 1
+            if res[i] == N/2:
+                res[i] = N/2 + 1
                 continue
-            res[i] == N / 2 + 1
-            res[i] = N / 2
+            if res[i] == N/2 + 1:
+                res[i] = N/2
+    res = [int(x) if int(x)==x else x for x in res]
+
     return Schur(res)
 
 
@@ -878,14 +881,14 @@ def pieriD_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
 def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> LinearCombination:
     cc = count_comps(lam, mu, False, k, 1) - (0 if abs(p) < k else 1)
     if cc >= 0:
-        _schur = None
+        _expr = None
         if k not in mu or tlam == 1:
-            _schur =  Schur(mu)
+            _expr =  Schur(mu).symbol()
         elif tlam == 2:
-            _schur = Schur(mu, 0)
+            _expr = Schur(mu, 0).symbol()
         else:
-            _schur =  Schur(mu).symbol() + Schur(mu, 0).symbol()
-        return 2**cc * LinearCombination(_schur)
+            _expr =  Schur(mu).symbol() + Schur(mu+[0]).symbol()
+        return 2**cc * LinearCombination(_expr)
     
     # Tie breaking
     h = k + tlam + (1 if p < 0 else 0)
@@ -899,22 +902,28 @@ def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> 
     h %= 2
     if tlam == 0 and k in mu:
         if h == 0:
-            return LinearCombination(Schur(mu + [0]))
-        return LinearCombination(Schur(mu + [1]))
+            return LinearCombination(Schur(mu + [0]).symbol())
+        return LinearCombination(Schur(mu + [1]).symbol())
     if h == 0:
         return LinearCombination(0)
     if (tlam == 2 and k in mu):
         mu = mu + [0]
     return LinearCombination(Schur(mu).symbol())
 
+
+def _toSchurFromIntnMu(_intn: set, _mu: List[int]) -> LinearCombination:
+    sch = Schur((list(_intn - set(_mu))[::-1]))
+    return LinearCombination(sch.symbol())
+
 @hashable_lru_cache(maxsize=None)
 def qpieriD_inner(p, lam, k, n):
     lam = list(lam)
 
-    q, q1, q2 = sp.Symbol('q q1 q2')
+    q, q1, q2 = sp.symbols('q q1 q2')
     res = pieriD_inner(p, lam, k, n)
 
     if k == 0:
+        print("case k==0")
         if len(lam) > 0 and lam[0] == n + k:
             res += q * apply_lc(lambda x: _part_star(x, n + k),
                                  pieriD_inner(p, lam[1:], k, n))
@@ -1174,7 +1183,8 @@ def index2part(lc: Any) -> Any:
         fail_no_type()
 
 
-def dualize(lc: Any) -> Any:
+def dualize(lc: Union[sp.Expr, LinearCombination, str]) -> Any:
+    lc = LinearCombination(lc)
     N = {
         "A": _n,
         "C": 2*_n,
@@ -1182,7 +1192,10 @@ def dualize(lc: Any) -> Any:
         "D": 2*_n+2
     }.get(_type, _n)
     
-    return index2part(apply_lc(lambda idx: dualize_index_inner(idx, N, _type), part2index(lc)))
+    index = part2index(lc)
+    print("index:", index)
+
+    return index2part(apply_lc(lambda idx: dualize_index_inner(idx, N, _type), index))
 
 
 def type_swap(lc: Any) -> Any:
