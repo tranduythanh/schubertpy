@@ -113,23 +113,29 @@ class LinearCombination(object):
         def recursive_apply(_expr: sp.Expr) -> sp.Expr:
             if isinstance(_expr, LinearCombination):
                 _expr = _expr.expr
-
             if _expr.is_Add or _expr.is_Mul or _expr.is_Pow:
                 ret1_args = []
                 for arg in _expr.args:
                     x = recursive_apply(arg)
                     ret1_args.append(x)
                 ret1 = _expr.func(*ret1_args)
-                return sp.expand(ret1)
+                ret2 = sp.expand(ret1)
+                print("case1: ", ret2)
+                return ret2
             
             if isSchur(_expr):
                 s = toSchur(str(_expr))
                 res = func(s.p)
                 if isinstance(res, Schur):
+                    print("case2: ", res)
                     return res.symbol()
                 if isinstance(res, LinearCombination):
+                    print("case2: ", res)
                     return res.expr
+                print("case2: ", res)
                 return res
+            
+            print("case3: ", _expr)
             return _expr
         
         new_expr = recursive_apply(self.expr)

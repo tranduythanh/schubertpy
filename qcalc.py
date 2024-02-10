@@ -730,9 +730,13 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
 
 @hashable_lru_cache(maxsize=None)
 def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombination:
+    
     lam = list(lam)
+    print("----------------------giambelli_rec_inner\n", lam, k)
+    print("len(lam): ", len(lam))
 
     if not lam or len(lam) == 0:
+        print("return 1")
         return LinearCombination(1)
 
     p = lam[0]
@@ -742,19 +746,22 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombin
     # Using list slicing for the equivalent of Maple's `op` function
     lam0 = lam[1:]
     if lam[-1] == 0 and lam[1] < k:
-        lam0 = lam[1:-1]
+        lam0 = lam[1:-2]
 
+    print("lam, lam0,  pieri(p, lam0): ", lam, lam0,  pieri(p, lam0))
     stuff = pieri(p, lam0) - LinearCombination(Schur(lam).symbol())
     
     # Assuming num2spec is a previously defined function
     a = giambelli_rec_inner(lam0, pieri, k)
     b = giambelli_rec(stuff, pieri, k)
+    print("a, b: ", a, b)
+
     res = sp.expand(num2spec(p) * a.expr - b.expr)
     return LinearCombination(res)
 
 def giambelli_rec(lc: Union[sp.Expr, LinearCombination, str], pieri: Callable, k: int) -> LinearCombination:
     lc = LinearCombination(lc)
-    # Assuming apply_lc is a previously defined function
+    print("giambelli_rec lc: ", lc)
     return apply_lc(lambda x: giambelli_rec_inner(x, pieri, k), lc)
 
 
@@ -858,20 +865,20 @@ def qpieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 @hashable_lru_cache(maxsize=None)
 def pieriD_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
-    # print("pieriD_inner ------------------------")
+    print("pieriD_inner ------------------------")
     lam = list(lam)
 
     tlam = 0 if k not in lam else (2 if lam[-1] == 0 else 1)
-    # print("lam: ", lam)
-    # print("tlam: ", tlam)
-    # print("pieriD_inner_pieri_set: ", pieri_set(abs(p),lam,k,n,1))
-    # print("pieriD_inner -----------<<<<<<<<<<<<<<")
+    print("lam: ", lam)
+    print("tlam: ", tlam)
+    print("pieriD_inner_pieri_set: ", pieri_set(abs(p),lam,k,n,1))
+    print("pieriD_inner -----------<<<<<<<<<<<<<<")
 
     res = sp.Integer(0)
     for mu in pieri_set(abs(p), lam, k, n, 1):
         res += _dcoef(p, lam, mu, tlam, k, n)
     res = LinearCombination(res)
-    # print("pieriD_inner res: ", res)
+    print("pieriD_inner res: ", res)
     return res
 
 def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> LinearCombination:
@@ -881,7 +888,7 @@ def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> 
         if k not in mu or tlam == 1:
             _expr =  Schur(mu).symbol()
         elif tlam == 2:
-            _expr = Schur(mu, 0).symbol()
+            _expr = Schur(mu+[0]).symbol()
         else:
             _expr =  Schur(mu).symbol() + Schur(mu+[0]).symbol()
         return 2**cc * LinearCombination(_expr)
@@ -898,8 +905,8 @@ def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> 
     h %= 2
     if tlam == 0 and k in mu:
         if h == 0:
-            return LinearCombination(Schur(mu + [0]).symbol())
-        return LinearCombination(Schur(mu + [1]).symbol())
+            return LinearCombination(Schur(mu).symbol())
+        return LinearCombination(Schur(mu + [0]).symbol())
     if h == 0:
         return LinearCombination(0)
     if (tlam == 2 and k in mu):
