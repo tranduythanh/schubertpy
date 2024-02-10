@@ -40,11 +40,11 @@ class Test_qcal_qq(unittest.TestCase):
         txt = 'S[1]^2*S[2]^2 - 2*S[1]*S[2]*S[3] + S[3]^2'
         self.assertEqual(str(res), txt)
 
-#     def test_qgiambelli_2(self):
-#         OG(2,6)
-#         res = qgiambelli('S[2,1]*S[2,1]*S[2,1]')
-#         txt = 'S[1]^3*S[2]^3 - 3*S[1]^2*S[2]^2*S[3] + 3*S[1]*S[2]*S[3]^2 - S[3]^3'
-#         self.assertEqual(str(res), txt)
+    def test_qgiambelli_2(self):
+        OG(2,6)
+        res = qgiambelli('S[2,1]*S[2,1]*S[2,1]')
+        txt = 'S[1]^3*S[2]^3 - 3*S[1]^2*S[2]^2*S[3] + 3*S[1]*S[2]*S[3]^2 - S[3]^3'
+        self.assertEqual(str(res), txt)
 
 #     def test_qmult(self):
 #         OG(2,6)
