@@ -60,6 +60,11 @@ class Test_apply(unittest.TestCase):
         lc = LinearCombination("q*S[1,2] + 7*S[3,4]")
         res = apply_lc(f, lc)
         self.assertEqual(str(res), 'S[2,3]*q + 7*S[4,5]')
+
+    def test_02(self):
+        res = apply_lc(lambda p: qpieriB_inner(2, p, 1, 3), '6*S[4,2]')
+        txt = '6*S[3,1]*q + 6*S[]*q^2'
+        self.assertEqual(str(res), txt)
             
 if __name__ == '__main__':
     unittest.main()
