@@ -502,6 +502,9 @@ def sort_part(tuples):
     return sorted(tuples, key=lambda lst: lst, reverse=True)
 
 def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
+    print("p, lam, k, n, d: ")
+    print(p, lam, k, n, 0)
+    
     rows = n + d - k
     cols = n + k
 
@@ -587,15 +590,15 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
         while isinstance(bot1, list):
             if k == 0:
                 res.add(tuple(part_clip(bot1)))
-                print("flow1")
             else:
                 j = min(len(top1c), len(bot1))
                 value = [top1c[i] + bot1[i] for i in range(j)] + top1c[j:]
                 res.add(tuple(value))
-                print("flow2")
             bot1 = _pieri_itr(bot1, inbot, outbot)
         
     res = [list(item) for item in res]
+
+    print("pieri_set: ", res)
     return sort_part(res)
 
 
@@ -653,7 +656,7 @@ def _part_tilde(lam: List[int], rows: int, cols: int) -> Union[int, Schur]:
         return 0
     
     r = rows + lam[0] - cols
-    if r < 0:
+    if r <= 0:
         return 0
     if r < rows and len(lam) > r and lam[r] > 1:
         return 0
@@ -687,6 +690,7 @@ def apply_lc(f: Callable, lc: Union[sp.Expr, LinearCombination, str]) -> LinearC
     return lc.apply(f)
 
 def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Callable) -> LinearCombination:
+    print("act_lc")
     lc = LinearCombination(lc)
 
     q = sp.Symbol('q')
@@ -704,12 +708,22 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
     expc0 = expc.subs(v, 0)  # Replaces v with 0 in expc
     expc1 = sp.expand((expc - expc0) / v)
 
+    print("expc:                          ", expc)
+    print("expc0:                         ", expc0)
+    print("expc1:                         ", expc1)
+    print("v:                             ", v)
+
     lc_p1 = act_lc(expc1, lc, pieri)
     lc_p2 = act_lc(expc0, lc, pieri)
     print("lc_p1", lc_p1)
     print("lc_p2", lc_p2)
+    
     # Assuming apply_lc is a previously defined function
-    return apply_lc(lambda p: pieri(i, p), lc_p1) + lc_p2
+    res1 = apply_lc(lambda p: pieri(i, p), lc_p1)
+    print("act_lc res 111111: ", res1)
+    res = LinearCombination(res1 + lc_p2)
+    print("act_lc res: ", res)
+    return res
 
 
 @hashable_lru_cache(maxsize=None)
@@ -793,16 +807,18 @@ def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     result = sp.Integer(0)
     b = 0 if p <= k else 1
     pset = pieri_set(p, lam, k, n, 0)
-    print("p, lam, k, n, d: ")
-    print(p, lam, k, n, 0)
-    print("pieri_set: ", pset)
     for mu in pset:
         result += 2**(count_comps(lam, mu, False, k, 0) - b) * Schur(mu)
     return result
 
 def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    print("qpieriB_inner")
     q = sp.Symbol('q')
+
+    
     res = pieriB_inner(p, lam, k, n)
+
+    print(">>>res: ", res)
     
     if k == 0:
         if len(lam) > 0 and lam[0] == n + k:
@@ -811,14 +827,19 @@ def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     else:
         if len(lam) == n - k and lam[-1] > 0:
             print("case2")
+            print(pieriB_inner(p, lam, k, n + 1))
+            print("median: ", apply_lc(lambda x: _part_tilde(x, n-k+1, n+k), pieriB_inner(p, lam, k, n + 1)))
             res += q * apply_lc(lambda x: _part_tilde(x, n-k+1, n+k), pieriB_inner(p, lam, k, n + 1))
+            print("end----case2")
         if len(lam) > 0 and lam[0] == n + k:
             print("case3")
             print(pieriB_inner(p, lam[1:], k, n))
             print(apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n)))
             res += q**2 * apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n))
+            print("++++++>>>>>>>")
 
     res = LinearCombination(res)
+    print("qpieriB_inner res: ", res)
     return LinearCombination(sp.expand(res.expr))
 
 # ##################################################################
@@ -1236,12 +1257,15 @@ def qpieri(i: int, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombinat
 
 
 def qact(expr: Union[sp.Expr, LinearCombination, str], lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    print("qact")
     expr = LinearCombination(expr).expr
     lc = LinearCombination(lc)
+    print(expr, lc)
     return act_lc(expr, lc, lambda i, p: _qpieri(i, p, _k, _n))
 
 
 def qgiambelli(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    print("qgiambelli")
     lc = LinearCombination(lc)
     return giambelli_rec(lc, lambda i, p: _qpieri(i, p, _k, _n), _k)
 
@@ -1253,8 +1277,9 @@ def qmult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, Linea
 
 
 def qtoS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    print("qtoS")
     lc = LinearCombination(lc)
-    return qact(qgiambelli(lc), Schur([]).symbol())
+    return qact(qgiambelli(lc).expr, LinearCombination(Schur([]).symbol()))
 
 pieri_fillA = _pieri_fillA
 pieri_itrA = _pieri_itrA

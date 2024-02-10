@@ -65,6 +65,18 @@ class Test_apply(unittest.TestCase):
         res = apply_lc(lambda p: qpieriB_inner(2, p, 1, 3), '6*S[4,2]')
         txt = '6*S[3,1]*q + 6*S[]*q^2'
         self.assertEqual(str(res), txt)
+        
+
+    def test_03(self):
+        res = apply_lc(lambda x: part_tilde(x, 3, 4), 'S[1,1,1] + 2*S[2,1]')
+        self.assertEqual(str(res), '0')
+    
+    
+    def test_04(self):
+        lc_p1 = 'q*S[2] + q*S[1,1] + 2*S[4,2]'
+        res = apply_lc(lambda p: qpieriB_inner(1, p, 1, 3), lc_p1)
+        txt = '5*S[2,1]*q + S[3]*q + 2*S[4,3]'
+        self.assertEqual(str(res), txt)
             
 if __name__ == '__main__':
     unittest.main()
