@@ -505,8 +505,8 @@ def sort_part(tuples):
     return sorted(tuples, key=lambda lst: lst, reverse=True)
 
 def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
-    print("p, lam, k, n, d: ")
-    print(p, lam, k, n, 0)
+    # print("p, lam, k, n, d: ")
+    # print(p, lam, k, n, d)
     
     rows = n + d - k
     cols = n + k
@@ -601,7 +601,7 @@ def pieri_set(p: int, lam: List[int], k: int, n: int, d:int):
         
     res = [list(item) for item in res]
 
-    print("pieri_set: ", res)
+    # print("pieri_set: ", res)
     return sort_part(res)
 
 
@@ -725,7 +725,6 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
     res1 = apply_lc(lambda p: pieri(i, p), lc_p1)
     print("act_lc res 111111: ", res1)
     res = LinearCombination(res1 + lc_p2)
-    print("act_lc res: ", res)
     return res
 
 
@@ -783,7 +782,7 @@ def pieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
     q = sp.Symbol('q')
     res = pieriA_inner(i, lam, k, n)
-    if len(lam) == n-k and lam[-1] > 0:
+    if len(lam) == n-k and lam[n-k-1] > 0:
         if k == 1:
             return LinearCombination(q * Schur())
         
@@ -815,34 +814,23 @@ def pieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
     return result
 
 def qpieriB_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
-    print("qpieriB_inner")
     q = sp.Symbol('q')
-
     
     res = pieriB_inner(p, lam, k, n)
-
-    print(">>>res: ", res)
     
     if k == 0:
         if len(lam) > 0 and lam[0] == n + k:
-            print("case1")
             res += q * apply_lc(lambda x: _part_star(x, n+k), pieriB_inner(p, lam[1:], k, n))
     else:
-        if len(lam) == n - k and lam[-1] > 0:
-            print("case2")
+        if len(lam) == n - k and lam[n-k-1] > 0:
             print(pieriB_inner(p, lam, k, n + 1))
-            print("median: ", apply_lc(lambda x: _part_tilde(x, n-k+1, n+k), pieriB_inner(p, lam, k, n + 1)))
             res += q * apply_lc(lambda x: _part_tilde(x, n-k+1, n+k), pieriB_inner(p, lam, k, n + 1))
-            print("end----case2")
         if len(lam) > 0 and lam[0] == n + k:
-            print("case3")
             print(pieriB_inner(p, lam[1:], k, n))
             print(apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n)))
             res += q**2 * apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n))
-            print("++++++>>>>>>>")
 
     res = LinearCombination(res)
-    print("qpieriB_inner res: ", res)
     return LinearCombination(sp.expand(res.expr))
 
 # ##################################################################
@@ -870,12 +858,20 @@ def qpieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
 # ##################################################################
 @hashable_lru_cache(maxsize=None)
 def pieriD_inner(p: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    # print("pieriD_inner ------------------------")
     lam = list(lam)
 
     tlam = 0 if k not in lam else (2 if lam[-1] == 0 else 1)
+    # print("lam: ", lam)
+    # print("tlam: ", tlam)
+    # print("pieriD_inner_pieri_set: ", pieri_set(abs(p),lam,k,n,1))
+    # print("pieriD_inner -----------<<<<<<<<<<<<<<")
+
     res = sp.Integer(0)
     for mu in pieri_set(abs(p), lam, k, n, 1):
         res += _dcoef(p, lam, mu, tlam, k, n)
+    res = LinearCombination(res)
+    # print("pieriD_inner res: ", res)
     return res
 
 def _dcoef(p: int, lam: List[int], mu: List[int], tlam: int, k: int, n: int) -> LinearCombination:
@@ -923,25 +919,47 @@ def qpieriD_inner(p, lam, k, n):
     res = pieriD_inner(p, lam, k, n)
 
     if k == 0:
-        print("case k==0")
+        # print("case k==0")
         if len(lam) > 0 and lam[0] == n + k:
             res += q * apply_lc(lambda x: _part_star(x, n + k),
                                  pieriD_inner(p, lam[1:], k, n))
     elif k == 1:
+        # print("case k==1")
         if len(lam) >= n and lam[n-1] > 0:
-            lb = [max(x - 1, 0) for x in lam]
-            cprd = pieriD_inner(abs(p) - 1, lb, 0, n) if abs(p) > 1 else Schur(lb)
+            print("case k==1, if1")
+            lb = part_clip([max(x - 1, 0) for x in lam])
+            # print("lb: ", lb)
+            
+            cprd = LinearCombination(Schur(lb).symbol())
+            if abs(p) > 1:
+                cprd = pieriD_inner(abs(p) - 1, lb, 0, n) 
+            # print("cprd: ", cprd)
+            
             intn = set(range(1, n+1))
-            cprd = apply_lc(lambda mu: Schur((list(intn - set(mu))[::-1])), cprd)
+            # print("intn: ", intn)
+
+            cprd = apply_lc(lambda mu: _toSchurFromIntnMu(intn, mu), cprd)
+            # print("cprd: ", cprd)
+            
             res1 = 0
             if lam[-1] > 0 and p > 0:
                 res1 += q1 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu))), cprd)
             if lam[-1] == 0 or k not in lam and (p == -1 or p > 1):
-                res1 += q2 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu)), 0), cprd)
+                res1 += q2 * apply_lc(lambda mu: Schur([x+1 for x in mu] + [1]*(n-len(mu)) + [0]), cprd)
+            
+            # print("res: ", res)
+            # print("res1: ", res1)
+            # print("dualize_res1: ", dualize(res1))
+            
             res += dualize(res1)
+
+            # print("res: ", res)
+
         if len(lam) > 0 and lam[0] == n + k:
+            print("case k==1, if2")
             res += q1 * q2 * apply_lc(lambda x: _part_star(x, n + k), pieriD_inner(p, lam[1:], k, n))
     else:
+        # print("case k==else")
         if len(lam) >= n + 1 - k and lam[n + 1 - k - 1] > 0:
             res += q * type_swap(apply_lc(lambda x: _part_tilde(x, n - k + 2, n + k),
                                           pieriD_inner(p, lam, k, n + 1)), k)
@@ -1273,7 +1291,8 @@ def qact(expr: Union[sp.Expr, LinearCombination, str], lc: Union[sp.Expr, Linear
     print("qact")
     expr = LinearCombination(expr).expr
     lc = LinearCombination(lc)
-    print(expr, lc)
+    print("expr: ", expr)
+    print("lc: ", lc)
     return act_lc(expr, lc, lambda i, p: _qpieri(i, p, _k, _n))
 
 
