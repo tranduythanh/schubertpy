@@ -1117,7 +1117,7 @@ def schub_classes() -> List[Schur]:
     return res
 
 
-def generators() -> List[str]:
+def generators() -> List[Schur]:
     if not isinstance(_type, str):
         fail_no_type()
 
