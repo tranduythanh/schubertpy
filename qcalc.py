@@ -746,15 +746,17 @@ def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombin
     # Using list slicing for the equivalent of Maple's `op` function
     lam0 = lam[1:]
     if lam[-1] == 0 and lam[1] < k:
-        lam0 = lam[1:-2]
+        lam0 = lam[1:-1]
 
-    # print("lam, lam0,  pieri(p, lam0): ", lam, lam0,  pieri(p, lam0))
+    # print("lam, lam0: ", lam, lam0)
+    # print("pieri(p, lam0): ", pieri(p, lam0))
     stuff = pieri(p, lam0) - LinearCombination(Schur(lam).symbol())
     
     # Assuming num2spec is a previously defined function
     a = giambelli_rec_inner(lam0, pieri, k)
     b = giambelli_rec(stuff, pieri, k)
-    # print("a, b: ", a, b)
+    # print("a: ", a)
+    # print("b: ", b)
 
     res = sp.expand(num2spec(p) * a.expr - b.expr)
     return LinearCombination(res)
@@ -920,10 +922,15 @@ def _toSchurFromIntnMu(_intn: set, _mu: List[int]) -> LinearCombination:
 
 @hashable_lru_cache(maxsize=None)
 def qpieriD_inner(p, lam, k, n):
+    # print("qpieriD_inner")
+
     lam = list(lam)
 
     q, q1, q2 = sp.symbols('q q1 q2')
     res = pieriD_inner(p, lam, k, n)
+
+    # print("p, lam, k, n: ", p, lam, k, n)
+    # print("(head) res: ", res)
 
     if k == 0:
         # print("case k==0")
@@ -968,11 +975,14 @@ def qpieriD_inner(p, lam, k, n):
     else:
         # print("case k==else")
         if len(lam) >= n + 1 - k and lam[n + 1 - k - 1] > 0:
+            # print("case k==else, if1")
             res += q * type_swap(apply_lc(lambda x: _part_tilde(x, n - k + 2, n + k),
                                           pieriD_inner(p, lam, k, n + 1)), k)
         if len(lam) > 0 and lam[0] == n + k:
+            # print("case k==else, if2")
             res += q**2 * apply_lc(lambda x: _part_star(x, n + k), pieriD_inner(p, lam[1:], k, n))
-    
+        
+        # print("res: ", res)
     res = LinearCombination(res)
     return LinearCombination(sp.expand(res.expr))
 
@@ -1223,14 +1233,14 @@ def dualize(lc: Union[sp.Expr, LinearCombination, str]) -> Any:
     return index2part(apply_lc(lambda idx: dualize_index_inner(idx, N, _type), index))
 
 
-def type_swap(lc: Any) -> Any:
+def type_swap(lc: Union[sp.Expr, LinearCombination, str, List[int]], k: int) -> LinearCombination:
     if isinstance(lc, list):
-        return type_swap(Schur(lc))
+        return type_swap(Schur(lc).symbol())
     
     if _type == "D":
         return apply_lc(lambda lam: type_swap_inner(lam, _k), lc)
     
-    return lc
+    return LinearCombination(lc)
 
 def miami_swap(lc: Any) -> Any:
     if isinstance(lc, list):
@@ -1306,12 +1316,16 @@ def qact(expr: Union[sp.Expr, LinearCombination, str], lc: Union[sp.Expr, Linear
 def qgiambelli(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     # print("qgiambelli")
     lc = LinearCombination(lc)
+    # print("lc: ", lc)
     return giambelli_rec(lc, lambda i, p: _qpieri(i, p, _k, _n), _k)
 
 
 def qmult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     lc1 = LinearCombination(lc1)
     lc2 = LinearCombination(lc2)
+    # print("qmult")
+    # print("lc1: ", lc1)
+    # print("lc2: ", lc2)
     return qact(qgiambelli(lc1), lc2)
 
 
