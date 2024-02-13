@@ -1169,7 +1169,7 @@ def part2pair(lc: Any) -> Any:
         raise Exception("Only types B,C,D.")
     
     if isinstance(lc, list):
-        return part2pair_inner(lc)
+        return part2pair_inner(lc, _k)
     else:
         return apply_lc(lambda lam: part2pair_inner(lam, _k), lc)
 
