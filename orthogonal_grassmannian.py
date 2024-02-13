@@ -1,7 +1,7 @@
 from abstract_grassmannian import AbstractGrassmannian
 from qcalc import *
 
-class OrthogonalGrassmannian(AbstractSetGrassmannian):
+class OrthogonalGrassmannian(AbstractGrassmannian):
     def __init__(self, m: int, n: int):
         if n % 2 == 1:
             self._type = "B"
@@ -30,7 +30,7 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
     
     def schub_classes(self) -> List[Schur]:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         if self._type == "D":
             res = []
@@ -51,7 +51,7 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
     
     def generators(self) -> List[Schur]:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         if self._type != "D" and self._k == self._n:
             return []
@@ -67,7 +67,7 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
 
     def point_class(self) -> Schur:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         delta = 1
         if self._type == "D" and self._k > 0:
@@ -174,19 +174,19 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
     def qpieriB_inner(self, p: int, lam: List[int], k: int, n: int) -> LinearCombination:
         q = sp.Symbol('q')
         
-        res = pieriB_inner(p, lam, k, n)
+        res = self.pieriB_inner(p, lam, k, n)
         
         if k == 0:
             if len(lam) > 0 and lam[0] == n + k:
-                res += q * apply_lc(lambda x: part_star(x, n+k), pieriB_inner(p, lam[1:], k, n))
+                res += q * apply_lc(lambda x: part_star(x, n+k), self.pieriB_inner(p, lam[1:], k, n))
         else:
             if len(lam) == n - k and lam[n-k-1] > 0:
-                # print(pieriB_inner(p, lam, k, n + 1))
-                res += q * apply_lc(lambda x: part_tilde(x, n-k+1, n+k), pieriB_inner(p, lam, k, n + 1))
+                # print(self.pieriB_inner(p, lam, k, n + 1))
+                res += q * apply_lc(lambda x: part_tilde(x, n-k+1, n+k), self.pieriB_inner(p, lam, k, n + 1))
             if len(lam) > 0 and lam[0] == n + k:
-                # print(pieriB_inner(p, lam[1:], k, n))
-                # print(apply_lc(lambda x: _part_star(x, n + k), pieriB_inner(p, lam[1:], k, n)))
-                res += q**2 * apply_lc(lambda x: part_star(x, n + k), pieriB_inner(p, lam[1:], k, n))
+                # print(self.pieriB_inner(p, lam[1:], k, n))
+                # print(apply_lc(lambda x: _part_star(x, n + k), self.pieriB_inner(p, lam[1:], k, n)))
+                res += q**2 * apply_lc(lambda x: part_star(x, n + k), self.pieriB_inner(p, lam[1:], k, n))
 
         res = LinearCombination(res)
         return LinearCombination(sp.expand(res.expr))
@@ -257,7 +257,7 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
         lam = list(lam)
 
         q, q1, q2 = sp.symbols('q q1 q2')
-        res = pieriD_inner(p, lam, k, n)
+        res = self.pieriD_inner(p, lam, k, n)
 
         # print("p, lam, k, n: ", p, lam, k, n)
         # print("(head) res: ", res)
@@ -266,7 +266,7 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
             # print("case k==0")
             if len(lam) > 0 and lam[0] == n + k:
                 res += q * apply_lc(lambda x: part_star(x, n + k),
-                                    pieriD_inner(p, lam[1:], k, n))
+                                    self.pieriD_inner(p, lam[1:], k, n))
         elif k == 1:
             # print("case k==1")
             if len(lam) >= n and lam[n-1] > 0:
@@ -276,7 +276,7 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
                 
                 cprd = LinearCombination(Schur(lb).symbol())
                 if abs(p) > 1:
-                    cprd = pieriD_inner(abs(p) - 1, lb, 0, n) 
+                    cprd = self.pieriD_inner(abs(p) - 1, lb, 0, n) 
                 # print("cprd: ", cprd)
                 
                 intn = set(range(1, n+1))
@@ -301,16 +301,16 @@ class OrthogonalGrassmannian(AbstractSetGrassmannian):
 
             if len(lam) > 0 and lam[0] == n + k:
                 # print("case k==1, if2")
-                res += q1 * q2 * apply_lc(lambda x: part_star(x, n + k), pieriD_inner(p, lam[1:], k, n))
+                res += q1 * q2 * apply_lc(lambda x: part_star(x, n + k), self.pieriD_inner(p, lam[1:], k, n))
         else:
             # print("case k==else")
             if len(lam) >= n + 1 - k and lam[n + 1 - k - 1] > 0:
                 # print("case k==else, if1")
                 res += q * type_swap(apply_lc(lambda x: part_tilde(x, n - k + 2, n + k),
-                                            pieriD_inner(p, lam, k, n + 1)), k)
+                                            self.pieriD_inner(p, lam, k, n + 1)), k)
             if len(lam) > 0 and lam[0] == n + k:
                 # print("case k==else, if2")
-                res += q**2 * apply_lc(lambda x: part_star(x, n + k), pieriD_inner(p, lam[1:], k, n))
+                res += q**2 * apply_lc(lambda x: part_star(x, n + k), self.pieriD_inner(p, lam[1:], k, n))
             
             # print("res: ", res)
         res = LinearCombination(res)

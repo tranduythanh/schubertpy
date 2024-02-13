@@ -74,18 +74,19 @@ class AbstractGrassmannian(ABC):
 
     def giambelli(self, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
         lc = LinearCombination(lc)
+        # print("ag:-giambelli: ", lc)
         return giambelli_rec(lc, lambda i, p: self._pieri(i, p, self._k, self._n), self._k)
 
 
     def mult(self, lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
         lc1 = LinearCombination(lc1)
         lc2 = LinearCombination(lc2)
-        return self.act(giambelli(lc1), lc2)
+        return self.act(self.giambelli(lc1), lc2)
 
 
     def toS(self, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
         lc = LinearCombination(lc)
-        return self.act(giambelli(lc), Schur([]).symbol())
+        return self.act(self.giambelli(lc), Schur([]).symbol())
 
 
     def qpieri(self, i: int, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:

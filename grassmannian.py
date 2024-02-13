@@ -23,7 +23,7 @@ class Grassmannian(AbstractGrassmannian):
     
     def schub_classes(self) -> List[Schur]:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         mu = [self._k] * (self._n - self._k)
         partitions = part_gen(mu)
@@ -34,7 +34,7 @@ class Grassmannian(AbstractGrassmannian):
     
     def generators(self) -> List[Schur]:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         if self._type != "D" and self._k == self._n:
             return []
@@ -45,7 +45,7 @@ class Grassmannian(AbstractGrassmannian):
 
     def point_class(self) -> Schur:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         if self._k > 0:
             return Schur((([self._k] * (self._n - self._k))))

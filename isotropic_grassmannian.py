@@ -28,7 +28,7 @@ class Grassmannian(AbstractGrassmannian):
 
     def schub_classes(self) -> List[Schur]:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         lam_list = all_kstrict(self._k, self._n - self._k, self._n + self._k)
         res = [Schur(lam) for lam in lam_list]
@@ -38,7 +38,7 @@ class Grassmannian(AbstractGrassmannian):
 
     def generators(self) -> List[Schur]:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         if self._type != "D" and self._k == self._n:
             return []
@@ -51,7 +51,7 @@ class Grassmannian(AbstractGrassmannian):
 
     def point_class(self) -> Schur:
         if not isinstance(self._type, str):
-            fail_no_type()
+            raise ValueError("Must set type with IG or OG or set_type functions.")
 
         delta = 1
         result = []
