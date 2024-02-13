@@ -1,29 +1,3 @@
-# schubertpy
-
-## Overview
-
-`schubertpy` is a powerful Python package designed for performing advanced mathematical operations on the Grassmannian, a key concept in algebraic geometry and representation theory. This module facilitates operations such as quantum Pieri rules, quantum Giambelli formulae, and the manipulation of Schubert classes. It is a Python implementation based on the comprehensive maple library available at [https://sites.math.rutgers.edu/~asbuch/qcalc/](https://sites.math.rutgers.edu/~asbuch/qcalc/).
-
-## Features
-
-- **Quantum Pieri Rule Calculations**: Efficient computation of quantum Pieri rules applied to Schubert classes.
-- **Quantum Giambelli Formulae**: Expression of products of Schubert classes in alternative forms using quantum Giambelli formulae.
-- **Schubert Class Operations**: Perform actions and multiplications on Schubert classes, in both classical and quantum contexts.
-- **Dualization and Conversion**: Dualize Schubert classes and convert between different Schubert class representations.
-
-## Installation
-
-To install the `schubertpy` module, run the following command:
-
-```bash
-pip install schubertpy
-```
-
-## Usage
-
-Example usage demonstrating the capabilities of `schubertpy`:
-
-```python
 from schubertpy import Grassmannian, OrthogonalGrassmannian, IsotropicGrassmannian
 
 def main():
@@ -84,28 +58,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-For detailed examples and more operations, refer to the test cases provided within the module's documentation.
-
-## Running Tests
-
-To verify the module's functionality, you can run the included tests with either of the following commands:
-
-```bash
-make test
-```
-
-Or directly with Python:
-
-```bash
-python3 -m unittest schubertpy/testcases/*.py
-```
-
-## Contributing
-
-Contributions to `schubertpy` are highly encouraged, whether they involve extending functionality, enhancing performance, or fixing bugs. Please feel free to submit issues or pull requests on GitHub to suggest changes or improvements.
-
-## License
-
-`schubertpy` is made available under the MIT License. For more details, see the LICENSE file included with the source code.
