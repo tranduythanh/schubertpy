@@ -1,7 +1,7 @@
 from abstract_grassmannian import AbstractGrassmannian
 from qcalc import *
 
-class Grassmannian(AbstractGrassmannian):
+class IsotropicGrassmannian(AbstractGrassmannian):
     def __init__(self, m: int, n: int):
         if n % 2 == 1:
             raise ValueError("n must be even.")
@@ -111,7 +111,7 @@ class Grassmannian(AbstractGrassmannian):
     # # Type C: Quantum cohomology of symplectic IG(n-k,2n).
     # ##################################################################
     @hashable_lru_cache(maxsize=None)
-    def pieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    def pieriC_inner(self, i: int, lam: List[int], k: int, n: int) -> LinearCombination:
         lam = list(lam)
 
         result = sp.Integer(0)
@@ -120,8 +120,8 @@ class Grassmannian(AbstractGrassmannian):
         return result
 
 
-    def qpieriC_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
+    def qpieriC_inner(self, i: int, lam: List[int], k: int, n: int) -> LinearCombination:
         q = sp.Symbol('q')
-        inner_result = pieriC_inner(i, lam, k, n)
-        second_term = q/2 * apply_lc(lambda x: part_star(x, n+k+1), pieriC_inner(i, lam, k, n+1))
+        inner_result = self.pieriC_inner(i, lam, k, n)
+        second_term = q/2 * apply_lc(lambda x: part_star(x, n+k+1), self.pieriC_inner(i, lam, k, n+1))
         return inner_result + second_term
