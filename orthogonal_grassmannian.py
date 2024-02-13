@@ -11,18 +11,24 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
             self._qpieri = self.qpieriB_inner
         else:
             self._type = "D"
-            self._k = (n-1)//2 - m
-            self._n = (n-1)//2 -1
+            self._k = n//2 - m
+            self._n = n//2 -1
             self._pieri = self.pieriD_inner
             self._qpieri = self.qpieriD_inner
 
 
     def __str__(self) -> str:
         td = [
-            self._type, self._k, self._n, 
-            "OG", self._n-self._k, 2*self._n+1, 
+            "B", self._k, self._n, "OG", 
+            self._n-self._k, 2*self._n+1, 
             self.degree_q()
         ]
+        if self._type == "D":
+            td = [
+                "D", self._k, self._n, 
+                "OG", self._n+1-self._k, 2*self._n+2,
+                self.degree_q()
+            ]
         return f"Type {td[0]} ;  (k,n) = ({td[1]},{td[2]}) ;  {td[3]}({td[4]},{td[5]}) ;  deg(q) = {td[6]}"
     
     def degree_q(self) -> int:
@@ -295,7 +301,7 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
                 # print("res1: ", res1)
                 # print("dualize_res1: ", dualize(res1))
                 
-                res += dualize(res1)
+                res += self.dualize(res1)
 
                 # print("res: ", res)
 
@@ -306,7 +312,7 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
             # print("case k==else")
             if len(lam) >= n + 1 - k and lam[n + 1 - k - 1] > 0:
                 # print("case k==else, if1")
-                res += q * type_swap(apply_lc(lambda x: part_tilde(x, n - k + 2, n + k),
+                res += q * self.type_swap(apply_lc(lambda x: part_tilde(x, n - k + 2, n + k),
                                             self.pieriD_inner(p, lam, k, n + 1)), k)
             if len(lam) > 0 and lam[0] == n + k:
                 # print("case k==else, if2")
