@@ -6,7 +6,6 @@ class Test_orthogonal_grassmannian_D(unittest.TestCase):
         self.og = OrthogonalGrassmannian(2,6)
 
     def test_qpieri_simple(self):
-        print(self.og)
         res = self.og.qpieri(1, 'S[2,1]')
         txt = 'S[1,0]*q1'
         self.assertEqual(str(res), txt)
