@@ -2,7 +2,7 @@ from functools import total_ordering
 
 from typing import *
 import sympy as sp
-from const import *
+from .const import *
 import ast
 
 class Schur(object):

@@ -1,4 +1,4 @@
-from qcalc import *
+from ..qcalc import *
 import unittest
 from unittest.mock import patch
 

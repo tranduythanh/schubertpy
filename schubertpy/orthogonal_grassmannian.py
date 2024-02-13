@@ -1,5 +1,5 @@
-from abstract_grassmannian import AbstractGrassmannian
-from qcalc import *
+from .abstract_grassmannian import AbstractGrassmannian
+from .qcalc import *
 
 class OrthogonalGrassmannian(AbstractGrassmannian):
     def __init__(self, m: int, n: int):

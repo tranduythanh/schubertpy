@@ -1,6 +1,6 @@
 import csv
 import sympy as sp
-from const import *
+from .const import *
 
 def _read_csv_transformed(filename):
     with open(filename, newline='') as csvfile:

@@ -2,9 +2,9 @@ import numpy as np
 import sympy as sp
 from collections import OrderedDict
 from typing import *
-from util import *
-from schur import *
-from lc import *
+from .util import *
+from .schur import *
+from .lc import *
 
 def _first_kstrict(k: int, rows: int, cols: int) -> List[int]:
     return [max(k, cols - i) for i in range(rows)]

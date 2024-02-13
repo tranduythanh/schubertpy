@@ -1,5 +1,5 @@
 import unittest
-from qcalc import *
+from ..qcalc import *
 
 
 class TestCalcComps(unittest.TestCase):

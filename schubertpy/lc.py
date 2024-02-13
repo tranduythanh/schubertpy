@@ -1,7 +1,7 @@
 from functools import total_ordering
 from typing import *
-from schur import *
-from const import *
+from .schur import *
+from .const import *
 import sympy as sp
 import ast
 

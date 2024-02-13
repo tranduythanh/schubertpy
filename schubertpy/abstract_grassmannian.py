@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from qcalc import *
+from .qcalc import *
 
 class AbstractGrassmannian(ABC):
     def __init__(self, m: int, n:int):

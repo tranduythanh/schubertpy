@@ -20,10 +20,10 @@ import numpy as np
 import sympy as sp
 from collections import OrderedDict
 from typing import *
-from util import *
-from schur import *
-from lc import *
 from functools import lru_cache, wraps
+from .util import *
+from .schur import *
+from .lc import *
 
 def hashable_lru_cache(maxsize=128, typed=False):
     def decorator(func):

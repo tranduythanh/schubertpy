@@ -1,6 +1,6 @@
-from qcalc import *
-from util import *
-from schur import *
+from schubertpy.qcalc import *
+from schubertpy.util import *
+from schubertpy.schur import *
 
 # Gr(2,5)
 # print(type_string())
