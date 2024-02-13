@@ -7,7 +7,7 @@ def read_requirements():
     
 setup(
     name='schubertpy',
-    version='0.3.4',
+    version='0.3.5',
     packages=find_packages(),
     description='A brief description of your package',
     long_description=open('README.md').read(),
