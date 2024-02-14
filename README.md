@@ -31,6 +31,12 @@ To install the `schubertpy` module, run the following command:
 pip install schubertpy
 ```
 
+If you wanna use with sagemath, run the following command:
+
+```bash
+sage -pip install schubertpy
+```
+
 ## Usage
 
 Example usage demonstrating the capabilities of `schubertpy`:
@@ -97,6 +103,13 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+You wanna use with sagemath? You can save above example to main.py and then run:
+
+```bash
+sage -python main.py
+```
+
 
 For detailed examples and more operations, refer to the test cases provided within the module's documentation.
 
