@@ -4,6 +4,18 @@
 
 `schubertpy` is a powerful Python package designed for performing advanced mathematical operations on the Grassmannian, a key concept in algebraic geometry and representation theory. This module facilitates operations such as quantum Pieri rules, quantum Giambelli formulae, and the manipulation of Schubert classes. It is a Python implementation based on the comprehensive maple library available at [https://sites.math.rutgers.edu/~asbuch/qcalc/](https://sites.math.rutgers.edu/~asbuch/qcalc/).
 
+References:
+
+- [https://ar5iv.labs.arxiv.org/html/0809.4966](https://ar5iv.labs.arxiv.org/html/0809.4966)
+- [https://sites.math.rutgers.edu/~asbuch/notes/grass.pdf](https://sites.math.rutgers.edu/~asbuch/notes/grass.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/notes/schurfcns.pdf](https://sites.math.rutgers.edu/~asbuch/notes/schurfcns.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/papers/qschub.pdf](https://sites.math.rutgers.edu/~asbuch/papers/qschub.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/papers/isogiam.pdf](https://sites.math.rutgers.edu/~asbuch/papers/isogiam.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/papers/qgig.pdf](https://sites.math.rutgers.edu/~asbuch/papers/qgig.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/papers/oggiam.pdf](https://sites.math.rutgers.edu/~asbuch/papers/oggiam.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/talks/cirm2020.pdf](https://sites.math.rutgers.edu/~asbuch/talks/cirm2020.pdf)
+- [https://sites.math.rutgers.edu/~asbuch/papers/](https://sites.math.rutgers.edu/~asbuch/papers/)
+
 ## Features
 
 - **Quantum Pieri Rule Calculations**: Efficient computation of quantum Pieri rules applied to Schubert classes.
