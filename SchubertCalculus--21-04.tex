@@ -24,6 +24,11 @@
 \usepackage{tcolorbox}
 \usepackage{graphicx,geometry,lipsum}
 \marginsize{1.5cm}{1.5cm}{2cm}{2cm}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Giải thuật}
+
 \begin{document}
 \chapter{Giải tích Schubert}
 Một bài toán cổ điển trong hình học xạ ảnh là tính số điểm, đường, mặt phẳng, hoặc các không gian con tuyến tính có chiều cao hơn thỏa mãn các điều kiện hình học đã cho. Vào thế kỷ 19, Hermann Schubert [97] đã thu thập nhiều kết quả liên quan đến bài toán này và đưa ranhững ý tưởng sâu sắc của riêng mình. Năm 1972, Kleiman và Laksov [71] đã giới thiệu hiện đại về Phép tính Schubert. Fulton [36] cũng xem xét chủ đề này bằng ngôn ngữ hiện đại. Ngày nay, có một số hệ thống đại số máy tính đang phát triển phép tính Schubert.Tuy nhiên, chỉ có một vài bài viết mô tả chi tiết việc thực hiện. Các thuật toán được sử dụng của Schubert trong Maple và Schubert2 trong Macaulay2 được mô tả trong [46]. Trong chương này, chúng tôi xem xét các khái niệm cơ bản liên quan đến các Grassmannian như chu trình Schubert và lớp Schubert. Sau đó chúng tôi trình bày các công thức cổ điển của Pieri và Giambelli và mô tả vành Chow của Grassmannian Chúng tôi cũng trình bày một phương pháp hiệu quả để tính toán các hệ số Littlewood-Richardson và mức độ của sơ đồ Fano. Chúng tôi cũng minh họa một số ví dụ cổ điển và chỉ ra cách tính toán có thể được thực hiện bằng Schubert3. Hầu hết các ví dụ trong chương này sẽ được xem xét lại bằng cách sử dụng schubert.lib trong phụ lục B
@@ -389,4 +394,53 @@ $$
 		\hline
 	\end{tabular}
 \end{center}
+
+\chapter{Giải thuật nổi bật}
+\section{Luật Pieri}
+
+\begin{algorithm}
+	\caption{Hàm \texttt{\_pieri\_fillA}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\State \textbf{Input:} 
+	\State $lam$ - Danh sách các số nguyên không âm (phân hoạch).
+	\State $inner$ - Danh sách các số nguyên không âm (phân hoạch tối thiểu).
+	\State $outer$ - Danh sách các số nguyên không âm (phân hoạch tối đa).
+	\State $row\_index$ - Thứ tự của dòng bắt đầu thêm ô (cell).
+	\State $p$ - Số lượng ô cần thêm vào trên dòng phù hợp.
+	
+	\State \textbf{Output:} Phân hoạch mới đã bổ sung thêm ô hoặc \texttt{NULL} nếu không thể.
+	
+	\If{$lam$ rỗng}
+		\State \Return $lam$ \Comment{Trả về ngay nếu lam rỗng}
+	\EndIf
+	\State $res \leftarrow \text{bản sao của } lam$ \Comment{Khởi tạo bản sao của lam}
+	\State $pp \leftarrow p$
+	\State $rr \leftarrow row\_index$
+	
+	\If{$rr = 0$}
+		\State $x \leftarrow \min(outer[0], inner[0] + pp)$ \Comment{Xử lý hàng đầu tiên của phân hoạch}
+		\State $res[0] \leftarrow x$
+		\State $pp \leftarrow pp - x + inner[0]$
+		\State $rr \leftarrow 1$
+	\EndIf
+	
+	\While{$rr < \text{length}(lam)$} \Comment{Lặp qua các dòng tiếp theo của phân hoạch và cố gắng thêm ô}
+		\State $x \leftarrow \min(outer[rr], inner[rr] + pp, res[rr - 1])$
+		\State $res[rr] \leftarrow x$
+		\State $pp \leftarrow pp - x + inner[rr]$
+		\State $rr \leftarrow rr + 1$
+	\EndWhile
+	
+	\If{$pp > 0$}
+		\State \Return \texttt{NULL} \Comment{$pp$ còn dư, tức là không có cách thêm ô phù hợp}
+	\EndIf
+	
+	\State \Return $res[0..\text{length}(lam)-1]$ \Comment{Trả về phân hoạch đã bổ sung thêm ô vào dòng phù hợp}
+	
+	\end{algorithmic}
+\end{algorithm}
+
+
+
 \end{document}
