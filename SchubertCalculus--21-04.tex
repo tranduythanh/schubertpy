@@ -402,14 +402,14 @@ $$
 	\caption{Hàm \texttt{\_pieri\_fillA}}
 	\begin{algorithmic}[1] % The [1] option enables line numbering
 	
-	\State \textbf{Input:} 
+	\Require 
 	\State $lam$ - Danh sách các số nguyên không âm (phân hoạch).
 	\State $inner$ - Danh sách các số nguyên không âm (phân hoạch tối thiểu).
 	\State $outer$ - Danh sách các số nguyên không âm (phân hoạch tối đa).
 	\State $row\_index$ - Thứ tự của dòng bắt đầu thêm ô (cell).
 	\State $p$ - Số lượng ô cần thêm vào trên dòng phù hợp.
 	
-	\State \textbf{Output:} Phân hoạch mới đã bổ sung thêm ô hoặc \texttt{NULL} nếu không thể.
+	\Ensure Phân hoạch mới đã bổ sung thêm ô hoặc \texttt{NULL} nếu không thể.
 	
 	\If{$lam$ rỗng}
 		\State \Return $lam$ \Comment{Trả về ngay nếu lam rỗng}
@@ -442,5 +442,63 @@ $$
 \end{algorithm}
 
 
+\begin{algorithm}
+	\caption{Hàm \texttt{\_pieri\_itrA}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\Require 
+	\State $lam$ - Danh sách các số nguyên
+	\State $inner$ - Danh sách các điều kiện ranh giới tối thiểu
+	\State $outer$ - Danh sách các điều kiện ranh giới tối đa
+	
+	\Ensure Danh sách được sửa đổi trong ranh giới hoặc \texttt{NULL} nếu không thể.
+	
+	\If{$lam$ rỗng}
+		\State \Return \texttt{NULL} \Comment{Trả về \texttt{NULL} nếu danh sách đầu vào rỗng}
+	\EndIf
+	\State $p \leftarrow lam_{end} - inner_{end}$ \Comment{Khởi tạo $p$ dựa trên sự chênh lệch giữa phần tử cuối của $lam$ và $inner$}
+	
+	\For{$r \leftarrow length(lam) - 2$ downto $0$} \Comment{Duyệt ngược từ hàng kế cuối của $lam$ trở lên}
+		\If{$lam_r > inner_r$}
+			\State $lam1 \leftarrow \text{bản sao của } lam$
+			\State $lam1[r] \leftarrow lam[r] - 1$ \Comment{Bớt đi 1 ô tại hàng $r$}
+			\State $lam1 \leftarrow \texttt{\_pieri\_fillA}(lam1, inner, outer, r+1, p+1)$ \Comment{Thử thêm $p+1$ ô từ hàng $r+1$}
+			\If{$lam1 \neq \texttt{NULL}$}
+				\State \Return $lam1$ \Comment{Nếu thêm ô thành công, trả kết quả}
+			\EndIf
+			\State $p \leftarrow p + (lam[r] - inner[r])$ \Comment{Cập nhật $p$ nếu thêm ô không thành công}
+		\EndIf
+	\EndFor
+	
+	\State \Return \texttt{NULL} \Comment{Trả về \texttt{NULL} nếu không thể thêm ô vào phân hoạch hiện tại}
+	
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+	\caption{Hàm \texttt{pieriA\_inner}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\Require 
+	\State $i$ - số ô cần thêm vào phân hoạch
+	\State $lam$ - phân hoạch
+	\State $k, n$ - chỉ số k, n của đa tạp Grassmann
+	
+	\Ensure Trả về một tổ hợp tuyến tính của các hàm Schur
+	
+	\State $inner \leftarrow \text{padding\_right}(lam, 0, n-k-\text{len}(lam))$ \Comment{Thêm 0 vào cuối $lam$ để đạt kích thước $n-k$}
+	\State $outer \leftarrow [k] + inner[:-1]$ \Comment{Tạo $outer$ bằng cách thêm dòng mới có $k$ ô vào trên cùng của $inner$}
+	\State $mu \leftarrow \texttt{pieri\_fillA}(inner, inner, outer, 0, i)$ \Comment{Khởi tạo $mu$ bắt đầu từ phân hoạch tối thiểu $inner$}
+	
+	\State $res \leftarrow 0$
+	\While{$\text{isinstance}(mu, \text{list})$} \Comment{Tiếp tục nếu $mu$ là một phân hoạch hợp lệ}
+		\State $res \leftarrow \text{Schur}(\text{part\_clip}(mu)) + res$ \Comment{Thêm hàm Schur của $mu$ đã rút gọn vào kết quả}
+		\State $mu \leftarrow \texttt{pieri\_itrA}(mu, inner, outer)$ \Comment{Cập nhật $mu$ bằng cách tiếp tục thêm ô}
+	\EndWhile
+	
+	\State \Return res \Comment{Trả kết quả}
+	
+	\end{algorithmic}
+\end{algorithm}
 
 \end{document}
