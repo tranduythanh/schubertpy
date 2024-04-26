@@ -1,0 +1,392 @@
+\documentclass[11pt,a4paper]{book}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{commath}
+\usepackage{eucal}
+\usepackage{exscale}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{niceframe}
+\usepackage{anysize}
+\usepackage{tikz}
+\usepackage{scalerel}
+\usepackage{pict2e}
+\usepackage{tkz-euclide}
+\usepackage{nicefrac}
+\usepackage{pgfplots}
+\usepackage{framed}
+\usepackage{tcolorbox}
+\usepackage{graphicx,geometry,lipsum}
+\marginsize{1.5cm}{1.5cm}{2cm}{2cm}
+\begin{document}
+\chapter{Giải tích Schubert}
+Một bài toán cổ điển trong hình học xạ ảnh là tính số điểm, đường, mặt phẳng, hoặc các không gian con tuyến tính có chiều cao hơn thỏa mãn các điều kiện hình học đã cho. Vào thế kỷ 19, Hermann Schubert [97] đã thu thập nhiều kết quả liên quan đến bài toán này và đưa ranhững ý tưởng sâu sắc của riêng mình. Năm 1972, Kleiman và Laksov [71] đã giới thiệu hiện đại về Phép tính Schubert. Fulton [36] cũng xem xét chủ đề này bằng ngôn ngữ hiện đại. Ngày nay, có một số hệ thống đại số máy tính đang phát triển phép tính Schubert.Tuy nhiên, chỉ có một vài bài viết mô tả chi tiết việc thực hiện. Các thuật toán được sử dụng của Schubert trong Maple và Schubert2 trong Macaulay2 được mô tả trong [46]. Trong chương này, chúng tôi xem xét các khái niệm cơ bản liên quan đến các Grassmannian như chu trình Schubert và lớp Schubert. Sau đó chúng tôi trình bày các công thức cổ điển của Pieri và Giambelli và mô tả vành Chow của Grassmannian Chúng tôi cũng trình bày một phương pháp hiệu quả để tính toán các hệ số Littlewood-Richardson và mức độ của sơ đồ Fano. Chúng tôi cũng minh họa một số ví dụ cổ điển và chỉ ra cách tính toán có thể được thực hiện bằng Schubert3. Hầu hết các ví dụ trong chương này sẽ được xem xét lại bằng cách sử dụng schubert.lib trong phụ lục B
+\section{Đa tạp Grassmann}
+Kí hiệu \( G(k, n) \) là đa tạp Grassmann của các không gian con tuyến tính \( k \) chiều trong không gian vector \( n \) chiều \( V \). Tautological subbundle \( S \) trên \( G(k, n) \) là vector bundle có hạng \( k \), với mỗi fiber tại \( W \in G(k, n) \) là không gian vector con \( W \subset V \) chính nó. Tautological quotient bundle \( Q \) trên \( G(k, n) \) là vector bundle có hạng \( n-k \), với mỗi fiber tại \( W \in G(k, n) \) là không gian thương \( V / W \). Tangent bundle \( T \) trên \( G(k, n) \) đẳng cấu với \( \operatorname{Hom}(S, Q) \cong S^{\vee} \otimes Q \).\\
+Cho \( \mathcal{V} \) là một \textbf{cờ} trên \( V \), nghĩa là, một dãy tăng dần nghiêm ngặt các không gian con tuyến tính
+\[
+0 \subset V_1 \subset \cdots \subset V_{n-1} \subset V_n=V,
+\]
+với \( \operatorname{dim} V_i=i \). Đối với mọi dãy số nguyên \( a=\left(a_1, \ldots, a_k\right) \) thoả mãn
+\[
+n-k \geq a_1 \geq a_2 \geq \cdots \geq a_k \geq 0,
+\]
+chúng ta định nghĩa \textbf{chu trình Schubert} bởi
+\[
+\Sigma_a(\mathcal{V})=\left\{W \in G(k, n): \operatorname{dim}\left(V_{n-k+i-a_i} \cap W\right) \geq i, i=1, \ldots, k\right\}.
+\]
+Có thế chứng minh được đây là biến con bất khả quy của $G(k,n))$ với đối chiều là
+$$|a|=\sum_{i=1}^{k}a_k$$
+và lớp chu trình tương ứng $\left[\Sigma_a(\mathcal{V})\right]$ không phụ thuộc vào cách chọn cờ. Ta định nghĩa \textbf{lớp Schubert} bởi lớp chu trình $\sigma_a:=\left[\Sigma_a(\mathcal{V})\right]$.\\
+\textbf{Mệnh đề 2.1.1.}
+Số lớp Schubert trên đa tạp Grassmann \( G(k, n) \) bằng với tổ hợp chập $k$ của $n$ phần tử \( \left(\begin{array}{l}n \\ k\end{array}\right) \).\\
+\textbf{Chứng minh.}
+Một lớp Schubert trên \( G(k, n) \) được biểu diễn bởi một dãy \( a=\left(a_1, a_2, \ldots, a_k\right) \) các số nguyên sao cho \( n-k \geq a_1 \geq a_2 \geq \cdots \geq a_k \geq 0 \). Thực sự, một dãy như vậy là một phân hoạch của một số nguyên nhỏ hơn hoặc bằng \( k(n-k) \) trong đó có tối đa \( k \) phần và không phần nào lớn hơn \( n-k \). Có một song ánh giữa các tập con \( k \) phần của \( \{1,2, \ldots, n\} \) và các dãy như vậy, được cho bởi
+\[
+b \longmapsto a=\left(n-k-b_1+1, n-k-b_2+2, \ldots, n-b_k\right),
+\]
+trong đó \( b=\left(b_1, b_2, \ldots, b_k\right) \) với \( 1 \leq b_1<b_2<\cdots<b_k \leq n \). Vì vậy số lớp Schubert trên đa tạp Grassmann \( G(k, n) \) bằng với hệ số nhị thức \( \left(\begin{array}{l}n \\ k\end{array}\right) \).\\
+\textbf{Ghi chú.} 
+Các ký hiệu \( \Sigma_a \) được viết tắt cho \( \Sigma_a(\mathcal{V}) \), ta viết \( \Sigma_{a_1, \ldots, \tilde{\alpha}_s} \), \( \sigma_{a_1, \ldots, a_s} \) khi \( a=\left(a_1, \ldots, a_s, 0, \ldots, 0\right) \) và \( \Sigma_{p^i} \), \( \sigma_{p^i} \) khi \( a=(p, \ldots, p, 0, \ldots, 0) \) với \( i \) các thành phần đầu tiên bằng \( p \). Khi đó các lớp chu trình \( \sigma_i, i=1, \ldots, n-k \) và \( \sigma_1, i=1, \ldots, k \) được gọi là các \textbf{lớp Schubert đặc biệt}.\\
+Các lớp Schubert đặc biệt có liên quan mật thiết với tautological bundles trên $G(k,n)$ và cả hai tập $\{\sigma_{1},\sigma_{1^2},...,\sigma_{1^k}\}$ và $\{\sigma_{1},\sigma_2,...,\sigma_{n-k}\}$ là các hệ sinh nhỏ nhất của vành Chow của $G(k,n)$. Một cách chính xác hơn, ta có mệnh đề sau đây.\\
+\textbf{Định lý 2.1.2.}
+Các lớp Chern của \( S \) và \( Q \) như sau:
+\[
+c_i(S)=(-1)^i \sigma_{1^i}, \quad i=1, \ldots, k
+\]
+và
+\[
+c_i(Q)=\sigma_i, \quad i=1, \ldots, n-k.
+\]
+\textbf{Chứng minh.}\\
+Các lớp Schubert tạo thành một cơ sở tự do $\mathbb{Z}$ cho $A(G(k,n))$. Với tích trong được xác định bởi công thức sau đây.\\
+\textbf{Định lý 2.1.3 (Công thức đối ngẫu).}
+Nếu \( |a|+|b|=k(n-k) \), ta có
+\[
+\sigma_a \cdot \sigma_b= \begin{cases}\sigma_{(n-k)^k} & \text{ nếu } a_i+b_{k-i}=n-k \text{ với mọi } i, \\ 0 & \text{ trong trường hợp ngược lại }\end{cases}
+\]
+\textbf{Ghi chú:} 
+Cả \( \left(\sigma_{\mathrm{n}-k}\right)^k \) và \( \left(\sigma_{1^k}\right)^{n-k} \) đều bằng với lớp của một điểm trong vành Chow của \( G(k, n) \).\\
+\textbf{Định lý 2.1.4 (Công thức Pieri).}
+Với mỗi lớp Schubert bất kì \( \sigma_a \in A^*(G(k, n)) \) và mọi số nguyên \( i \) thỏa mãn \( 0 \leq i \leq n-k \), ta có
+\[
+\sigma_a \cdot \sigma_i=\sum_c \sigma_c,
+\]
+trong đó \( c \) thỏa \( n-k \geq c_1 \geq a_1 \geq c_2 \geq \cdots \geq c_k \geq a_k \geq 0 \), và \( |c|=|a|+i \).\\
+\textbf{Định lí 2.1.5 (Công thức Giambelli).}
+Cho phân hoạch \( a=\left(a_1, \ldots, a_k\right) \) với \( n-k \geq a_1 \geq a_2 \geq \cdots \geq a_k \geq 0 \), ta có
+\[
+\sigma_a=\operatorname{det}\left(\sigma_{a_i+j-i}\right)_{1 \leq i, j \leq k},
+\]
+trong đó \( \sigma_0=1 \) và \( \sigma_m=0 \) khi \( m<0 \) hoặc \( m>n-k \).\\
+\textbf{Chứng minh.}\\
+Công thức Pieri cho chúng ta biết cách xác định tích của một lớp Schubert bất kỳ và một lớp Schubert đặc biệt. Công thức Giambelli cho chúng ta biết cách biểu diễn một lớp Schubert bất kỳ dưới dạng các lớp Schubert đặc biệt. Do đó, cả hai công thức đều cung cấp cho chúng ta một cách hiệu quả để xác định tích của hai lớp Schubert bất kỳ.\\
+\textbf{Ví dụ 2.1.6.}
+Trong trường hợp \( G(2,4) \), có chính xác 6 lớp Schubert:
+$$
+\left\{1, \sigma_1, \sigma_2, \sigma_{1,1}, \sigma_{2,1}, \sigma_{2,2}\right\}.$$
+\textbf{Code.}\\
+Theo công thức Pieri, chúng ta có
+\[
+\begin{aligned}
+	\sigma_1 \cdot \sigma_1 &=\sigma_2+\sigma_{1,1}, \\
+	\sigma_1 \cdot \sigma_2 &=\sigma_1 \cdot \sigma_{1,1}=\sigma_{2,1}, \\
+	\sigma_1 \cdot \sigma_{2,1} &=\sigma_2 \cdot \sigma_2=\sigma_{2,2}.
+\end{aligned}
+\]
+Theo công thức Giambelli, chúng ta có
+\[
+\begin{aligned}
+	\sigma_{1,1}&=\left|\begin{array}{cc}
+		\sigma_1 & \sigma_2 \\
+		1 & \sigma_1
+	\end{array}\right|=\sigma_1^2-\sigma_2, \\
+	\sigma_{2,1}&=\left|\begin{array}{cc}
+		\sigma_2 & 0 \\
+		1 & \sigma_1
+	\end{array}\right|=\sigma_1 \sigma_2, \\
+	\sigma_{2,2}&=\left|\begin{array}{ll}
+		\sigma_2 & 0 \\
+		\sigma_1 & \sigma_2
+	\end{array}\right|=\sigma_2^2.
+\end{aligned}
+\]
+\textbf{Định lí 2.1.7.} Vành Chow của đa tạp \( G(k, n) \) có dạng
+\[
+A(G(k, n)) \cong \frac{\mathbb{Z}\left[\sigma_1, \ldots, \sigma_{n-k}\right]}{I},
+\]
+trong đó ideal \( I \) được sinh bởi \( n-k \) đa thức \( f_{\mathrm{m}} \in \mathbb{Z}\left[\sigma_1, \ldots, \sigma_{n-k}\right] \), \( m=1, \ldots, n-k \). Các đa thức \( f_{\mathrm{m}} \) được xác định bởi công thức Giambelli như sau:
+\[
+f_m=\sigma_{1^{k+m}}=\operatorname{det}\left(\sigma_{1+j-i}\right)_{1 \leq i, j \leq k+m}.
+\]
+Hơn nữa, vành Chow này được phân loại với \( \operatorname{deg}\left(\sigma_i\right)=i \).\\
+\textbf{Chứng minh.}
+Bởi tính đối ngẫu, có một đồng cấu giữa các vành Chow của \( G(k, n) \) và \( G(n-k, n) \), nó biến \( c_i(Q) \) thành \( c_i(S) \) với \( Q \) là tautological quotient bundle trên \( G(k, n) \) và \( S \) là tautological subbundle trên \( G(n-k, n) \). Vành Chow của \( G(n-k, n) \) có dạng
+\[
+A(G(n-k, n)) \cong \frac{\mathbb{Z}\left[c_1(S), \ldots, c_{n-k}(S)\right]}{I},
+\]
+trong đó ideal \( I \) sinh bởi các số hạng có bậc \( k+1, \ldots, n \) trong khai triển chuỗi lũy thừa
+\[
+\frac{1}{1+c_1(S)+\cdots+c_{n-k}(S)}=1-\left(c_1(S)+\cdots+c_{n-k}(S)\right)+\cdots \in \mathbb{Z}\left[\left[c_1(S), \ldots, c_{n-k}(S)\right].\right.
+\]
+Dễ thấy rằng các số hạng này là \( (-1)^{k+m} \operatorname{det}\left(c_{1+j-i}(S)\right)_{1 \leq i, j \leq k+m} \) cho tất cả \( m=1, \ldots, n-k \). Lưu ý rằng \( c_0(S)=1 \) và \( c_l(S)=0 \) khi \( l<0 \) hoặc \( l>n-k \). Do đó, vành Chow của \( G(k, n) \) có dạng mong muốn.\\
+Vì vành Chow của đa tạp Grassmann \( G(k, n) \) là quotient of a polynomial ring in \( n-k \) variables \( \sigma_1, \ldots, \sigma_{n-k} \) modulo and an ideal được tạo ra bởi \( n-k \) đa thức như trong Định lí 2.1.7, chúng ta có thể thực hiện việc tính toán của số giao điểm của các lớp chu trình trên các đa tạp Grassmann trong bất kỳ computer algebra system nào hỗ trợ việc tính toán các cơ sở Gröbner.\\
+\textbf{Thuật toán.}\\
+\textbf{Ví dụ 2.1.8.}
+Để tính số lượng đường thẳng cắt bốn đường thẳng ở trường hợp tổng quát trong \( \mathbb{P}^3 \). Từ công thức Giambelli, chúng ta có
+\[
+\sigma_{1,1,1}=\left|\begin{array}{ccc}
+	\sigma_1 & \sigma_2 & 0 \\
+	1 & \sigma_1 & \sigma_2 \\
+	0 & 1 & \sigma_1
+\end{array}\right|=\sigma_1^3-2 \sigma_1 \sigma_2
+\]
+và
+\[
+\sigma_{1,1,1,1}=\left|\begin{array}{cccc}
+	\sigma_1 & \sigma_2 & 0 & 0 \\
+	1 & \sigma_1 & \sigma_2 & 0 \\
+	0 & 1 & \sigma_1 & \sigma_2 \\
+	0 & 0 & 1 & \sigma_1
+\end{array}\right|=\sigma_1^4-3 \sigma_1^2 \sigma_2+\sigma_2^2.
+\]
+Do đó, vành Chow của \( G(2,4) \) có dạng
+\[
+A^*(G(2,4)) \cong \frac{\mathbb{Z}\left[\sigma_1, \sigma_2\right]}{\left(\sigma_1^3-2 \sigma_1 \sigma_2, \sigma_1^4-3 \sigma_1^2 \sigma_2+\sigma_2^2\right)}.
+\]
+Trong vành Chow này, chúng ta có \( \sigma_1^4=2 \sigma_2^2 \). Tức là
+\[
+\int_{G(2,4)} \sigma_1^4=2.
+\]
+\textbf{Code.}\\
+Chúng ta kết luận rằng có đúng hai đường thẳng cắt bốn đường thẳng ở trường hợp tổng quát trong \( \mathbb{P}^3 \).\\
+\textbf{Ví dụ 2.1.9.} Gọi \( C \subset \mathbb{P}^3 \) là một đường cong trơn, nondegenerate có bậc \( d \) và genus \( g \). Ta có thể chứng minh rằng tập hợp \( S_1(C) \) của secant lines với \( C \) là một chu trình có đối chiều 2 trong \( G(2,4) \) và lớp của nó là
+\[\left[S_1(C)\right]=\left(\left(\begin{array}{c}
+	d-1 \\
+	2
+\end{array}\right)-g\right) \sigma_2+\left(\begin{array}{l}
+	d \\
+	2
+\end{array}\right) \sigma_{1,1}.
+\]
+Lấy \( d=3 \) và \( g=0 \), chúng tôi khẳng định rằng số secant lines to two general twisted cubic curves trong \( \mathbb{P}^3 \) bằng với bậc của lớp \( \left(\sigma_2+3 \sigma_{1,1}\right)^2 \) trong vành Chow của \( G(2,4) \),
+\[\int_{G(2,4)}\left(\sigma_2+3 \sigma_{1,1}\right)^2.\]
+Chúng ta kết luận rằng có chính xác 10 secant lines to two general twisted cubic curves trong \( \mathbb{P}^3 \).\\
+\textbf{Ví dụ 2.1.10.} Trong [61], Huber, Sottile, và Sturmfels đã xem xét vấn đề sau: Cho \( n \) không gian tuyến tính chung \( V_1, \ldots, V_n \) trong \( \mathbb{C}^{k+m} \) với \( \operatorname{dim} V_i=m+1-a_i \) và \( a_1+\cdots+a_n=m k \), có bao nhiêu không gian tuyến tính \( k \) chiều trong \( \mathbb{C}^{k+m} \) gặp tất cả \( V_i \) một cách không trống? Chúng ta có thể giải quyết vấn đề này như sau: Hãy \( G(k, k+m) \) là Grassmannian của các không gian tuyến tính \( k \) chiều trong \( \mathbb{C}^{k+m} \). Khoảng cách giữa các không gian tuyến tính \( k \) chiều trong \( \mathbb{C}^{k+m} \) gặp \( V_i \) một cách không trống là một chu kỳ có mãng \( a_i \) và lớp chu kỳ của nó trong vành Chow của \( G(k, k+m) \) là lớp Schubert đặc biệt \( \sigma_{a_i} \). Do đó, số lượng không gian tuyến tính \( k \) chiều trong \( \mathbb{C}^{k+m} \) gặp tất cả \( V_i \) một cách không trống bằng với độ của lớp chu trình có kích thước không trống \( \sigma_{a_1} \cdot \sigma_{a_2} \cdot \ldots \cdot \sigma_{a_n} \) trong vành Chow \( A^*(G(k, k+m)) \),
+
+\[
+\int_{G(k, k+m)} \sigma_{a_1} \cdot \sigma_{a_2} \cdot \ldots \cdot \sigma_{a_n}.
+\]
+
+Vì \( a_1+\cdots+a_n=m k \), số này là hữu hạn và có thể tính bằng Thuật toán 2.1.1. Trong trường hợp đặc biệt \( a_1=\cdots=a_n=1 \), có một công thức rõ ràng cho độ của Grassmannian trong nhúng Plücker,
+
+\[
+\operatorname{deg}(G(k, k+m))=\int_{G(k, k+m)} \sigma_1^{k m}=(k m) ! \frac{\prod_{l=0}^{k-1} l !}{\prod_{l=0}^{k-1}(m+l) !} .
+\]
+
+Trong cùng bài báo đó, các tác giả đã phát triển thuật toán Pieri homotopy để giải quyết các vấn đề từ tính toán Schubert cổ điển. Sau đó, thuật toán này đã được cải thiện bởi Huber và Verschelde trong [62]. Một cách tiếp cận khác cho thuật toán Pieri homotopy đã được đưa ra bởi Li, Wang và Wu trong [81]. Trong Chương 5, chúng tôi sẽ trình bày một phương pháp khác để giải quyết vấn đề này, sử dụng lý thuyết giao điểm tương quan và công thức của Bott.
+
+
+\section{Luật Littlewood-Richardson}
+
+Tổng quát hóa từ công thức Pieri, ta có công thức tích của hai lớp Schubert bất kì $\sigma_a, \sigma_b \in A^*(G(k, n))$,
+$$\sigma_a \cdot \sigma_b=\sum_{|c|=|a|+|b|} N_{a, b}^c \sigma_c \in A^{|a|+|b|}(G(k, n))$$
+trong đó $N_{a, b}^c$ được xác định bởi luật Littlewood-Richardson. Những hệ số này xuất hiện ở trong nhiều bài toán tổ hợp và có thể được tính toán bằng nhiều phương pháp. Ở đây chúng tôi giới thiệu phương pháp xác định hệ số Littlewood-Richardson $N_{a, b}^c$ bằng hình học.
+
+Gọi $a=\left(a_1, a_2, \ldots, a_k\right)$ là một phân hoạch với $n-k \geq a_1 \geq a_2 \geq \cdots \geq a_k \geq 0$. Đặt $a^{\vee}=\left(n-k-a_k, \ldots, n-k-a_1\right)$. Bằng công thức đối ngẫu, ta có được $\sigma_a \cdot \sigma_{a^\vee}$ là lớp các điểm trên vành Chow $A^*(G(k, n))$. Tức là $\int_{G(k, n)} \sigma_a \cdot \sigma_{a^{\vee}}=1$. Do đó
+$$N_{a, b}^c=\int_{G(k, n)} \sigma_a \cdot \sigma_b \cdot \sigma_{c^{\vee}}$$
+
+Công thức trên cho ta một phương pháp hiệu quả để tính toán các hệ số Littlewood-Richardson.\\
+\textbf{Thuật toán.}\\
+\textbf{Thuật toán.}\\
+\textbf{Ví dụ.} Trong trường hợp $G(3,6)$, ta có
+$$\sigma_{2,1}\cdot\sigma_{2,1}=\sigma_{3,3}+2\sigma_{3,2,1}+\sigma_{2,2,2}$$
+\textbf{Code.}
+
+\section{Sơ đồ Fano}
+
+Cho $X \subset \mathbb{P}^n$ là một siêu mặt tổng quát có bậc là $d$. Gọi $F_k(X)$ là tập các  $k$-mặt trong $X$. Ta có thể dễ dàng chứng minh được rằng $F_k(X)$ là một sơ đồ con của đa tạp Grassmann $G(k+1, n+1)$. Sơ đồ con này gọi là \textbf{sơ đồ Fano của $k$-mặt} trong $X$. Mệnh đề sau giúp chúng ta dự đoán được số chiều của các sơ đồ Fano.\\\\
+\textbf{Mệnh đề 2.3.1.} Cho $X \subset \mathbb{P}^n$ là một siêu mặt tổng quát bậc $d$. Giả sử $d \neq 2$ hoặc $n \geq 2 k+1$. Khi đó:\\
+1. $F_k(X)$ là rỗng nếu $\phi(k, d, n)<0$\\
+2. $F_k(X)$ là trơn và có số chiều dự đoán là $\phi(k, d, n)$ nếu $\phi(k, d, n) \geq 0$.\\
+Ở đây ta kí hiệu $\phi(k, d, n)=(k+1)(n-k)-\begin{pmatrix}
+d+k\\
+d
+\end{pmatrix}$.\\
+\textbf{Chứng minh.}\\
+Định lí sau đây mô tả lớp vòng $\left[F_k(X)\right]$ trên vành Chow $A^*(G(k+1, n+1))$.\\
+\textbf{Định lí 2.3.2.} Cho $S$ là tautological subbundle trên $G(k+1, n+1)$ và $\text{Sym}^d S^{\vee}$ là $d$-th symmetric power of the dual of $S$. Khi đó
+$$\left[F_k(X)\right]=c_{\text{top }}\left(\operatorname{Sym}^d S^{\vee}\right) \in A^*(G(k+1, n+1)),$$
+trong đó $c_{\text {top}}(E)$ là top Chern class của vector bundle $E$.\\
+\textbf{Chứng minh.}\\
+Một hệ quả của định lí trên là bậc của $\left[F_k(X)\right]$ bằng bậc của  top Chern class của $\operatorname{Sym}^d S^{\vee}$ trên vành Chow của $G(k+1, n+1)$. Do đó ta có
+$$\operatorname{deg}\left(F_k(X)\right)=\int_{G(k+1, n+1)} c_{\text {top }}\left(\operatorname{Sym}^d S^{\vee}\right) \cdot \sigma_1^{\phi(k, d, n)}$$
+\textbf{Thuật toán.}\\
+Bằng đối ngẫu, ta còn có
+$$\operatorname{deg}\left(F_k(X)\right)=\int_{G(n-k, n+1)} c_{\mathrm{top}}\left(\operatorname{Sym}^d Q\right) \cdot \sigma_1^{\phi(k, d, n)} .$$
+\textbf{Thuật toán.}\\
+\textbf{Ví dụ 2.3.3.} Cho $X$ là siêu mặt bậc ba tổng quát trong $\mathbb{P}^4$, khi đó số chiều dự đoán của $F_1(X)$ là 2. Để tính bậc của $F_1(X)$, ta xét đa tạp Grassmann $G(2,5)$ với tautological subbundle $S$. Sau đó tính toán lớp vòng
+$$c_{\text {top }}\left(\operatorname{Sym}^3 S^{\vee}\right)=105 \sigma_1^4-226 \sigma_1^2 \sigma_2+43 \sigma_2^2+112 \sigma_1 \sigma_3 \in A^*(G(2,5))$$
+Bằng đối ngẫu, nếu ta xét đa tạp Grassmann $G(3,5)$ với tautological quotient bundle $Q$, thì ta có thể tính được lớp vòng
+$$c_{\text {top }}\left(\operatorname{Sym}^3 Q\right)=18 \sigma_1^2 \sigma_2+9 \sigma_2^2 \in A^*(G(3,5))$$
+Do đó bậc của $F_1(X)$ là:
+$$\operatorname{deg}\left(F_1(X)\right)=\int_{G(2,5)} c_{\text {top }}\left(\operatorname{Sym}^3 S^{\vee}\right) \cdot \sigma_1^2=\int_{G(3,5)} c_{\text {top }}\left(\operatorname{Sym}^3 Q\right) \cdot \sigma_1^2=45$$
+\textbf{Code.}
+
+\section{Không gian con tuyến tính trên siêu mặt}
+
+Trong phần này chúng tôi sẽ miêu tả nghiệm của bài toán sau đây.\\
+\textbf{Bài toán 2.4.1.} Cho $X \subset \mathbb{P}^n$ là siêu mặt tổng quát bậc $d$. Có bao nhiêu $k$-mặt trong $\mathbb{P}^n$ chứa trong $X$?\\
+Trong nhiều trường hợp, câu trả lời là vô số. Tuy nhiên, nếu $d, k, n \in \mathbb{N}$ thỏa mãn $d \neq 2($ or $n \geq 2 k+1)$ và
+$$\left(\begin{array}{c}
+	d+k \\
+	k
+\end{array}\right)=(k+1)(n-k),$$
+thì đáp án là hữu hạn.\\
+\textbf{Ví dụ 2.4.2.} Cho $X \subset \mathbb{P}^3$ là siêu mặt bậc ba tổng quát. Có bao nhiêu đường trong $\mathbb{P}^3$ nằm trong $X$? Đáp án là 27 đường. Nếu ta thay $X$ bởi quintic hypersurface tổng quát trong $\mathbb{P}^4$ thì kết quả là 2875 đường.\\\\
+Cho $X \subset \mathbb{P}^n$ là siêu mặt tổng quát bậc $d$. Để đếm số $k$-mặt trong $X$, ta xét sơ đồ Fano $F_k(X)$ như là một sơ đồ con của $G(k+1, n+1)$ hay không gian tham số của $k$-mặt trong $\mathbb{P}^n$.\\
+Trong trường hợp $d \neq 2$ hoặc $n \geq 2 k+1$ và $\phi(k, d, n)=0$, theo mệnh đề 2.3.1, ta có $F_k(X)$ là không gian 0 chiều. Dẫn tới số lượng $k$-mặt trong $X$ là hữu hạn và bằng bậc của $\left[F_k(X)\right]$ trong $A(G(k+1, n+1))$. Chúng tôi đề xuất một thuật toán hiệu quả để đếm số $k$-mặt trên siêu mặt tổng quát bậc $d$ trong $\mathbb{P}^n$.\\
+\textbf{Thuật toán.}\\
+\textbf{Ví dụ 2.4.3.} Trong ví dụ này, chúng tôi tính số đường thẳng trong siêu mặt tổng quát bậc $d=2 n-3 \geq 3$ trong $\mathbb{P}^n$.\\
+Con số này chính là bậc của top Chern class của $d$-th symmetric power of the tautological quotient bundle trên $G(n-1, n+1)$.\\
+Các dữ liệu sau khi tính toán được thu thập và thể hiện ở bảng 2.1. Tổng quát hơn, nếu $k, d, n \in \mathbb{N}$ thỏa mãn $d \geq 3$ và
+$$
+\left(\begin{array}{c}
+	d+k \\
+	k
+\end{array}\right)=(k+1)(n-k),
+$$
+thì chúng ta hoàn toàn có tính được số $k$-mặt trên một siêu mặt tổng quát bậc $d$ trong $\mathbb{P}^n$.
+Do đó có 3297280 2-mặt trên một siêu mặt tổng quát bậc 4 trong $\mathbb{P}^4$ và 321489 3-mặt trên một siêu mặt tổng quát bậc 3 trong $\mathbb{P}^8$.
+\section{Sơ đồ Fano vũ trụ}
+
+Trong phần này, chúng tôi trình bày các cách tiếp cận khác nhau cho cùng một mục đích là đếm số đường thẳng trên một mặt bậc 3 tổng quát trong $\mathbb{P}^3$.
+Dễ thấy có một song ánh
+$$
+\text { \{siêu mặt bậc} \left.d \ \text {trong \ } \mathbb{P}^n\right\} \longleftrightarrow\left\{\text {điểm trong\ } \mathbb{P}^{\begin{pmatrix}
+		n+d\\
+		d
+\end{pmatrix}-1}\right\} .
+$$
+Do vậy, mỗi một siêu mặt $X$ có bậc là $d$ trong $\mathbb{P}^n$ sẽ được xem như là một điểm trong $\mathbb{P}^{\begin{pmatrix}
+		n+d\\
+		d
+	\end{pmatrix}-1}$\\
+\textbf{Định nghĩa 2.5.1.} Incidence tương ứng
+$$
+F_{n, d}=\left\{\left.(X, L) \in \mathbb{P}^{\begin{pmatrix}
+		n+d\\
+		d
+	\end{pmatrix}-1} \times G(2, n+1) \right\rvert\, L \subset X\right\}
+$$
+được gọi là \textbf{Sơ đồ Fano vũ trụ} của các đường trên siêu mặt bậc $d$ trong $\mathbb{P}^n$.\\
+\begin{center}\begin{tabular}{|c|c|}
+	\hline$n$ & Number of lines \\
+	\hline 2 & 1 \\
+	3 & 27 \\
+	4 & 2875 \\
+	5 & 698005 \\
+	6 & 305093061 \\
+	7 & 210480374951 \\
+	8 & 210776836330775 \\
+	9 & 289139638632755625 \\
+	10 & 520764738758073845321 \\
+	\hline
+\end{tabular}\end{center}
+\begin{center}
+	Bảng 2.1: Số các đường trong siêu mặt
+\end{center}
+Chúng ta làm việc với tích $W:=\mathbb{P}^{\begin{pmatrix}
+		n+d\\
+		d
+	\end{pmatrix}-1} \times G(2, n+1)$ và kí hiệu $p_1, p_2$ là canonical projections của chúng. Xét vector bundle
+$$E:=p_2^* \operatorname{Sym}^d S^{\vee} \otimes p_1^* \mathcal{O}_{\mathbb{P}^{\begin{pmatrix}
+			n+d\\
+			d
+		\end{pmatrix}-1}}(1)$$
+Với $S$ là tautological subbundle trong $G(2, n+1)$. Định lí sau đây mô tả lớp vòng của $F_{n, d}$ trong vành Chow của $W$.\\
+\textbf{Định lí 2.5.2.} Sơ đồ Fano vũ trụ $F_{n, d}$ của các đường thẳng trên siêu mặt bậc $d$ trong $\mathbb{P}^n$ là tối giản và có đối chiều là $d+1$ trong tích $W$. Ngoài ra, ở đây còn có zero locus của section của $E$ và lớp vòng của nó là
+$$\left[F_{n, d}\right]=c_{d+1}(E) \in A^{d+1}(W)$$
+\textbf{Chứng minh.}\\
+\textbf{Ví dụ 2.5.3.} Trong trường hợp $n=d=3$, ta xét vector bundle
+$$
+E:=p_2^* \operatorname{Sym}^3 S^{\vee} \otimes p_1^* \mathcal{O}_{\mathbb{P} 19}(1)
+$$
+trên tích $\mathbb{P}^{19} \times G(2,4)$, với $S$ là tautological subbundle trong $G(2,4)$. Khi đó lớp vòng của $F_{3,3}$ là
+$$
+\begin{aligned}
+	{\left[F_{3,3}\right] } & =c_4(E) \\
+	& =h^4+6 h^3 \sigma_1+21 h^2 \sigma_1^2-10 h^2 \sigma_2+42 h \sigma_1 \sigma_2+27 \sigma_2^2 .
+\end{aligned}
+$$
+Ta sử dụng kí hiệu $h$ cho pullback to $\mathbb{P}^{19} \times G(2,4)$ của lớp siêu phẳng trong $\mathbb{P}^{19}$ và các kí hiệu $\sigma_i$ cho pullbacks to $\mathbb{P}^{19} \times G(2,4)$ của các lớp Schubert tương ứng trong $G(2,4)$.\\
+\textbf{Code.}\\
+Trong trường hợp này số đường thẳng trên siêu mặt bậc 3 tổng quát trong $\mathbb{P}^3$ bằng bậc của $\left[F_{3,3}\right] \cdot h^{19}$ trong $A^*\left(\mathbb{P}^{19} \times G(2,4)\right)$
+$$\int_{\mathbb{P}^{19} \times G(2,4)}\left[F_{3,3}\right] \cdot h^{19}=\int_{\mathbb{P}^{19} \times G(2,4)} c_4(E) \cdot h^{19}=27 $$
+\textbf{Code.}\\
+Thêm nữa, nếu $C$ là tập các đường thẳng trên general pencil của siêu mặt bậc 3 trong $\mathbb{P}^3$, thì $C$ sẽ là một vòng có số chiều là 1 của tích $\mathbb{P}^{19} \times G(2,4)$ và lớp vòng của nó sẽ là $\left[F_{3,3}\right] \cdot h^{18}$. Ta có thể coi $C$ như là một đường cong trong $\mathbb{P}^{19} \times G(2,4)$, khi đó bậc của $C$ là 42 . Thật vậy, bậc của $C$ bằng với bậc của $\left[F_{3,3}\right] \cdot h^{18} \cdot \sigma_1$ trong $A^*\left(\mathbb{P}^{19} \times G(2,4)\right)$
+$$\int_{\mathbb{P}^{19} \times G(2,4)}\left[F_{3,3}\right] \cdot h^{18} \cdot \sigma_1=\int_{\mathbb{P}^{19} \times G(2,4)} c_4(E) \cdot h^{18} \cdot \sigma_1=42 $$
+\textbf{Code.}
+
+\section{Đường trên Complete Intersection Calabi-Yau Threefolds}
+
+Cho
+$$X=\bigcap_{i=1}^k X_i \subset \mathbb{P}^{k+3}$$
+là một complete intersection threefold, trong đó $X_i$ là một siêu mặt trơn bậc $d_i \geq 2$ với mọi $i=1, \ldots, k$. Trong trường hợp này, ta nói rằng $X$ là loại $\left(d_1, \ldots, d_k\right)$. Nếu canonical bundle $K_X$ trong $X$ là tầm thường, thì $X$ được gọi là Calabi-Yau. Từ công thức adjunction, ta có
+$$K_X \cong \mathcal{O}\left(\sum_{i=1}^k d_i-(k+4)\right) $$
+Giả sử $X$ là Calabi-Yau. Khi đó ta có
+$$
+\sum_{i=1}^k d_i=k+4 .
+$$
+Không mất tính tổng quát, ta giả sử rằng $d_1 \geq \cdots \geq d_k \geq 2$. Từ đó ta có
+$$
+2 k \leq \sum_{i=1}^k d_i=k+4 \text {, }
+$$
+do đó $k \leq 4$. Vì thế có đúng 5 khả năng có thể xảy ra:\\
+\textbf{1.} Nếu $k=1$, thì $d_1=5$. Trong trường hợp này, $X$ là một siêu mặt quintic trong $\mathbb{P}^4$.\\
+\textbf{2.} Nếu $k=2$, có 2 khả năng:\\
+a) $d_1=4, d_2=2$. Khi đó $X$ là một complete intersection của loại $(4,2)$ trong $\mathbb{P}^5$.\\
+b) $d_1=d_2=3$. Khi đó $X$ là một complete intersection của loại $(3,3)$ trong $\mathbb{P}^5$.\\
+\textbf{3.} Nếu $k=3$, thì $d_1=3, d_2=d_3=2$. Trong trường hợp này, $X$ là một complete intersection của loại $(3,2,2)$ trong $\mathbb{P}^6$.\\
+\textbf{4.} Nếu $k=4$, thì $d_1=d_2=d_3=d_4=2$. Trong trường hợp này, $X$ là một complete intersection của loại $(2,2,2,2)$ trong $\mathbb{P}^7$.\\
+Như đã biết ở ví dụ 2.4.3, có 2875 trên một siêu mặt quintic tổng quát trong $\mathbb{P}^4$. Một cách tương tự, có thể biết được số đường trên general complete intersection Calabi-Yau threefolds là hữu hạn.
+Cho $X$ là một general complete intersection loại $(4,2)$ trong $\mathbb{P}^5$. Ta có thể xem $X$ như là giao của hai siêu mặt tổng quát $X_1$ và $X_2$ với $\operatorname{deg}\left(X_1\right)=4$ và $\operatorname{deg}\left(X_2\right)=2$. Từ định lí 2.3.2, lớp vòng của đường trong $X$
+$$\left[F_1\left(X_1\right)\right] \cdot\left[F_1\left(X_2\right)\right]=c_5\left(\operatorname{Sym}^4\left(S^{\vee}\right)\right) \cdot c_3\left(\operatorname{Sym}^2\left(S^{\vee}\right)\right) \in A(G(2,6)) .$$
+Từ đó $n_1^{(4,2)}$ của đường trong $X$ bằng với bậc của lớp vòng này, hay
+$$
+n_1^{(4,2)}=\int_{G(2,6)} c_5\left(\operatorname{Sym}^4\left(S^{\vee}\right)\right) \cdot c_3\left(\operatorname{Sym}^2\left(S^{\vee}\right)\right) .
+$$
+Tương tự, $n_1^{(3,3)}$ của đường thẳng trên một general complete intersection loại $(3,3)$ trong $\mathbb{P}^5$ là
+$$
+n_1^{(3,3)}=\int_{G(2,6)} c_4\left(\operatorname{Sym}^3\left(S^{\vee}\right)\right)^2 .
+$$
+
+$n_1^{(3,2,2)}$ của đường thẳng trên một general complete intersection loại $(3,2,2)$ trong $\mathbb{P}^6$ là
+$$
+n_1^{(3,2,2)}=\int_{G(2,7)} c_4\left(\operatorname{Sym}^3\left(S^{\vee}\right)\right) \cdot c_3\left(\operatorname{Sym}^2\left(S^{\vee}\right)\right)^2 .
+$$
+
+$n_1^{(2,2,2,2)}$ của đường thẳng trên một general complete intersection loại $(2,2,2,2)$ trong $\mathbb{P}^7$ là
+$$
+n_1^{(2,2,2,2)}=\int_{G(2,8)} c_3\left(\operatorname{Sym}^2\left(S^{\vee}\right)\right)^4 .
+$$
+\textbf{Code.}\\
+\textbf{Định lí 2.6.1.} Số đường thẳng trên general complete intersection Calabi-Yau threefolds cho bởi bảng sau:
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline Type & Number of lines \\
+		\hline$(5)$ & 2875 \\
+		$(4,2)$ & 1280 \\
+		$(3,3)$ & 1053 \\
+		$(3,2,2)$ & 720 \\
+		$(2,2,2,2)$ & 512 \\
+		\hline
+	\end{tabular}
+\end{center}
+\end{document}
