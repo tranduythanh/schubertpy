@@ -12,7 +12,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name='schubertpy',
-    version='0.3.12',
+    version='0.3.13',
     packages=find_packages(),
     description='This Python module facilitates operations such as quantum Pieri rules, quantum Giambelli formulae, action and multiplication of Schubert classes, and conversion between different representations of Schubert classes',
     long_description=long_description,
