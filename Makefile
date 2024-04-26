@@ -13,6 +13,6 @@ publish:
 	rm -rf build
 	rm -rf schulze.egg-info
 	bump2version --allow-dirty patch
-	pipreqs --force ./
+	# pipreqs --force ./
 	python3 setup.py sdist bdist_wheel
 	python3 -m twine upload --verbose dist/*
