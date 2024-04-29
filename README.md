@@ -127,10 +127,26 @@ Or directly with Python:
 python3 -m unittest schubertpy/testcases/*.py
 ```
 
+## Authors
+- **Đặng Tuấn Hiệp**
+  - Email: hiepdt@dlu.edu.vn
+- **Trần Duy Thanh**
+  - Email: coachtranduythanh@gmail.com
+  - Email: 2015830@dlu.edu.vn
+- **Nguyễn Minh Đức**
+  - Email: 2113423@dlu.edu.vn
+- **Nguyễn Trương Thiên Ân**
+  - Email: 2113421@dlu.edu.vn
+
 ## Contributing
 
-Contributions to `schubertpy` are highly encouraged, whether they involve extending functionality, enhancing performance, or fixing bugs. Please feel free to submit issues or pull requests on GitHub to suggest changes or improvements.
+We highly encourage contributions to `schubertpy`. Whether you are looking to expand functionality, enhance performance, or fix bugs, your input is valuable. To get started:
+
+- **Report Issues**: If you encounter issues or have suggestions, please report them by creating an issue on our GitHub page.
+- **Submit Pull Requests**: Feel free to fork the repository and submit pull requests. Whether it's adding new features, optimizing existing code, or correcting bugs, your contributions are welcome.
+
+Please ensure your pull requests are well-documented and include any necessary tests. For more details on contributing, refer to our contribution guidelines on GitHub.
 
 ## License
 
-`schubertpy` is made available under the MIT License. For more details, see the LICENSE file included with the source code.
+`schubertpy` is open source software (under the GNU General Public License).

@@ -56,5 +56,9 @@ def main():
     print(og.dualize('S[1]+S[2]'))
 
 
+    gr = Grassmannian(3, 7)
+    print(gr.toS('S[2,1]*S[2]*S[1]'))
+
+
 if __name__ == "__main__":
     main()
