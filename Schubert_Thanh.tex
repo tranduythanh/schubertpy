@@ -1,0 +1,227 @@
+\documentclass[11pt,a4paper]{book}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{commath}
+\usepackage{eucal}
+\usepackage{exscale}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{niceframe}
+\usepackage{anysize}
+\usepackage{tikz}
+\usepackage{scalerel}
+\usepackage{pict2e}
+\usepackage{tkz-euclide}
+\usepackage{nicefrac}
+\usepackage{pgfplots}
+\usepackage{framed}
+\usepackage{tcolorbox}
+\usepackage{graphicx,geometry,lipsum}
+\marginsize{1.5cm}{1.5cm}{2cm}{2cm}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Giải thuật}
+
+\begin{document}
+
+\chapter{Bối cảnh và giới thiệu đề tài}
+
+\section{Bối cảnh}
+Phép tính Schubert (Schubert calculus) là một lĩnh vực quan trọng trong đại số đại cương và hình học đại số, xuất phát từ nhu cầu đếm các đối tượng hình học như điểm, đường thẳng, mặt phẳng, hoặc các không gian tuyến tính chiều cao hơn thỏa mãn các điều kiện hình học cụ thể. Lịch sử của phép tính Schubert bắt đầu từ những nỗ lực của nhà toán học Hermann Schubert trong thế kỷ 19, người đã thu thập nhiều kết quả và ý tưởng sơ khai trong lĩnh vực này.
+
+Ban đầu, phép tính Schubert tập trung vào việc đếm các không gian tuyến tính trên các không gian dựa trên phân loại của chúng. Tuy nhiên, với sự phát triển của lĩnh vực này, nó đã mở rộng sang nhiều lĩnh vực khác nhau, bao gồm cả việc áp dụng lí thuyết tổ hợp và tính toán hình thức.
+
+Trong phép tính Schubert, các đối tượng hình học thường được biểu diễn dưới dạng các ô Schubert (Schubert cell), là các lớp đối đồng điều trên các đa tạp Grassmann hoặc các không gian hình học khác. Sử dụng các quy tắc như Pieri và Giambelli, và các kĩ thuật như tích hợp và phân tích, người ta có thể tính toán số lượng các đối tượng hình học (thoả tính chất nào đó) trong các không gian này.
+
+Một phần quan trọng của phép tính Schubert là khả năng tính toán hình thức của các đối tượng hình học, đặc biệt là trong ngữ cảnh của hình học đếm (enumerated geometry). Điều này liên quan đến việc sử dụng công cụ và phương pháp tính toán để xác định số lượng và tính chất của các đối tượng hình học trong một không gian hình học cụ thể.
+
+Tính đến nay, phép tính Schubert không chỉ là một công cụ quan trọng trong hình học đếm (enumerated geometry) mà còn là một phần của nghiên cứu trong lĩnh vực lí thuyết tổ hợp và đại số. Đóng góp của nó đã mở ra nhiều cánh cửa cho việc hiểu biết và áp dụng trong nhiều lĩnh vực toán học và khoa học khác nhau.
+
+\section{Các gói phần mềm hỗ trợ}
+
+\subsection{Các gói không sử dụng lí thuyết tổ hợp}
+
+\begin{enumerate}
+	\item \textbf{Schubert} trên Mapple (1992). Tác giả: Sheldon Katz và Stein Arild Stromme. 
+	
+	Gói được thiết kế để chuyên xử lí các tính toán thường gặp trong lí thuyết giao, đặc biệt là trong hình học đại số hiện đại.
+	
+	\item \textbf{Schubert2} trên Macaulay2 (2008). Tác giả: Daniel R. Grayson,Michael E. Stillman,Stein A. Strømme,David Eisenbud,Charley Crissman.
+	
+	Gói này hỗ trợ tính toán trong lí thuyết giao trên các đa tạp xạ ảnh trơn, cung cấp các công cụ để xác định các vành giao nhau và tính toán các thuộc tính của chúng. Thay vì sử dụng phương trình, người ta đưa ra vành giao điểm, đã được phân loại, của các lớp chu trình đại số tương đương số modulo (algebraic cycle classes modulo numerical equivalence), cho phép nghiên cứu và tính toán các đặc tính hình học của chúng.
+
+    Tác giả lấy cảm hứng từ công trình trước đó của Sheldon Katz và Stein A. Strømme, và đã tiếp tục phát triển và mở rộng lí thuyết và ứng dụng của lí thuyết giao. Công trình của họ đã giúp định rõ và làm chặt chẽ hơn lí thuyết tính toán các vành giao nhau của các bó cờ, mở ra cơ hội cho việc áp dụng và nghiên cứu sâu hơn trong lĩnh vực này.
+
+	\item textbf{Schubert3} trên SageMath (2014). Tác giả: Đặng Tuấn Hiệp. 
+	
+	Tác giả cải thiện một số hạn chế của 2 gói trên, đồng thời chuyển sang môi trường SageMath (một công cụ toán học được phát triển dựa trên python), và do đó dễ tiếp cận với cộng đồng người dùng nhà nghiên cứu hơn.
+\end{enumerate}
+
+\subsection{Các gói được viết theo lí thuyết tổ hợp:}
+
+\begin{enumerate}
+	\item \textbf{qcalc} trên Maple (2014). Tác giả:Anders Skovsted Buch. 
+	
+	qcalc là một chương trình Maple có thể thực hiện các tính toán trong vành đối đồng điều lượng tử nhỏ của bất kỳ loại đa tạp Grassmann cổ điển nào. Chính xác hơn, nó bao gồm đa tạp Grassmann thông thường (loại A) và đa tạp Grassmann của các không gian con đẳng hướng trong không gian vectơ đối xứng (loại C) hoặc trong không gian vectơ trực giao (loại B hoặc D). Gói phần mềm này được viết như một phần của dự án hợp tác với Andrew Kresch và Harry Tamvakis, nhằm mục đích nghiên cứu các vành đối đồng điều lượng tử nhỏ của đa tạp Grassmann đẳng hướng và trực giao dưới cực đại.
+\end{enumerate}
+
+\section{Mục tiêu đề tài}
+
+Nhận thấy việc sử dụng công cụ tính toán hiện đại là cần thiết để giải quyết các vấn đề phức tạp trong phép tính Schubert, cũng như giúp người dạy, người học, nhà nghiên cứu có thêm công cụ để minh hoạ, kiểm nghiệm ý tưởng, chúng tôi thấy cần thiết phải phát triển công cụ tính toán mới, hiệu quả và dễ sử dụng, giúp người dùng dễ dàng tiếp cận và sử dụng trong nghiên cứu và giảng dạy. 
+
+Tiếp nối các thành quả đã có, chúng tôi chọn ngôn ngữ python, đặt tên gói phần mềm mới là \textbf{schubertpy}. Ban đầu gói được viết dựa trên mã nguồn của qcalc do tác giả cung cấp công khai. Sau đó, bổ sung mã kiểm thử, áp dụng mô hình OOP, cái tiến giải thuật dựa trên các gói numpy, sympy sẵn có trong python. Gói schubertpy hiện đã phát hành miễn phí, công khai trên kho thư viện chính thức của python tại \href{https://pypi.org/project/schubertpy/}{https://pypi.org/project/schubertpy/}
+
+\chapter{Giải thuật chính}
+\section{Luật Pieri}
+
+\begin{algorithm}
+	\caption{Hàm \texttt{\_pieri\_fillA}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\Require 
+	\State $lam$ - Danh sách các số nguyên không âm (phân hoạch).
+	\State $inner$ - Danh sách các số nguyên không âm (phân hoạch tối thiểu).
+	\State $outer$ - Danh sách các số nguyên không âm (phân hoạch tối đa).
+	\State $row\_index$ - Thứ tự của dòng bắt đầu thêm ô (cell).
+	\State $p$ - Số lượng ô cần thêm vào trên dòng phù hợp.
+	
+	\Ensure Phân hoạch mới đã bổ sung thêm ô hoặc \texttt{NULL} nếu không thể.
+	
+	\If{$lam$ rỗng}
+		\State \Return $lam$ \Comment{Trả về ngay nếu lam rỗng}
+	\EndIf
+	\State $res \leftarrow \text{bản sao của } lam$ \Comment{Khởi tạo bản sao của lam}
+	\State $pp \leftarrow p$
+	\State $rr \leftarrow row\_index$
+	
+	\If{$rr = 0$}
+		\State $x \leftarrow \min(outer[0], inner[0] + pp)$ \Comment{Xử lí hàng đầu tiên của phân hoạch}
+		\State $res[0] \leftarrow x$
+		\State $pp \leftarrow pp - x + inner[0]$
+		\State $rr \leftarrow 1$
+	\EndIf
+	
+	\While{$rr < \text{length}(lam)$} \Comment{Lặp qua các dòng tiếp theo của phân hoạch và cố gắng thêm ô}
+		\State $x \leftarrow \min(outer[rr], inner[rr] + pp, res[rr - 1])$
+		\State $res[rr] \leftarrow x$
+		\State $pp \leftarrow pp - x + inner[rr]$
+		\State $rr \leftarrow rr + 1$
+	\EndWhile
+	
+	\If{$pp > 0$}
+		\State \Return \texttt{NULL} \Comment{$pp$ còn dư, tức là không có cách thêm ô phù hợp}
+	\EndIf
+	
+	\State \Return $res[0..\text{length}(lam)-1]$ \Comment{Trả về phân hoạch đã bổ sung thêm ô vào dòng phù hợp}
+	
+	\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+	\caption{Hàm \texttt{\_pieri\_itrA}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\Require 
+	\State $lam$ - Danh sách các số nguyên
+	\State $inner$ - Danh sách các điều kiện ranh giới tối thiểu
+	\State $outer$ - Danh sách các điều kiện ranh giới tối đa
+	
+	\Ensure Danh sách được sửa đổi trong ranh giới hoặc \texttt{NULL} nếu không thể.
+	
+	\If{$lam$ rỗng}
+		\State \Return \texttt{NULL} \Comment{Trả về \texttt{NULL} nếu danh sách đầu vào rỗng}
+	\EndIf
+	\State $p \leftarrow lam_{end} - inner_{end}$ \Comment{Khởi tạo $p$ dựa trên sự chênh lệch giữa phần tử cuối của $lam$ và $inner$}
+	
+	\For{$r \leftarrow length(lam) - 2$ downto $0$} \Comment{Duyệt ngược từ hàng kế cuối của $lam$ trở lên}
+		\If{$lam_r > inner_r$}
+			\State $lam1 \leftarrow \text{bản sao của } lam$
+			\State $lam1[r] \leftarrow lam[r] - 1$ \Comment{Bớt đi 1 ô tại hàng $r$}
+			\State $lam1 \leftarrow \texttt{\_pieri\_fillA}(lam1, inner, outer, r+1, p+1)$ \Comment{Thử thêm $p+1$ ô từ hàng $r+1$}
+			\If{$lam1 \neq \texttt{NULL}$}
+				\State \Return $lam1$ \Comment{Nếu thêm ô thành công, trả kết quả}
+			\EndIf
+			\State $p \leftarrow p + (lam[r] - inner[r])$ \Comment{Cập nhật $p$ nếu thêm ô không thành công}
+		\EndIf
+	\EndFor
+	
+	\State \Return \texttt{NULL} \Comment{Trả về \texttt{NULL} nếu không thể thêm ô vào phân hoạch hiện tại}
+	
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+	\caption{Hàm \texttt{pieriA\_inner}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\Require 
+	\State $i$ - số ô cần thêm vào phân hoạch
+	\State $lam$ - phân hoạch
+	\State $k, n$ - chỉ số k, n của đa tạp Grassmann
+	
+	\Ensure Trả về một tổ hợp tuyến tính của các hàm Schur
+	
+	\State $inner \leftarrow \text{padding\_right}(lam, 0, n-k-\text{len}(lam))$ \Comment{Thêm 0 vào cuối $lam$ để đạt kích thước $n-k$}
+	\State $outer \leftarrow [k] + inner[:-1]$ \Comment{Tạo $outer$ bằng cách thêm dòng mới có $k$ ô vào trên cùng của $inner$}
+	\State $mu \leftarrow \texttt{pieri\_fillA}(inner, inner, outer, 0, i)$ \Comment{Khởi tạo $mu$ bắt đầu từ phân hoạch tối thiểu $inner$}
+	
+	\State $res \leftarrow 0$
+	\While{$\text{isinstance}(mu, \text{list})$} \Comment{Tiếp tục nếu $mu$ là một phân hoạch hợp lệ}
+		\State $res \leftarrow \text{Schur}(\text{part\_clip}(mu)) + res$ \Comment{Thêm hàm Schur của $mu$ đã rút gọn vào kết quả}
+		\State $mu \leftarrow \texttt{pieri\_itrA}(mu, inner, outer)$ \Comment{Cập nhật $mu$ bằng cách tiếp tục thêm ô}
+	\EndWhile
+	
+	\State \Return res \Comment{Trả kết quả}
+	
+	\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{algorithm}
+	\caption{Hàm \texttt{giambelli\_rec\_inner}}
+	\begin{algorithmic}[1] % The [1] option enables line numbering
+	
+	\Require 
+	\State $lam$ - Phân hoạch
+	\State $pieri$ - Hàm thực thi luật Pieri
+	\State $k$ - Chỉ số k của đa tạp Grassmann
+	
+	\Ensure Trả về một tổ hợp tuyến tính
+	
+	\If{$lam$ rỗng}
+		\State \Return \texttt{LinearCombination}(1) \Comment{Trả về 1 nếu danh sách rỗng}
+	\EndIf
+	
+	\State $p \leftarrow lam[0]$ 
+	\If{$p = k$ và $lam_{end} = 0$}
+		\State $p \leftarrow -k$ \Comment{Điều chỉnh giá trị của $p$ nếu thỏa mãn điều kiện}
+	\EndIf
+	
+	\State $lam0 \leftarrow lam[1:]$ \Comment{Loại bỏ dòng đầu tiên của $lam$}
+	\If{$lam_{\text{cuối}} = 0$ và $lam[1] < k$}
+		\State $lam0 \leftarrow lam[1:-1]$ \Comment{Loại bỏ cả dòng đầu và cuối nếu thỏa mãn điều kiện}
+	\EndIf
+	
+	\State $stuff \leftarrow pieri(p, lam0) - \texttt{LinearCombination}(\text{Schur}(lam).symbol())$ \Comment{Khởi tạo biểu thức cho tính toán tiếp theo}
+	
+	\State $a \leftarrow \texttt{giambelli\_rec\_inner}(lam0, pieri, k)$ \Comment{Gọi đệ quy với danh sách mới}
+	\State $b \leftarrow \texttt{giambelli\_rec}(stuff, pieri, k)$ \Comment{Gọi hàm giambelli với biểu thức mới}
+	
+	\State $res \leftarrow \text{sp.expand}(\text{num2spec}(p) * a.expr - b.expr)$ \Comment{Kết hợp và mở rộng biểu thức}
+	
+	\Return \texttt{LinearCombination}(res) \Comment{Trả về kết quả dưới dạng tổ hợp tuyến tính}
+	
+	\end{algorithmic}
+\end{algorithm}
+
+\end{document}
