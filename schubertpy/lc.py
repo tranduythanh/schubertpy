@@ -9,6 +9,7 @@ import ast
 class LinearCombination(object):
     def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination']):
         if isinstance(expr, str):
+            expr = expr.replace('^', '**')
             expr = expr.translate(ftable)
             self.expr = sp.parse_expr(expr)
         elif isinstance(expr, (sp.Expr, sp.Number, sp.Symbol)):
@@ -140,3 +141,81 @@ class LinearCombination(object):
         
         new_expr = recursive_apply(self.expr)
         return LinearCombination(str(new_expr))
+    
+    def is_valid(self) -> bool:
+        """
+        Check if the expression is a linear combination.
+        This version considers an expression linear if it involves only:
+        - Scalar multiplication (a number multiplied by an expression).
+        - Addition or subtraction of linear terms.
+        """
+        def is_linear(expr):
+            if isinstance(expr, sp.Number):
+                # A number is linear by itself
+                return True
+            elif isinstance(expr, sp.Symbol):
+                # A symbol is linear by itself
+                return True
+            elif isinstance(expr, sp.Add):
+                # Check if all components of the addition are linear
+                return all(is_linear(arg) for arg in expr.args)
+            elif isinstance(expr, sp.Mul):
+                # Check if the multiplication is only between a scalar and another expression
+                number_count = sum(1 for arg in expr.args if isinstance(arg, sp.Number))
+                if number_count == 1 and len(expr.args) == 2:
+                    # One argument should be a number and the other should be linear
+                    return all(is_linear(arg) for arg in expr.args if not isinstance(arg, sp.Number))
+                return False
+            elif isinstance(expr, sp.Pow):
+                # Check if it is a power with exponent equal to 1 or -1 which is still linear
+                if isinstance(expr.exp, sp.Number) and expr.exp == 1:
+                    return is_linear(expr.base)
+                return False
+            return False  # Non-linear for other types of expressions
+        
+        # Start the recursion with the main expression
+        return is_linear(self.expr)
+
+    def _count_Schur(self, expr) -> int:
+        if isinstance(expr, sp.Mul):
+            return sum(1 for arg in expr.args if isSchur(arg))
+        raise ValueError(f"Invalid type for counting Schur: {expr}")
+    
+    def _cutoff_Schur(self, expr) -> Tuple['LinearCombination', 'Schur']:
+        if isinstance(expr, sp.Mul):
+            new_expr = sp.Mul(*[arg for arg in expr.args if not isSchur(arg)])
+            ss = [arg for arg in expr.args if isSchur(arg)]
+            if len(ss) <=0:
+                raise ValueError(f"Schur function absent or not in order 1: {expr}")
+            s = ss[0]
+            return (LinearCombination(new_expr), Schur(s).partition())
+        raise ValueError(f"Invalid type for cutoff Schur: {expr}")
+    
+
+    def _schur_expansion(self, expr, include_q=True) -> 'LinearCombination':
+        if isinstance(expr, sp.Number):
+            return (int(expr),[])
+        if isSchur(expr):
+            return (1, [toSchur(str(expr))])
+        if isinstance(expr, sp.Mul):
+            if self._count_Schur(expr) > 1:
+                raise ValueError(f"Cannot convert a product with multiple Schur functions to schur_expansion. Please expand the expression first: {self.expr}")
+            return(self. _cutoff_Schur(expr))
+            
+        if isinstance(self.expr, sp.Add):
+            # Handle the case where the expression is a sum of terms
+            res = []
+            for term in self.expr.args:
+                if not include_q and str(term).__contains__('q'):
+                    continue
+                res.append(self._schur_expansion(term))
+            sorted_array = sorted(res, key=lambda x: x[1])
+            return sorted_array
+        raise ValueError(f"Invalid type for schur_expansion: {self.expr}")
+
+    def schur_expansion(self, include_q=True) -> 'LinearCombination':
+        """
+        Expand each term in the expression individually.
+        This method assumes that the expression is a polynomial and expands each term separately.
+        """
+        return self._schur_expansion(self.expr, include_q)

@@ -1,4 +1,4 @@
-from schubertpy import Grassmannian, OrthogonalGrassmannian, IsotropicGrassmannian
+from schubertpy import Grassmannian, IsotropicGrassmannian, OrthogonalGrassmannian
 
 def main():
     # Initialize the Grassmannian object with dimensions
@@ -57,7 +57,10 @@ def main():
 
 
     gr = Grassmannian(3, 7)
-    print(gr.toS('S[2,1]*S[2]*S[1]'))
+    res = gr.toS('S[2,1]*S[2]*S[1]')
+    print(type(res))
+    print(res)
+    print(res.schur_expansion())  # Output will depend on the function and expression
 
 
 if __name__ == "__main__":

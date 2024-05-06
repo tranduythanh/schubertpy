@@ -6,9 +6,13 @@ from .const import *
 import ast
 
 class Schur(object):
-    def __init__(self, p: List[int]):
+    def __init__(self, p: Union[List[int], sp.Expr, str]):
         # Set self.p to p or [] if p is None
-        self.p = p if p is not None else []
+        if isinstance(p, (list, tuple)):
+            self.p = p if p is not None else []
+            return
+        p = toSchur(p)
+        self.p = p.p
 
     def __str__(self):
         return f"S{self.p}".replace(' ', '')
@@ -65,6 +69,9 @@ class Schur(object):
 
     def symbol(self) -> sp.Symbol:
         return sp.parse_expr(self.__str__().translate(ftable))
+
+    def partition(self) -> List[int]:
+        return self.p
 
 
 def unique_schur_list(schur_list: List[Schur]):

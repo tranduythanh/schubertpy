@@ -71,4 +71,5 @@ def increment_by_one(atom):
 
 new_expr = apply_func_to_expr(increment_by_one, expr)
 print(new_expr)  # Output will depend on the function and expression
+print(new_expr.shur_expansion())  # Output will depend on the function and expression
 

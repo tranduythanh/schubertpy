@@ -77,6 +77,28 @@ class Test_apply(unittest.TestCase):
         res = apply_lc(lambda p: qpieriB_inner(1, p, 1, 3), lc_p1)
         txt = '5*S[2,1]*q + S[3]*q + 2*S[4,3]'
         self.assertEqual(str(res), txt)
+
+
+class Test_schur_expansion(unittest.TestCase):
+    
+    def test_01(self):
+        s1 = Schur([1,2])
+        s2 = Schur([3,4])
+        lc = LinearCombination(f"q*{s1.symbol()} + 7*{s2.symbol()}")
+        res =  lc.schur_expansion()
+        self.assertEqual(str(res), '[(q, [1, 2]), (7, [3, 4])]')
+
+        lc = LinearCombination(f"q^2*{s1.symbol()} + 7*4*{s2.symbol()}")
+        res =  lc.schur_expansion()
+        self.assertEqual(str(res), '[(q^2, [1, 2]), (28, [3, 4])]')
+
+        lc = LinearCombination(f"q^2*{s1.symbol()} + 7*4*{s2.symbol()}")
+        res =  lc.schur_expansion(include_q=False)
+        self.assertEqual(str(res), '[(28, [3, 4])]')
+
+        lc = LinearCombination(f"q^2*{s1.symbol()}^2 + 7*4*{s2.symbol()}")
+        with self.assertRaises(ValueError):
+            lc.schur_expansion()
             
 if __name__ == '__main__':
     unittest.main()
