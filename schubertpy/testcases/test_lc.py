@@ -99,6 +99,11 @@ class Test_schur_expansion(unittest.TestCase):
         lc = LinearCombination(f"q^2*{s1.symbol()}^2 + 7*4*{s2.symbol()}")
         with self.assertRaises(ValueError):
             lc.schur_expansion()
+
+        lc = LinearCombination("S[2,2,2] + 3*S[3,2,1] + S[3,3] + 2*S[4,1,1] + 2*S[4,2]")
+        res =  lc.schur_expansion(include_q=False)
+        self.assertEqual(str(res), '[(1, [2, 2, 2]), (3, [3, 2, 1]), (1, [3, 3]), (2, [4, 1, 1]), (2, [4, 2])]')
+        
             
 if __name__ == '__main__':
     unittest.main()

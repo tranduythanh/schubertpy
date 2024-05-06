@@ -196,7 +196,7 @@ class LinearCombination(object):
         if isinstance(expr, sp.Number):
             return (int(expr),[])
         if isSchur(expr):
-            return (1, [toSchur(str(expr))])
+            return (1, toSchur(str(expr)).partition())
         if isinstance(expr, sp.Mul):
             if self._count_Schur(expr) > 1:
                 raise ValueError(f"Cannot convert a product with multiple Schur functions to schur_expansion. Please expand the expression first: {self.expr}")
