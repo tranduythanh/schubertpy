@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from cff import Citation
 
 # Function to read the contents of the requirements.txt file
 def read_requirements():
@@ -12,7 +11,7 @@ with open('README.md', encoding='utf-8') as f:
 
 # Define package metadata
 package_name = 'schubertpy'
-package_version = '0.3.19'
+package_version = '0.3.20'
 package_author = 'Trần Duy Thanh'
 package_author_email = 'fbtranduythanh@gmail.com'
 package_url = 'https://github.com/tranduythanh/schubertpy'
@@ -20,17 +19,31 @@ package_description = 'This Python module facilitates operations such as quantum
 package_license = 'GNU General Public License'
 
 # Generate CITATION.cff content
-citation = Citation(
-    title=package_name,
-    authors=['Dang Tuan Hiep',package_author,'Hoàng Minh Đức','Nguyễn Trương Thiên Ân'],
-    version=package_version,
-    url=package_url,
-    license=package_license,
-)
+citation_content = f'''cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: {package_name}
+version: {package_version}
+abstract: {package_description}
+authors:
+  - family-names: 'Dang Tuan Hiep'
+    email: hiepdt@dlu.edu.vn
+    affiliation: Dalat University
+  - family-names: {package_author}
+    email: {package_author_email}
+    affiliation: Dalat University
+  - family-names: 'Hoàng Minh Đức'
+    email: 2113423@dlu.edu.vn
+    affiliation: Dalat University
+  - family-names: 'Nguyễn Trương Thiên Ân'
+    email: 2113421@dlu.edu.vn
+    affiliation: Dalat University
+license: {package_license}
+url: {package_url}
+'''
 
 # Write CITATION.cff content to file
 with open('CITATION.cff', 'w') as f:
-    f.write(citation.cff())
+    f.write(citation_content)
 
 setup(
     name=package_name,
