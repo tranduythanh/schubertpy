@@ -142,7 +142,7 @@ python3 -m unittest schubertpy/testcases/*.py
   - Email: 2113423@dlu.edu.vn
 
 - **Nguyễn Trương Thiên Ân** 🇻🇳
-  - <img width="100" alt="Screenshot 2024-05-08 at 15 58 33" src="https://github.com/tranduythanh/schubertpy/assets/6112723/827e6a24-22e5-4ffd-b6cc-b841f8c685c4">
+  - <img width="100" alt="Screenshot 2024-05-08 at 16 50 21" src="https://github.com/tranduythanh/schubertpy/assets/6112723/a8b695fa-48fd-42d5-831d-fc58bb26dd45">
   - Email: 2113421@dlu.edu.vn
 
 ## Contributing
