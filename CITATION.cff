@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: schubertpy
+version: 0.3.20
+abstract: This Python module facilitates operations such as quantum Pieri rules, quantum Giambelli formulae, action and multiplication of Schubert classes, and conversion between different representations of Schubert classes
+authors:
+  - family-names: 'Dang Tuan Hiep'
+    email: hiepdt@dlu.edu.vn
+    affiliation: Dalat University
+  - family-names: Trần Duy Thanh
+    email: fbtranduythanh@gmail.com
+    affiliation: Dalat University
+  - family-names: 'Hoàng Minh Đức'
+    email: 2113423@dlu.edu.vn
+    affiliation: Dalat University
+  - family-names: 'Nguyễn Trương Thiên Ân'
+    email: 2113421@dlu.edu.vn
+    affiliation: Dalat University
+license: GNU General Public License
+url: https://github.com/tranduythanh/schubertpy
