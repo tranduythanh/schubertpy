@@ -138,7 +138,7 @@ python3 -m unittest schubertpy/testcases/*.py
   - Email: 2015830@dlu.edu.vn
 
 
-- **Nguyễn Minh Đức** 🇻🇳
+- **Hoàng Minh Đức** 🇻🇳
   - <img width="100" alt="Screenshot 2024-05-08 at 16 49 14" src="https://github.com/tranduythanh/schubertpy/assets/6112723/595e2bd1-33e0-42cd-8fc3-ee889c994664">  
   - Email: 2113423@dlu.edu.vn
 
