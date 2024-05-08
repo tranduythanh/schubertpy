@@ -128,20 +128,20 @@ python3 -m unittest schubertpy/testcases/*.py
 ```
 
 ## Authors
-- **Đặng Tuấn Hiệp**
+- **Đặng Tuấn Hiệp** 🇻🇳
   - <img width="100" alt="Screenshot 2024-05-08 at 15 58 33" src="https://github.com/tranduythanh/schubertpy/assets/6112723/3e2bc594-e192-4450-b624-c4b18ff2be84">
   - Email: hiepdt@dlu.edu.vn
   
-- **Trần Duy Thanh**
+- **Trần Duy Thanh** 🇻🇳
   - <img width="100" alt="Screenshot 2024-05-08 at 15 58 33" src="https://github.com/tranduythanh/schubertpy/assets/6112723/8c141d45-4c45-4545-99cd-35d5bafbeeb2">
   - Email: coachtranduythanh@gmail.com
   - Email: 2015830@dlu.edu.vn
 
-- **Nguyễn Minh Đức**
+- **Nguyễn Minh Đức** 🇻🇳
   - <img width="100" alt="Screenshot 2024-05-08 at 15 58 33" src="https://github.com/tranduythanh/schubertpy/assets/6112723/c35985a6-5329-4a67-bdf3-f3a11762641e">
   - Email: 2113423@dlu.edu.vn
 
-- **Nguyễn Trương Thiên Ân**
+- **Nguyễn Trương Thiên Ân** 🇻🇳
   - <img width="100" alt="Screenshot 2024-05-08 at 15 58 33" src="https://github.com/tranduythanh/schubertpy/assets/6112723/827e6a24-22e5-4ffd-b6cc-b841f8c685c4">
   - Email: 2113421@dlu.edu.vn
 
