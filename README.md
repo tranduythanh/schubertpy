@@ -157,3 +157,7 @@ Please ensure your pull requests are well-documented and include any necessary t
 ## License
 
 `schubertpy` is open source software (under the GNU General Public License).
+
+## Citing
+
+We encourage you to cite our work if you have used our package. See "Cite this repository" on this page.
