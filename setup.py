@@ -11,7 +11,7 @@ with open('README.md', encoding='utf-8') as f:
 
 # Define package metadata
 package_name = 'schubertpy'
-package_version = '0.3.20'
+package_version = '0.3.21'
 package_author = 'Trần Duy Thanh'
 package_author_email = 'fbtranduythanh@gmail.com'
 package_url = 'https://github.com/tranduythanh/schubertpy'
