@@ -129,13 +129,17 @@ python3 -m unittest schubertpy/testcases/*.py
 
 ## Authors
 - **Đặng Tuấn Hiệp**
+  ![z5418655925330_19986c86a59f14bedae59b6d5b2c11d8](https://github.com/tranduythanh/schubertpy/assets/6112723/3e2bc594-e192-4450-b624-c4b18ff2be84)
   - Email: hiepdt@dlu.edu.vn
 - **Trần Duy Thanh**
+  
   - Email: coachtranduythanh@gmail.com
   - Email: 2015830@dlu.edu.vn
 - **Nguyễn Minh Đức**
+
   - Email: 2113423@dlu.edu.vn
 - **Nguyễn Trương Thiên Ân**
+  ![z5419292851839_8af8e49bec2f9585ba19b8720b2c63c2](https://github.com/tranduythanh/schubertpy/assets/6112723/827e6a24-22e5-4ffd-b6cc-b841f8c685c4)
   - Email: 2113421@dlu.edu.vn
 
 ## Contributing
