@@ -1,25 +1,35 @@
-from functools import total_ordering
 from typing import *
-from .schur import *
-from .const import *
 import sympy as sp
-import ast
+import pandas as pd
+
+from .partition import *
+from .schur import Schur, isSchur, toSchur, translate_schur
+from .const import *
 
 
 class LinearCombination(object):
-    def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination']):
+    def __init__(self, expr: Union[str, sp.Expr, int, 'LinearCombination', 'Schur', List[int]]):
+        if isinstance(expr, list) and is_valid_part(expr):
+            self.expr = Schur(expr).symbol()
+            return
+        if isinstance(expr, Schur):
+            self.expr = Schur(expr).symbol()
+            return
         if isinstance(expr, str):
             expr = expr.replace('^', '**')
             expr = expr.translate(ftable)
             self.expr = sp.parse_expr(expr)
-        elif isinstance(expr, (sp.Expr, sp.Number, sp.Symbol)):
+            return
+        if isinstance(expr, (sp.Expr, sp.Number, sp.Symbol)):
             self.expr = expr
-        elif isinstance(expr, (int, float)):
+            return
+        if isinstance(expr, (int, float)):
             self.expr = sp.sympify(expr)
-        elif isinstance(expr, LinearCombination):
+            return
+        if isinstance(expr, LinearCombination):
             self.expr = expr.expr
-        else:
-            raise ValueError(f"Invalid type for LinearCombination: {type(expr)}")
+            return
+        raise ValueError(f"Invalid type for LinearCombination: {type(expr)}")
 
     def __str__(self):
         return translate_schur(self.expr).replace('**', '^')
@@ -99,8 +109,8 @@ class LinearCombination(object):
         raise ValueError(f"Invalid operator: {op}")
     
 
-    def list_schur_oprands(self) -> List[Schur]:
-        def recursive_list(expr: sp.Expr) -> List[Schur]:
+    def list_schur_oprands(self) -> List['Schur']:
+        def recursive_list(expr: sp.Expr) -> List['Schur']:
             if expr.is_Add or expr.is_Mul or expr.is_Pow:
                 return [recursive_list(arg) for arg in expr.args]
             if isSchur(expr):
@@ -142,6 +152,19 @@ class LinearCombination(object):
         new_expr = recursive_apply(self.expr)
         return LinearCombination(str(new_expr))
     
+    def has_part_zero_padding(self) -> bool:
+        """
+        Check if the expression has zero padding in the partition.
+        """
+        def recursive_has_part_zero_padding(_expr: sp.Expr) -> bool:
+            if _expr.is_Add or _expr.is_Mul or _expr.is_Pow:
+                return any(recursive_has_part_zero_padding(arg) for arg in _expr.args)
+            if isSchur(_expr):
+                return Schur(_expr).has_part_zero_padding()
+            return False
+        
+        return recursive_has_part_zero_padding(self.expr)
+
     def is_valid(self) -> bool:
         """
         Check if the expression is a linear combination.
@@ -193,6 +216,32 @@ class LinearCombination(object):
     
 
     def _schur_expansion(self, expr, include_q=True) -> 'LinearCombination':
+        """
+        Perform the Schur expansion of an expression.
+
+        This method attempts to expand an expression into its Schur components. It handles
+        numbers, Schur functions, and products of expressions. If the expression is a sum,
+        it expands each term individually. The method can optionally exclude terms containing
+        the variable 'q' from the expansion.
+
+        Parameters:
+        - expr: sp.Expr
+            The sympy expression to be expanded into Schur components.
+        - include_q: bool, optional (default=True)
+            A flag indicating whether terms containing the variable 'q' should be included
+            in the expansion.
+
+        Returns:
+        - A list of tuples, where each tuple contains a coefficient and a list
+        representing the partition of a Schur function, or raises a ValueError if the
+        expression cannot be expanded into Schur components.
+
+        Raises:
+        - ValueError
+            If the expression contains a product with multiple Schur functions (which cannot
+            be directly converted to a Schur expansion without prior expansion), or if the
+            expression type is not supported for Schur expansion.
+        """
         if isinstance(expr, sp.Number):
             return (int(expr),[])
         if isSchur(expr):
@@ -216,6 +265,18 @@ class LinearCombination(object):
     def schur_expansion(self, include_q=True) -> 'LinearCombination':
         """
         Expand each term in the expression individually.
-        This method assumes that the expression is a polynomial and expands each term separately.
+        This method assumes that the expression is sum of terms.
+
+        Parameters:
+        - expr: sp.Expr
+            The sympy expression to be expanded into Schur components.
+        - include_q: bool, optional (default=True)
+            A flag indicating whether terms containing the variable 'q' should be included
+            in the expansion.
+
+        Returns:
+        - A list of tuples, where each tuple contains a coefficient and a list
+        representing the partition of a Schur function, or raises a ValueError if the
+        expression cannot be expanded into Schur components.
         """
         return self._schur_expansion(self.expr, include_q)

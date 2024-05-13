@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import *
 from .qcalc import *
 
 class AbstractGrassmannian(ABC):
@@ -114,9 +115,18 @@ class AbstractGrassmannian(ABC):
         return giambelli_rec(lc, lambda i, p: self._qpieri(i, p, self._k, self._n), self._k)
 
 
-    def qmult(self, lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
+    def qmult(
+        self, 
+        lc1: Union[sp.Expr, LinearCombination, str, Schur, List[int]], 
+        lc2: Union[sp.Expr, LinearCombination, str, Schur, List[int]],
+    ) -> LinearCombination:
+        
         lc1 = LinearCombination(lc1)
         lc2 = LinearCombination(lc2)
+        # if lc1.has_part_zero_padding():
+        #     raise ValueError("The 1st input param contains a partition with zero padding")
+        # if lc2.has_part_zero_padding():
+        #     raise ValueError("The 2nd input param contains a partition with zero padding")
         # print("qmult")
         # print("lc1: ", lc1)
         # print("lc2: ", lc2)

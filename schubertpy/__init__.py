@@ -4,6 +4,7 @@ from .orthogonal_grassmannian import OrthogonalGrassmannian
 from .lc import LinearCombination
 from .schur import Schur
 from .util import yd
+from .mult_table import MultTable, QMultTable
 
 __all__ = [
     'Grassmannian',
@@ -11,5 +12,7 @@ __all__ = [
     'OrthogonalGrassmannian',
     'LinearCombination',
     'Schur',
-    'yd'
+    'yd',
+    'MultTable',
+    'QMultTable'
 ]

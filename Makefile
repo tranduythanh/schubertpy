@@ -1,3 +1,7 @@
+run-example:
+	pip3 install -e .
+	python3 example/main.py
+
 test:
 	clear && printf '\e[3J'
 	python3 -m unittest schubertpy/testcases/*.py

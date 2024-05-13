@@ -1320,15 +1320,6 @@ def qgiambelli(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     return giambelli_rec(lc, lambda i, p: _qpieri(i, p, _k, _n), _k)
 
 
-def qmult(lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
-    lc1 = LinearCombination(lc1)
-    lc2 = LinearCombination(lc2)
-    # print("qmult")
-    # print("lc1: ", lc1)
-    # print("lc2: ", lc2)
-    return qact(qgiambelli(lc1), lc2)
-
-
 def qtoS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     # print("qtoS")
     lc = LinearCombination(lc)

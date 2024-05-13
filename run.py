@@ -1,4 +1,4 @@
-from schubertpy import Grassmannian, IsotropicGrassmannian, OrthogonalGrassmannian
+from schubertpy import *
 
 def main():
     # Initialize the Grassmannian object with dimensions

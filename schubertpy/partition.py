@@ -1,10 +1,26 @@
-import numpy as np
-import sympy as sp
 from collections import OrderedDict
 from typing import *
 from .util import *
-from .schur import *
-from .lc import *
+
+def _is_sorted_descending(part: List[int]):
+    # Iterate through the list, comparing each element with the next one
+    for i in range(len(part) - 1):
+        # If the current element is smaller than the next one,
+        # the list is not in descending order
+        if part[i] < part[i + 1]:
+            return False
+    return True
+
+def is_valid_part(part: List[int]) -> bool:
+    if not isinstance(part, list):
+        return False
+    if not all(isinstance(x, int) for x in part):
+        return False
+    if not all(x >= 0 for x in part):
+        return False
+    if not _is_sorted_descending(part):
+        return False
+    return True
 
 def _first_kstrict(k: int, rows: int, cols: int) -> List[int]:
     return [max(k, cols - i) for i in range(rows)]
@@ -34,6 +50,7 @@ def part_clip(lambda_: List[int]) -> List[int]:
     '''
     trims or removes trailing zeros from the list lambda.
     '''
+    lambda_ = lambda_.copy()
     i = len(lambda_) - 1
     while i >= 0 and lambda_[i] == 0:
         i -= 1

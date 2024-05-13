@@ -3,13 +3,17 @@ from functools import total_ordering
 from typing import *
 import sympy as sp
 from .const import *
+from .partition import *
 import ast
 
 class Schur(object):
-    def __init__(self, p: Union[List[int], sp.Expr, str]):
+    def __init__(self, p: Union[List[int], sp.Expr, str, 'Schur']):
         # Set self.p to p or [] if p is None
         if isinstance(p, (list, tuple)):
             self.p = p if p is not None else []
+            return
+        if isinstance(p, Schur):
+            self.p = p.p
             return
         p = toSchur(p)
         self.p = p.p
@@ -72,6 +76,9 @@ class Schur(object):
 
     def partition(self) -> List[int]:
         return self.p
+    
+    def has_part_zero_padding(self) -> bool:
+        return part_clip(self.p) != self.p
 
 
 def unique_schur_list(schur_list: List[Schur]):
