@@ -66,7 +66,9 @@ def main():
     # of a 4-dimensional vector space.
     gr = Grassmannian(2, 4)
     sclasses = gr.schub_classes()
-    print(sclasses)
+    for c1 in sclasses:
+        for c2 in sclasses:
+            print(c1, "*", c2, "=", gr.qmult(c1, c2))
     
     # Init Multiplication table for the Grassmannian Gr(2,4).
     mTable = MultTable(gr)
