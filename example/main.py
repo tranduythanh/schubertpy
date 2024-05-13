@@ -1,4 +1,4 @@
-from schubertpy import Grassmannian, IsotropicGrassmannian, OrthogonalGrassmannian
+from schubertpy import *
 
 def main():
     # Initialize the Grassmannian object with dimensions
@@ -66,6 +66,7 @@ def main():
     # of a 4-dimensional vector space.
     gr = Grassmannian(2, 4)
     sclasses = gr.schub_classes()
+    print(sclasses)
     for c1 in sclasses:
         for c2 in sclasses:
             print(c1, "*", c2, "=", gr.qmult(c1, c2))
