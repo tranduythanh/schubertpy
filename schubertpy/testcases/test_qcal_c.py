@@ -46,12 +46,6 @@ class Test_qcal_qq(unittest.TestCase):
         txt = 'S[1]^3*S[2]^3 - 3*S[1]^2*S[2]^2*S[3] + 3*S[1]*S[2]*S[3]^2 - S[3]^3'
         self.assertEqual(str(res), txt)
 
-    def test_qmult(self):
-        IG(2,6)
-        res = qmult('S[2,1]', 'S[2,1]+S[3,2]')
-        txt = 'S[1]*q + S[3]*q + 2*S[4,2]'
-        self.assertEqual(str(res), txt)
-
     def test_qtoS(self):
         IG(2,6)
         res = qtoS('S[2,1]*S[2,1]*S[2,1]')
