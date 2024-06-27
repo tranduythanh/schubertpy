@@ -22,10 +22,12 @@ def dispatch(command, params):
 class TestWithCSVFile(unittest.TestCase):
 
     def test_1(self):
-        csv_file_path = './schubertpy/testcases/testcase.csv'
+        csv_file_path = './schubertpy/testcases/results.csv'
+        count = 0
         with open(csv_file_path, newline='') as csvfile:
             csv_reader = csv.reader(csvfile, delimiter=';')
             for row in csv_reader:
+                count += 1
                 command_with_params = row[0].split('(')
                 command = command_with_params[0]
                 params = command_with_params[1][:-1]
@@ -33,6 +35,9 @@ class TestWithCSVFile(unittest.TestCase):
                 params = [int(p) for p in params]
                 
                 gr = dispatch(command, params)
+
+                if count%1000 == 0:
+                    print(count)
                 
                 s1 = row[2]
                 s2 = row[3]
@@ -50,7 +55,7 @@ class TestWithCSVFile(unittest.TestCase):
                 expected_result = sp.expand(expected_result).simplify()
                 
                 self.assertTrue(result == expected_result)
-                print(f"ok\t{row}")
+                # print(f"ok\t{row}")
 
 
 if __name__ == '__main__':

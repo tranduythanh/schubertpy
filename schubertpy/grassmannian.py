@@ -2,6 +2,12 @@ from .abstract_grassmannian import AbstractGrassmannian
 from .qcalc import *
 
 class Grassmannian(AbstractGrassmannian):
+    _type: str
+    _k: int
+    _n: int
+    _pieri: Callable
+    _qpieri: Callable
+
     def __init__(self, m: int, n: int):
         self._type = "A"
         self._k = n-m
@@ -115,7 +121,7 @@ class Grassmannian(AbstractGrassmannian):
         res = self.pieriA_inner(i, lam, k, n)
         if len(lam) == n-k and lam[n-k-1] > 0:
             if k == 1:
-                return LinearCombination(q * Schur())
+                return LinearCombination(q * Schur([]))
             
             # gen new lab
             lab = []

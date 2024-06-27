@@ -793,7 +793,7 @@ def qpieriA_inner(i: int, lam: List[int], k: int, n: int) -> LinearCombination:
     res = pieriA_inner(i, lam, k, n)
     if len(lam) == n-k and lam[n-k-1] > 0:
         if k == 1:
-            return LinearCombination(q * Schur())
+            return LinearCombination(q * Schur([]))
         
         # gen new lab
         lab = []

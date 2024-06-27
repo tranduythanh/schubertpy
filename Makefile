@@ -20,3 +20,11 @@ publish:
 	# pipreqs --force ./
 	python3 setup.py sdist bdist_wheel
 	python3 -m twine upload --verbose dist/*
+
+uml:
+	pyreverse -o dot --filter-mode ALL -k --verbose -p schubertpy .
+	dot2tex classes_schubertpy.dot -t raw > mygraph.tex
+	cat mygraph.tex
+
+uml-detail:
+	pyreverse -o pdf --filter-mode ALL --verbose -p schubertpy .

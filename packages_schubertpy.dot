@@ -1,0 +1,55 @@
+digraph "packages_schubertpy" {
+rankdir=BT
+charset="utf-8"
+"schubertpy" [color="black", label=<schubertpy>, shape="box", style="solid"];
+"schubertpy.main" [color="black", label=<schubertpy.main>, shape="box", style="solid"];
+"schubertpy.main_sage" [color="black", label=<schubertpy.main_sage>, shape="box", style="solid"];
+"schubertpy.run" [color="black", label=<schubertpy.run>, shape="box", style="solid"];
+"schubertpy.schubertpy" [color="black", label=<schubertpy.schubertpy>, shape="box", style="solid"];
+"schubertpy.schubertpy.abstract_grassmannian" [color="black", label=<schubertpy.schubertpy.abstract_grassmannian>, shape="box", style="solid"];
+"schubertpy.schubertpy.const" [color="black", label=<schubertpy.schubertpy.const>, shape="box", style="solid"];
+"schubertpy.schubertpy.csv_bijection" [color="black", label=<schubertpy.schubertpy.csv_bijection>, shape="box", style="solid"];
+"schubertpy.schubertpy.grassmannian" [color="black", label=<schubertpy.schubertpy.grassmannian>, shape="box", style="solid"];
+"schubertpy.schubertpy.isotropic_grassmannian" [color="black", label=<schubertpy.schubertpy.isotropic_grassmannian>, shape="box", style="solid"];
+"schubertpy.schubertpy.lc" [color="black", label=<schubertpy.schubertpy.lc>, shape="box", style="solid"];
+"schubertpy.schubertpy.mult_table" [color="black", label=<schubertpy.schubertpy.mult_table>, shape="box", style="solid"];
+"schubertpy.schubertpy.orthogonal_grassmannian" [color="black", label=<schubertpy.schubertpy.orthogonal_grassmannian>, shape="box", style="solid"];
+"schubertpy.schubertpy.partition" [color="black", label=<schubertpy.schubertpy.partition>, shape="box", style="solid"];
+"schubertpy.schubertpy.qcalc" [color="black", label=<schubertpy.schubertpy.qcalc>, shape="box", style="solid"];
+"schubertpy.schubertpy.schur" [color="black", label=<schubertpy.schubertpy.schur>, shape="box", style="solid"];
+"schubertpy.schubertpy.util" [color="black", label=<schubertpy.schubertpy.util>, shape="box", style="solid"];
+"schubertpy.schubertsage" [color="black", label=<schubertpy.schubertsage>, shape="box", style="solid"];
+"schubertpy.schubertsage.conversion" [color="black", label=<schubertpy.schubertsage.conversion>, shape="box", style="solid"];
+"schubertpy.setup" [color="black", label=<schubertpy.setup>, shape="box", style="solid"];
+"schubertpy" -> "schubertpy" [arrowhead="open", arrowtail="none"];
+"schubertpy.main_sage" -> "schubertpy.schubertsage" [arrowhead="open", arrowtail="none"];
+"schubertpy.run" -> "schubertpy" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.isotropic_grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.lc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.mult_table" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.orthogonal_grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.schur" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy" -> "schubertpy.schubertpy.util" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.abstract_grassmannian" -> "schubertpy.schubertpy.qcalc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.csv_bijection" -> "schubertpy.schubertpy.const" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.grassmannian" -> "schubertpy.schubertpy.abstract_grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.grassmannian" -> "schubertpy.schubertpy.qcalc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.isotropic_grassmannian" -> "schubertpy.schubertpy.abstract_grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.isotropic_grassmannian" -> "schubertpy.schubertpy.qcalc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.lc" -> "schubertpy.schubertpy.const" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.lc" -> "schubertpy.schubertpy.partition" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.lc" -> "schubertpy.schubertpy.schur" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.mult_table" -> "schubertpy.schubertpy.abstract_grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.mult_table" -> "schubertpy.schubertpy.lc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.orthogonal_grassmannian" -> "schubertpy.schubertpy.abstract_grassmannian" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.orthogonal_grassmannian" -> "schubertpy.schubertpy.qcalc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.partition" -> "schubertpy.schubertpy.util" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.qcalc" -> "schubertpy.schubertpy.lc" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.qcalc" -> "schubertpy.schubertpy.schur" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.qcalc" -> "schubertpy.schubertpy.util" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.schur" -> "schubertpy.schubertpy.const" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertpy.schur" -> "schubertpy.schubertpy.partition" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertsage" -> "schubertpy.schubertsage.conversion" [arrowhead="open", arrowtail="none"];
+"schubertpy.schubertsage.conversion" -> "schubertpy" [arrowhead="open", arrowtail="none"];
+}

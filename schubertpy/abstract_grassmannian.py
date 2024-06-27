@@ -3,6 +3,12 @@ from typing import *
 from .qcalc import *
 
 class AbstractGrassmannian(ABC):
+    _type: str
+    _k: int
+    _n: int
+    _pieri: Callable
+    _qpieri: Callable
+    
     def __init__(self, m: int, n:int):
         self._type = None
         self._k = None
@@ -120,7 +126,6 @@ class AbstractGrassmannian(ABC):
         lc1: Union[sp.Expr, LinearCombination, str, Schur, List[int]], 
         lc2: Union[sp.Expr, LinearCombination, str, Schur, List[int]],
     ) -> LinearCombination:
-        
         lc1 = LinearCombination(lc1)
         lc2 = LinearCombination(lc2)
         # if lc1.has_part_zero_padding():

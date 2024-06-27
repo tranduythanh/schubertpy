@@ -32,7 +32,7 @@ for n from 2 to 12 do
     for k from 1 to n-1 do
         try
             # Set the Grassmannian OG(2, n)
-            print("OG", k, n);
+            print(cat("OG(", k, ",", n, ")"));
             OG(k, n);
             get_type();
             # Loop through generators and Schubert classes
@@ -44,14 +44,32 @@ for n from 2 to 12 do
                     write_results("OG", k, n, h, sc, result);
                 end do;
             end do;
-        catch e:
-            print("Error in OG", k, n, ": ", e);
+        catch:
+            print(cat("Error in OG(", k, ",", n, "): ", lasterror));
+        end try;
+
+        try
+            # Set the Grassmannian Gr(k, n)
+            print(cat("Gr(", k, ",", n, ")"));
+            Gr(k, n);
+            get_type();
+            # Loop through generators and Schubert classes
+            for h in generators() do
+                for sc in schub_classes() do
+                    # Compute the qmult
+                    result := qmult(h, sc);
+                    # Write to file
+                    write_results("Gr", k, n, h, sc, result);
+                end do;
+            end do;
+        catch:
+            print(cat("Error in Gr(", k, ",", n, "): ", lasterror));
         end try;
 
         # If n is even, also set IG(2, n)
         if n mod 2 = 0 then
             try
-                print("IG", k, n);
+                print(cat("IG(", k, ",", n, ")"));
                 IG(k, n);
                 get_type();
                 # Loop through generators and Schubert classes
@@ -63,8 +81,8 @@ for n from 2 to 12 do
                         write_results("IG", k, n, h, sc, result);
                     end do;
                 end do;
-            catch e:
-                print("Error in IG", k, n, ": ", e);
+            catch:
+                print(cat("Error in IG(", k, ",", n, "): ", lasterror));
             end try;
         end if;
     end do;

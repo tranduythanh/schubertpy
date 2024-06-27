@@ -5,6 +5,9 @@ from .lc import *
 from .abstract_grassmannian import *
 
 class AbstractMultTable(ABC):
+    gr = AbstractGrassmannian
+    df = pd.DataFrame
+
     def __init__(self, gr: AbstractGrassmannian):
         """
         Initializes the multiplication table for a given Grassmannian.

@@ -2,6 +2,12 @@ from .abstract_grassmannian import AbstractGrassmannian
 from .qcalc import *
 
 class IsotropicGrassmannian(AbstractGrassmannian):
+    _type: str
+    _k: int
+    _n: int
+    _pieri: Callable
+    _qpieri: Callable
+    
     def __init__(self, m: int, n: int):
         if n % 2 == 1:
             raise ValueError("n must be even.")
