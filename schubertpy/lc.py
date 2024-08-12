@@ -5,6 +5,7 @@ import pandas as pd
 from .partition import *
 from .schur import Schur, isSchur, toSchur, translate_schur
 from .const import *
+from .util import *
 
 
 class LinearCombination(object):
@@ -280,3 +281,54 @@ class LinearCombination(object):
         expression cannot be expanded into Schur components.
         """
         return self._schur_expansion(self.expr, include_q)
+
+    def draw_ascii_partition(self, include_q=True):
+        """
+        Draw ASCII partitions for the linear combination on a single graphical line.
+
+        This method prints ASCII art representations of each partition
+        in the linear combination, along with their coefficients.
+
+        Parameters:
+        - include_q: bool, optional (default=True)
+            A flag indicating whether terms containing the variable 'q' should be included.
+        """
+        # Get the Schur expansion of the expression
+        expansion = self.schur_expansion(include_q=include_q)
+        
+        # If expansion is a tuple, wrap it in a list
+        if isinstance(expansion, tuple):
+            expansion = [expansion]
+        
+        # Prepare the ASCII art lines
+        ascii_lines = []
+        max_height = 0
+        
+        for coeff, part in expansion:
+            max_height = max(max_height, len(part))
+        
+        part_count = 0
+        for coeff, part in expansion:
+            part_ascii = embed_partition(part, max(part), max_height)
+            coeff_str = ""
+            if coeff != 1:
+                coeff_str = f"{coeff}*"
+            if part_count > 0:
+                coeff_str = " + "+ coeff_str
+            coeff_block = embed_str(coeff_str, max_height)
+            part_ascii = [coeff_block[i] + part_ascii[i] for i in range(max_height)]
+            ascii_lines.append(part_ascii)
+            part_count += 1
+        
+        # Combine the ASCII art side by side
+        combined_lines = []
+        for i in range(max_height):
+            line_parts = []
+            for part in ascii_lines:
+                line_parts.append(part[i])
+            combined_lines.append("".join(line_parts))
+
+        
+        # Print the combined ASCII art
+        for line in combined_lines:
+            print(line)

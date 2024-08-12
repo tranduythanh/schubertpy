@@ -1,2 +1,4 @@
 numpy>=1.24.3
 sympy>=1.11.1
+gmpy2>=2.2.1
+jackpolynomials>=0.1.0
