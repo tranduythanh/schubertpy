@@ -5,6 +5,7 @@ from ..schur import *
 import sympy as sp
 import csv
 import unittest
+import time
 from ..csv_bijection import check_bijection_with_permutation as isbijection
 
 
@@ -43,11 +44,14 @@ class TestWithCSVFile(unittest.TestCase):
                 s2 = row[3]
                 
                 result = None
+                start = time.time()
                 try:
                     result = gr.qmult(s1, s2)
                 except Exception as e:
                     print("current row:", row)
                     raise Exception(f"qmult failed: {e}")
+                
+                elapsed_time = time.time() - start
                 
                 result = sp.expand(result.expr).simplify()
                 
@@ -55,7 +59,7 @@ class TestWithCSVFile(unittest.TestCase):
                 expected_result = sp.expand(expected_result).simplify()
                 
                 self.assertTrue(result == expected_result)
-                # print(f"ok\t{row}")
+                print(f"ok\t{elapsed_time}\t{row}")
 
 
 if __name__ == '__main__':
