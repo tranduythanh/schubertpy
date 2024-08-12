@@ -39,6 +39,8 @@ sage -pip install schubertpy
 
 ## Usage
 
+Example on [Google Colab](https://colab.research.google.com/drive/1KYq1Q3kt9j_YjDgK60ZSUW4tI-YL0AaZ?usp=sharing)
+
 Example usage demonstrating the capabilities of `schubertpy`:
 
 ```python
