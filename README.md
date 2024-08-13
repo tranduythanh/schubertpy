@@ -62,7 +62,7 @@ def main():
     print(gr.dualize('S[1]+S[2]'))
 
 
-    ig = Grassmannian(2, 6)
+    ig = IsotropicGrassmannian(2, 6)
     print(ig.qpieri(1, 'S[2,1] - 7*S[3,2]'))
     print(ig.qact('S[1]+S[2]*S[3]', 'S[2,1]+S[3,2]'))
     print(ig.qgiambelli('S[2,1]*S[2,1]'))
@@ -75,7 +75,7 @@ def main():
     print(ig.toS('S[2,1]*S[2,1]*S[2,1]'))
     print(ig.dualize('S[1]+S[2]'))
 
-    og = Grassmannian(2, 6)
+    og = OrthogonalGrassmannian(2, 7)
     print(og.qpieri(1, 'S[2,1] - 7*S[3,2]'))
     print(og.qact('S[1]+S[2]*S[3]', 'S[2,1]+S[3,2]'))
     print(og.qgiambelli('S[2,1]*S[2,1]'))
@@ -88,7 +88,7 @@ def main():
     print(og.toS('S[2,1]*S[2,1]*S[2,1]'))
     print(og.dualize('S[1]+S[2]'))
 
-    og = Grassmannian(2, 7)
+    og = OrthogonalGrassmannian(2, 6)
     print(og.qpieri(1, 'S[2,1] - 7*S[3,2]'))
     print(og.qact('S[1]+S[2]*S[3]', 'S[2,1]+S[3,2]'))
     print(og.qgiambelli('S[2,1]*S[2,1]'))
