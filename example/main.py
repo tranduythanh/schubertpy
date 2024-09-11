@@ -75,6 +75,9 @@ def main():
     # Converts the quantum multiplication table back to a list of lists of LinearCombination objects.
     print(qmTable.to_matrix())
 
+    p = Partition([5, 5])
+    p.remove_rim_hooks(rim_size=5, acceptable_grid=(2, 3))
+
 
 if __name__ == "__main__":
     main()

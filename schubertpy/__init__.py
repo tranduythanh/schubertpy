@@ -5,6 +5,7 @@ from .lc import LinearCombination
 from .schur import Schur
 from .util import yd
 from .mult_table import MultTable, QMultTable
+from .partition import Partition
 
 __all__ = [
     'Grassmannian',
@@ -14,5 +15,6 @@ __all__ = [
     'Schur',
     'yd',
     'MultTable',
-    'QMultTable'
+    'QMultTable',
+    'Partition'
 ]

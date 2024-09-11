@@ -151,6 +151,8 @@ first_kstrict = _first_kstrict
 
 class Partition:
     def __init__(self, partition: List[int]):
+        if not is_valid_part(partition):
+            raise ValueError("Invalid partition")
         self.partition = partition
 
     def __str__(self):
@@ -185,7 +187,7 @@ class Partition:
     
         return True
 
-    def remove_rim_hooks(self, rim_size: int, output_range: Tuple[int, int]) -> 'Partition':
+    def remove_rim_hooks(self, rim_size: int, acceptable_grid: Tuple[int, int]) -> 'Partition':
         if len(self.partition) == 0:
             return Partition([])
         if rim_size <= 0:
@@ -195,7 +197,7 @@ class Partition:
         
         _partition = self.partition + [0]
         _rim_size = rim_size
-        width, height = output_range
+        width, height = acceptable_grid
 
         # print("original partition")
         # self.draw()
@@ -222,9 +224,9 @@ class Partition:
         # new_partition.draw()
         if new_partition._is_in_range(width, height):
             return new_partition
-        return new_partition.remove_rim_hooks(rim_size, output_range)
+        return new_partition.remove_rim_hooks(rim_size, acceptable_grid)
 
     
 if __name__ == "__main__":
     p = Partition([5, 5])
-    p.remove_rim_hooks(rim_size=5, output_range=(2, 3))
+    p.remove_rim_hooks(rim_size=5, acceptable_grid=(2, 3))
