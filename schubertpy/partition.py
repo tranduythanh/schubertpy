@@ -2,7 +2,7 @@ from collections import OrderedDict
 from typing import *
 from .util import *
 
-def _is_sorted_descending(part: List[int]):
+def _is_non_increasing(part: List[int]):
     # Iterate through the list, comparing each element with the next one
     for i in range(len(part) - 1):
         # If the current element is smaller than the next one,
@@ -18,7 +18,7 @@ def is_valid_part(part: List[int]) -> bool:
         return False
     if not all(x >= 0 for x in part):
         return False
-    if not _is_sorted_descending(part):
+    if not _is_non_increasing(part):
         return False
     return True
 
@@ -148,3 +148,83 @@ def part_len(lambda_: List[int]) -> int:
     return len(cl)
 
 first_kstrict = _first_kstrict
+
+class Partition:
+    def __init__(self, partition: List[int]):
+        self.partition = partition
+
+    def __str__(self):
+        return str(self.partition)
+
+    def __repr__(self):
+        return f"Partition({self.partition})"
+    
+    def draw(self):
+        if len(self.partition) == 0:
+            print("0")
+            return
+        
+        for row in self.partition:
+            print('[]' * row)
+
+    def _max_rim_size(self) -> int:
+        return sum(self.partition) + len(self.partition) - 1
+    
+    def _is_in_range(self, width: int, height: int) -> bool:
+        if width < 0 or height < 0:
+            raise ValueError("width and height must be non-negative")
+        
+        if len(self.partition) == 0:
+            return True
+        
+        if len(self.partition) > height:
+            return False
+        
+        if self.partition[0] > width:
+            return False
+    
+        return True
+
+    def remove_rim_hooks(self, rim_size: int, output_range: Tuple[int, int]) -> 'Partition':
+        if len(self.partition) == 0:
+            return Partition([])
+        if rim_size <= 0:
+            return Partition(self.partition)
+        if rim_size > self._max_rim_size():
+            return Partition([])
+        
+        _partition = self.partition + [0]
+        _rim_size = rim_size
+        width, height = output_range
+
+        # print("original partition")
+        # self.draw()
+        # print("\nlet's remove rim hooks")
+
+        for i in range(len(_partition)-1):
+            delta = _partition[i] - _partition[i+1]
+            if delta >= _rim_size:
+                _partition[i] -= _rim_size
+                break
+            if _partition[i+1] > 0:
+                delta += 1
+            _rim_size -= delta
+            _partition[i] -= delta
+            # print(_partition, _rim_size)
+        
+        if not _is_non_increasing(_partition):
+            return Partition([])
+        
+        _partition = part_clip(_partition)
+        new_partition = Partition(_partition)
+        
+        # print("\nnew partition")
+        # new_partition.draw()
+        if new_partition._is_in_range(width, height):
+            return new_partition
+        return new_partition.remove_rim_hooks(rim_size, output_range)
+
+    
+if __name__ == "__main__":
+    p = Partition([5, 5])
+    p.remove_rim_hooks(rim_size=5, output_range=(2, 3))
