@@ -53,7 +53,7 @@ class AbstractMultTable(ABC):
         Cells with `None` values are replaced with an empty string for clarity. The resulting DataFrame is then printed
         to the standard output.
         """
-        df = self.df.map(lambda x: str(x) if x is not None else "")
+        df = self.df.applymap(lambda x: str(x) if x is not None else "")
         print(df)
 
     def to_matrix(self) -> List[List]:

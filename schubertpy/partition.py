@@ -172,17 +172,17 @@ class Partition:
     def _max_rim_size(self) -> int:
         return sum(self.partition) + len(self.partition) - 1
     
-    def _is_in_range(self, width: int, height: int) -> bool:
-        if width < 0 or height < 0:
-            raise ValueError("width and height must be non-negative")
+    def is_in_range(self, nrow: int, ncol: int) -> bool:
+        if nrow < 0 or ncol < 0:
+            raise ValueError("nrow and ncol must be non-negative")
         
         if len(self.partition) == 0:
             return True
         
-        if len(self.partition) > height:
+        if len(self.partition) > nrow:
             return False
         
-        if self.partition[0] > width:
+        if self.partition[0] > ncol:
             return False
     
         return True
@@ -197,7 +197,7 @@ class Partition:
         
         _partition = self.partition + [0]
         _rim_size = rim_size
-        width, height = acceptable_grid
+        nrow, ncol = acceptable_grid
 
         # print("original partition")
         # self.draw()
@@ -207,12 +207,16 @@ class Partition:
             delta = _partition[i] - _partition[i+1]
             if delta >= _rim_size:
                 _partition[i] -= _rim_size
+                _rim_size -= delta
                 break
             if _partition[i+1] > 0:
                 delta += 1
             _rim_size -= delta
             _partition[i] -= delta
             # print(_partition, _rim_size)
+    
+        if _rim_size > 0:
+            return Partition([])
         
         if not _is_non_increasing(_partition):
             return Partition([])
@@ -221,8 +225,8 @@ class Partition:
         new_partition = Partition(_partition)
         
         # print("\nnew partition")
-        # new_partition.draw()
-        if new_partition._is_in_range(width, height):
+        new_partition.draw()
+        if new_partition.is_in_range(nrow, ncol):
             return new_partition
         return new_partition.remove_rim_hooks(rim_size, acceptable_grid)
 
