@@ -142,42 +142,6 @@ class AbstractGrassmannian(ABC):
         # print("lc2: ", lc2)
         return self.qact(self.qgiambelli(lc1), lc2)
     
-    def qmult_rh(
-        self, 
-        lc1: Union[sp.Expr, LinearCombination, str, Schur, List[int]], 
-        lc2: Union[sp.Expr, LinearCombination, str, Schur, List[int]],
-    ) -> LinearCombination:
-        _gr = self.clone()
-        _delta = _gr._n-_gr._k
-        _gr._n = _gr._n + _delta
-        _gr._k = _gr._k + _delta
-
-        res = _gr.mult(lc1, lc2)
-        # print("qmult_rh")
-        # print("_gr:\t", _gr)
-        # print("res:\t", res)
-        # print("---------------------------------")
-        # print(res.expr)
-
-        def __rm_rim_hook(list: List) -> Partition:
-            p = Partition(list)
-            acceptable_grid = (self._n-self._k, self._k)
-            rim_size = self._n
-            
-            # if the partiton is in acceptable grid, just return the symbol
-            if p.is_in_range(acceptable_grid[0], acceptable_grid[1]):
-                return Schur(p.partition).symbol()
-
-            # if the partiton is not in acceptable grid, apply the rim hooks
-            # print("let's remove the rim hooks with rim_size = ", rim_size, " and acceptable_grid = ", acceptable_grid)
-            x = p.remove_rim_hooks(rim_size=rim_size, acceptable_grid=acceptable_grid)
-            exponent = (sum(list)-sum(x.partition))/rim_size
-            return Schur(x.partition).symbol() * sp.Symbol('q')**int(exponent)
-        
-        res = res.apply2(lambda list: __rm_rim_hook(list))
-        # print("res2:\t", res)
-        return res
-
 
     def qtoS(self, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
         # print("qtoS")

@@ -134,3 +134,60 @@ class Grassmannian(AbstractGrassmannian):
                 z = LinearCombination(z)
             res += q * sp.expand(z.expr)
         return LinearCombination(res)
+    
+    def qmult_rh(
+        self, 
+        lc1: Union[sp.Expr, LinearCombination, str, Schur, List[int]], 
+        lc2: Union[sp.Expr, LinearCombination, str, Schur, List[int]],
+    ) -> LinearCombination:
+        n = self._n
+        kp = n - self._k
+
+        _gr = self.clone()
+        _kp = _gr._n-_gr._k
+        # _gr._n = _gr._n + _delta
+        # _gr._k = _gr._k + _delta
+
+        
+        _gr._n = 2*n - kp
+        _gr._k = _gr._n - kp
+
+        # print(f"expanded Grassmannian: Gr({_gr._n-_gr._k},{_gr._n})")
+        res = _gr.mult(lc1, lc2)
+        # print("qmult_rh")
+        # print("_gr:\t", _gr)
+        # print("res:\t", res)
+        # print("---------------------------------")
+        # print(res.expr)
+
+        def __rm_rim_hook(arr: List) -> Partition:
+            p = Partition(arr)
+            acceptable_grid = (self._n-self._k, self._k)
+            rim_size = self._n
+
+            # print("__rm_rim_hook: ", arr, "\trim_size = ", rim_size, "\tacceptable_grid = ", acceptable_grid)
+            
+            # if the partiton is in acceptable grid, just return the symbol
+            if p.is_in_range(acceptable_grid[0], acceptable_grid[1]):
+                return Schur(p.partition).symbol()
+
+            # if the partiton is not in acceptable grid, apply the rim hooks
+            # print("let's remove the rim hooks with rim_size = ", rim_size, " and acceptable_grid = ", acceptable_grid)
+            x, q_num, height = p.remove_rim_hooks(rim_size=rim_size, acceptable_grid=acceptable_grid)
+
+            sign = (-1)**(height-kp)
+            # sign = (-1)**(n - kp - height)
+
+            # print("removed rim hooks:", x, "\tq_num = ", q_num, "\theight = ", height, "\tsign = ", sign)
+
+
+            if q_num > 0:
+                return Schur(x.partition).symbol() * sp.Symbol('q')**int(q_num) * sign
+            if x == 0 or len(x.partition) == 0:
+                return 0
+            return Schur(x.partition).symbol() * sign
+        
+        # print("intermediate resolution:\t", res)
+        res = res.apply2(lambda arr: __rm_rim_hook(arr))
+        # print("res2:\t", res)
+        return res
