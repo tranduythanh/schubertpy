@@ -75,8 +75,13 @@ def main():
     # Converts the quantum multiplication table back to a list of lists of LinearCombination objects.
     print(qmTable.to_matrix())
 
-    p = Partition([5, 5])
-    p.remove_rim_hooks(rim_size=5, acceptable_grid=(2, 3))
+
+    # Type A
+    gr = Grassmannian(2, 7)
+    print(gr.mult('S[2,1]', 'S[2,1]'))
+    gr = Grassmannian(2, 5)
+    print("expected:\t", gr.qmult('S[2,1]', 'S[2,1]'))
+    print(gr.qmult_rh('S[2,1]', 'S[2,1]'))
 
 
 if __name__ == "__main__":
