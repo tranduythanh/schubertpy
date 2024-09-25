@@ -77,10 +77,8 @@ def main():
 
 
     # Type A
-    gr = Grassmannian(2, 7)
-    print(gr.mult('S[2,1]', 'S[2,1]'))
-    gr = Grassmannian(2, 5)
-    print("expected:\t", gr.qmult('S[2,1]', 'S[2,1]'))
+    gr = Grassmannian(2, 4)
+    print(gr.qmult('S[2,1]', 'S[2,1]'))
     print(gr.qmult_rh('S[2,1]', 'S[2,1]'))
 
 

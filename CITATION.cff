@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: If you use this software, please cite it as below.
 title: schubertpy
-version: 0.3.28
+version: 1.0.1
 abstract: This Python module facilitates operations such as quantum Pieri rules, quantum Giambelli formulae, action and multiplication of Schubert classes, and conversion between different representations of Schubert classes
 authors:
   - family-names: 'Dang Tuan Hiep'
