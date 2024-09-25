@@ -136,7 +136,7 @@ python3 -m unittest schubertpy/testcases/*.py
   
 - **Trần Duy Thanh** 🇻🇳
   - <img width="100" alt="Screenshot 2024-05-08 at 16 56 22" src="https://github.com/tranduythanh/schubertpy/assets/6112723/f3abca71-6bb5-44f6-b090-9ce206bdd5ad">
-  - Email: coachtranduythanh@gmail.com
+  - Email: fbtranduythanh@gmail.com
   - Email: 2015830@dlu.edu.vn
 
 - **Hoàng Minh Đức** 🇻🇳
