@@ -149,7 +149,7 @@ class Grassmannian(AbstractGrassmannian):
         # _gr._k = _gr._k + _delta
 
         
-        _gr._n = 2*n - kp
+        _gr._n = 2*n - 1
         _gr._k = _gr._n - kp
 
         # print(f"expanded Grassmannian: Gr({_gr._n-_gr._k},{_gr._n})")
