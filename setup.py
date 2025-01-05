@@ -57,4 +57,8 @@ setup(
     author_email=package_author_email,
     url=package_url,
     install_requires=read_requirements(),
+    extras_require={'passagemath': ['passagemath-combinat',
+                                    'passagemath-modules',
+                                    'passagemath-repl',
+                                    'passagemath-symbolics',]},
 )
