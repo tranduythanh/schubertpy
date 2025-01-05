@@ -1,4 +1,4 @@
-from ..partition import Partition
+from schubertpy.partition import Partition
 import unittest
 
 class TestPartition(unittest.TestCase):

@@ -1,5 +1,5 @@
 import unittest
-from ..util import padding_right
+from schubertpy.util import padding_right
 
 class TestPaddingRight(unittest.TestCase):
     

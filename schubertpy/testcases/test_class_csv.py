@@ -1,12 +1,12 @@
-from ..grassmannian import *
-from ..isotropic_grassmannian import *
-from ..orthogonal_grassmannian import *
-from ..schur import *
+from schubertpy.grassmannian import *
+from schubertpy.isotropic_grassmannian import *
+from schubertpy.orthogonal_grassmannian import *
+from schubertpy.schur import *
 import sympy as sp
 import csv
 import unittest
 import time
-from ..csv_bijection import check_bijection_with_permutation as isbijection
+from schubertpy.csv_bijection import check_bijection_with_permutation as isbijection
 
 
 # Dispatcher to map the command to the appropriate function

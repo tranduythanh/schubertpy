@@ -1,5 +1,5 @@
-from ..qcalc import *
-from ..schur import *
+from schubertpy.qcalc import *
+from schubertpy.schur import *
 import unittest
 
 class TestSpec2Num(unittest.TestCase):
