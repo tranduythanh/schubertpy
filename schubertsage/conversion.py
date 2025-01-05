@@ -1,9 +1,15 @@
 from schubertpy.schur import Schur
-# from sage.combinat.sf.schur import SymmetricFunctions
 from sage.symbolic.ring import SR
 from sage.symbolic.function import SymbolicFunction
 
-from sage.all import SymmetricFunctions, SymmetricFunctionAlgebra_schur
+try:
+    import sage.all
+except ImportError:
+    import sage.all__sagemath_combinat
+
+from sage.combinat.sf.sf import SymmetricFunctions
+from sage.combinat.sf.schur import SymmetricFunctionAlgebra_schur
+
 sym = SymmetricFunctions(SR)
 S = sym.schur()
 
