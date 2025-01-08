@@ -1,5 +1,5 @@
 import unittest
-from ..qcalc import *
+from schubertpy.qcalc import *
 
 
 class TestCalcComps(unittest.TestCase):

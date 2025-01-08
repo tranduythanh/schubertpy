@@ -1,4 +1,4 @@
-from ..orthogonal_grassmannian import *
+from schubertpy.orthogonal_grassmannian import *
 import unittest
 
 

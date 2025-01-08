@@ -1,4 +1,4 @@
-from ..isotropic_grassmannian import *
+from schubertpy.isotropic_grassmannian import *
 import unittest
 from unittest.mock import patch
 

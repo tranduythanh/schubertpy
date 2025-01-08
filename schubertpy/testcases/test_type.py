@@ -1,4 +1,4 @@
-from ..qcalc import *
+from schubertpy.qcalc import *
 import unittest
 from unittest.mock import patch
 

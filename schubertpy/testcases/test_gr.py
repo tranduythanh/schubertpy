@@ -1,4 +1,4 @@
-from ..grassmannian import *
+from schubertpy.grassmannian import *
 import unittest
 from unittest.mock import patch
 
