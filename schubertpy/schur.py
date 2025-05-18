@@ -1,12 +1,12 @@
 import ast
-from typing import *
+from typing import List, Union
 
 import matplotlib.pyplot as plt
 import sympy as sp
 
-from .const import *
-from .partition import *
-from .util import *
+from .utils.const import btable, ftable
+from .utils.mix import SchurPol
+from .utils.kstrict import part_clip
 
 class Schur(object):
     def __init__(self, p: Union[List[int], sp.Expr, str, 'Schur']):

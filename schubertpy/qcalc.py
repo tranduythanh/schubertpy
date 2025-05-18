@@ -18,28 +18,12 @@
 
 import numpy as np
 import sympy as sp
-from collections import OrderedDict
-from typing import *
-from functools import lru_cache, wraps
-from .util import *
-from .schur import *
-from .lc import *
-
-def hashable_lru_cache(maxsize=128, typed=False):
-    def decorator(func):
-        # Create a cached version of the original function with lru_cache
-        cached_func = lru_cache(maxsize=maxsize, typed=typed)(func)
-        
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Convert all list arguments to tuples so they are hashable
-            hashable_args = tuple(tuple(arg) if isinstance(arg, list) else arg for arg in args)
-            hashable_kwargs = {k: tuple(v) if isinstance(v, list) else v for k, v in kwargs.items()}
-            # Call the cached function with the hashable arguments
-            return cached_func(*hashable_args, **hashable_kwargs)
-        
-        return wrapper
-    return decorator
+from typing import List, Optional, Tuple, Union, Any, Callable
+from .utils.hash import hashable_lru_cache
+from .utils.mix import padding_right
+from .schur import Schur, isSchur, toSchur, unique_schur_list
+from .lc import LinearCombination
+from .utils.kstrict import part_clip, all_kstrict
 
 # qcalc := module()
 # option package;
@@ -70,61 +54,6 @@ def hashable_lru_cache(maxsize=128, typed=False):
 # ##################################################################
 # # Miscellaneous conversions
 # ##################################################################
-
-def _first_kstrict(k: int, rows: int, cols: int) -> List[int]:
-    return [max(k, cols - i) for i in range(rows)]
-
-
-def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
-    n = len(lambda_)
-    clip_lambda = part_clip(lambda_)
-    if clip_lambda is None:
-        return None
-    if len(clip_lambda) == 0:
-        return []
-
-    i = len(clip_lambda)
-
-    li = lambda_[i-1] - 1
-    
-    if li <= k:
-        return lambda_[:i-1] + [li] * (n - i + 1)
-    elif li + i - n > k:
-        return lambda_[:i-1] + [li - j for j in range(n - i + 1)]
-    else:
-        return lambda_[:i-1] + [li - j for j in range(li - k + 1)] + [k] * (n - i - li + k)
-
-
-def part_clip(lambda_: List[int]) -> List[int]:
-    '''
-    trims or removes trailing zeros from the list lambda.
-    '''
-    i = len(lambda_) - 1
-    while i >= 0 and lambda_[i] == 0:
-        i -= 1
-    return lambda_[:i+1] if i >= 0 else []
-
-
-
-
-
-def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
-    res = []
-    lam = _first_kstrict(k, rows, cols)
-    
-    while True: # Check if lam is a list
-        clipped = part_clip(lam)
-        if clipped:  # Check if clipped is not None
-            res.append(clipped)
-            lam = _itr_kstrict(lam, k)
-            continue
-        
-        res.append([])
-        break
-
-    return res
-
-
 def part_conj(lambda_: List[int]) -> List[int]:
     lambda_ = part_clip(lambda_)
     n = len(lambda_)
@@ -1327,7 +1256,5 @@ def qtoS(lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
 
 pieri_fillA = _pieri_fillA
 pieri_itrA = _pieri_itrA
-first_kstrict = _first_kstrict
-itr_kstrict = _itr_kstrict
 part_star = _part_star
 part_tilde = _part_tilde

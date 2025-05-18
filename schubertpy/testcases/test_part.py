@@ -1,4 +1,5 @@
 from schubertpy.qcalc import *
+from schubertpy.utils.kstrict import itr_kstrict
 import unittest
 from unittest.mock import patch
 

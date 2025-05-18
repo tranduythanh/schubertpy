@@ -1,7 +1,7 @@
-from typing import *
+from typing import List
 
 import numpy as np
-from sympy import symbols, Poly, Symbol
+from sympy import symbols, Poly
 
 def padding_right(lam, value, count):
     return lam + [value]*count
@@ -38,9 +38,6 @@ def embed_partition(partition: List[int], width, height: int) -> List[str]:
     if height > len(res):
         res += ["  "*width]*(height - len(res))
     return res
-
-
-
 
 def __N__(kappa, mu):
     n = len(kappa)

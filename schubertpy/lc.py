@@ -1,11 +1,10 @@
 from typing import *
 import sympy as sp
-import pandas as pd
 
-from .partition import *
+from .utils.mix import embed_partition, embed_str
+from .partition import is_valid_part
 from .schur import Schur, isSchur, toSchur, translate_schur
-from .const import *
-from .util import *
+from .utils.const import ftable
 
 
 class LinearCombination(object):

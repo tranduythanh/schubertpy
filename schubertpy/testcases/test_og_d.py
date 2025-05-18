@@ -45,9 +45,9 @@ class Test_orthogonal_grassmannian_D(unittest.TestCase):
         txt = 'S[1,1]*q1*q2 + S[3]*q1'
         self.assertEqual(str(res), txt)
 
-    def test_qmult(self):
-        OG(2,8)
-        res = self.og.qmult('S[2,1,0]', 'S[]')
+    def test_qmult_og(self):
+        og = OrthogonalGrassmannian(2,8)
+        res = og.qmult('S[2,1,0]', 'S[]')
         txt = 'S[2,1,0]'
         self.assertEqual(str(res), txt)
 

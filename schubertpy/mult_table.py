@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import *
+from typing import List
 import pandas as pd
-from .lc import *
-from .abstract_grassmannian import *
+from .lc import LinearCombination
+from .abstract_grassmannian import AbstractGrassmannian
 
 class AbstractMultTable(ABC):
     gr = AbstractGrassmannian

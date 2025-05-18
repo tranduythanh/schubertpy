@@ -1,7 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import *
-from .qcalc import *
-from .partition import Partition
+from typing import Callable, List, Union, Any
+from .schur import Schur
+from .lc import LinearCombination
+import sympy as sp
+
+from .qcalc import (
+    apply_lc,
+    giambelli_rec,
+    isSchur,
+    toSchur,
+)
 
 class AbstractGrassmannian(ABC):
     _type: str
