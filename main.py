@@ -1,5 +1,5 @@
 from schubertpy.qcalc import *
-from schubertpy.util import *
+from schubertpy.utils.mix import *
 from schubertpy.schur import *
 
 # Gr(2,5)

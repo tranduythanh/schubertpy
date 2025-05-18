@@ -1,6 +1,6 @@
 from schubertpy import *
 import matplotlib.pyplot as plt
-from schubertpy.util import *
+from schubertpy.utils.mix import *
 
 def main():
     # # Initialize the Grassmannian object with dimensions
