@@ -404,6 +404,16 @@ def calc_comps(
                 comps[j] = -1
     return comps
 
+def count_ones(comps: List[int], skipfirst: bool, bot2_length: int) -> int:
+    """Count occurrences of 1 in comps with skipfirst logic."""
+    res = 0
+    incomp = skipfirst
+    for j in range(bot2_length):
+        if comps[j] == 1 and not incomp:
+            res += 1
+        incomp = comps[j] == 1
+    return res
+
 def count_comps(lam1: List[int], lam2: List[int], skipfirst: bool, k: int, d: int) -> int:
     top1 = part_conj([min(item, k) for item in lam1])
     top1.extend([0] * (k - len(top1)))
@@ -420,14 +430,7 @@ def count_comps(lam1: List[int], lam2: List[int], skipfirst: bool, k: int, d: in
 
     comps = calc_comps(top1, bot1, top2, bot2, lb2, k, d)
 
-    res = 0
-    incomp = skipfirst
-    for j in range(bot2[0]):
-        if comps[j] == 1 and not incomp:
-            res += 1
-        incomp = comps[j] == 1
-
-    return res
+    return count_ones(comps, skipfirst, bot2[0])
 
 
 def sort_part(tuples):
