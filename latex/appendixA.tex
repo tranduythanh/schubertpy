@@ -1,0 +1,110 @@
+\section*{Phụ lục: Pseudocode của Quy tắc Pieri cho các loại Grassmannian} \label{appendix:pseudocode}
+
+
+\subsection*{Thuật toán Pieri Type A (Grassmannian thường) -- Python: \texttt{pieriA\_inner}}
+
+\begin{algorithm}[H]
+\caption{Pieri Rule Type A (\texttt{pieriA\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum \sigma_\mu \in H^*(Gr(k,n))$
+\STATE $\lambda_{pad} \gets \lambda$ nối thêm $0$ cho đủ độ dài $n-k$
+\STATE $inner \gets \lambda_{pad}$
+\STATE $outer \gets (k, \lambda_{pad,1}, ..., \lambda_{pad,n-k-1})$
+\STATE $result \gets 0$
+\STATE $\mu \gets$ PieriFillA($inner$, $outer$, $0$, $i$)
+\WHILE{$\mu \neq \emptyset$}
+    \STATE $result \gets result + \sigma_{trim(\mu)}$
+    \STATE $\mu \gets$ PieriIterA($\mu$, $inner$, $outer$)
+\ENDWHILE
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán hỗ trợ cho Pieri Type A}
+
+\begin{algorithm}[H]
+\caption{Padding Right (\texttt{padding\_right})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda \in$ Partition, $value \in \mathbb{N}$, $count \in \mathbb{N}$
+\ENSURE $\lambda'$ với $count$ phần tử $value$ nối vào phải
+\STATE $\lambda' \gets \lambda$ nối thêm $count$ phần tử $value$
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Pieri Fill Type A (\texttt{\_pieri\_fillA})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda$, $inner$, $outer$ là các partition, $row\_index$, $p \in \mathbb{N}$
+\ENSURE $\mu$ hoặc $\emptyset$
+\IF{$\lambda = \emptyset$}
+    \RETURN $\lambda$
+\ENDIF
+\STATE $res \gets \lambda.copy()$
+\STATE $pp \gets p$
+\STATE $rr \gets row\_index$
+\IF{$rr = 0$}
+    \STATE $x \gets \min(outer[0], inner[0] + pp)$
+    \STATE $res[0] \gets x$
+    \STATE $pp \gets pp - x + inner[0]$
+    \STATE $rr \gets 1$
+\ENDIF
+\WHILE{$rr < |\lambda|$}
+    \STATE $x \gets \min(outer[rr], inner[rr] + pp, res[rr-1])$
+    \STATE $res[rr] \gets x$
+    \STATE $pp \gets pp - x + inner[rr]$
+    \STATE $rr \gets rr + 1$
+\ENDWHILE
+\IF{$pp > 0$}
+    \RETURN $\emptyset$
+\ENDIF
+\RETURN $res[:|\lambda|]$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Pieri Iterator Type A (\texttt{\_pieri\_itrA})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda$, $inner$, $outer$ là các partition
+\ENSURE $\mu$ hoặc $\emptyset$
+\IF{$\lambda = \emptyset$}
+    \RETURN $\emptyset$
+\ENDIF
+\STATE $p \gets \lambda_{|\lambda|} - inner_{|\lambda|}$
+\FOR{$r \gets |\lambda|-1$ down to $1$}
+    \IF{$\lambda[r] > inner[r]$}
+        \STATE $\mu \gets \lambda.copy()$
+        \STATE $\mu[r] \gets \mu[r] - 1$
+        \STATE $\mu \gets$ PieriFillA($\mu$, $inner$, $outer$, $r+1$, $p+1$)
+        \IF{$\mu \neq \emptyset$}
+            \RETURN $\mu$
+        \ENDIF
+    \ENDIF
+    \STATE $p \gets p + \lambda[r] - inner[r]$
+\ENDFOR
+\RETURN $\emptyset$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán Pieri lượng tử Type A (Quantum) -- Python: \texttt{qpieriA\_inner}}
+
+\begin{algorithm}[H]
+\caption{Quantum Pieri Rule Type A (\texttt{qpieriA\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(Gr(k,n))$
+\STATE $result \gets$ PieriA($i$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
+\IF{$|\lambda| = n-k$ và $\lambda_{n-k} > 0$}
+    \IF{$k = 1$}
+        \RETURN $q \cdot \sigma_{\emptyset}$
+    \ENDIF
+    \STATE $\lambda' \gets \{\lambda_j - 1 : \lambda_j > 1\}$
+    \STATE $LC \gets$ PieriA($i-1$, $\lambda'$, $k-1$, $n$)
+    \STATE $Z \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $k-1$), $LC$)
+    \STATE $result \gets result + q \cdot Z$
+\ENDIF
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+

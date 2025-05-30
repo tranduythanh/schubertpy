@@ -1,0 +1,119 @@
+\documentclass[conference,a4paper]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\usepackage{epigraph}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\setlength\epigraphwidth{8cm}
+\setlength\epigraphrule{0pt}
+
+\pagestyle{fancy}
+
+\fancyhf{}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% Customize the color of citations
+\hypersetup{
+    colorlinks=true,
+    citecolor=blue,  % Change this color as needed
+    linkcolor=black,
+    urlcolor=blue
+}
+
+\ifCLASSINFOpdf
+\else
+\fi
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\DeclareRobustCommand*{\IEEEauthorrefmark}[1]{\raisebox{0pt}[0pt][0pt]{\textsuperscript{\footnotesize #1}}}
+
+\addto\captionsvietnamese{
+  \renewcommand{\abstractname}{Abstract}
+}
+
+\addto\captionsvietnamese{
+  \renewcommand{\refname}{References}
+}
+
+% Add page numbering
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\begin{document}
+\title{SchubertPy: A Python Package for Schubert Calculus and Its Applications in Algebraic Geometry}
+\date{}
+
+\author{\IEEEauthorblockN{
+Đặng Tuấn Hiệp\IEEEauthorrefmark{1},
+Trần Duy Thanh\IEEEauthorrefmark{2}.
+}
+%\\
+\IEEEauthorblockA{\IEEEauthorrefmark{1}
+Faculty of Mathematics and Informatics, Dalat University, DLU, Lâm Đồng, Việt Nam, fbtranduythanh@gmail.com.}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}
+Faculty of Mathematics and Informatics, Dalat University, DLU, Lâm Đồng, Việt Nam, hiepdt@dlu.edu.vn.}
+}
+\maketitle
+
+\begin{abstract}
+Bài viết này khám phá hành trình phát triển của \textit{phép tính Schubert} – từ những khởi đầu trực giác vào thế kỷ 19 đến nền tảng toán học chặt chẽ và các mở rộng hiện đại. Chúng tôi sẽ trình bày các bài toán đếm hình học (hình học liệt kê) đã thúc đẩy sự ra đời của phép tính Schubert, những ý tưởng độc đáo của Hermann Schubert, thách thức đặt ra bởi bài toán Hilbert thứ 15 về việc hệ thống hóa lý thuyết này, và các tiến bộ sau đó đã củng cố phép tính Schubert như một nền tảng quan trọng của hình học đại số. Câu chuyện được trình bày như một quá trình cải thiện liên tục về mặt ý tưởng và độ chặt chẽ, với việc giới thiệu các khái niệm then chốt và kỹ thuật tính toán ngày càng tinh vi. Bên cạnh phần lý thuyết, chúng tôi cũng giới thiệu \textit{SchubertPy} – một thư viện Python cho phép tính Schubert – nhằm minh họa cách thức tính toán các đối tượng của phép tính Schubert bằng công cụ máy tính.
+\end{abstract}
+
+\input{01.intro.tex}
+
+\input{02.schubert.theory.tex}
+
+\input{03.rule.classic.tex}
+
+\input{04.quantum.tex}
+
+\input{05.extension.tex}
+
+
+\section{Kết luận}
+Phép tính Schubert, từ những khởi đầu đơn giản trong hình học liệt kê, đã phát triển thành một lý thuyết toán học phong phú và sâu sắc. Các công cụ cơ bản như quy tắc Pieri, công thức Giambelli và quy tắc Littlewood-Richardson đã cung cấp nền tảng vững chắc cho việc giải quyết các bài toán đếm trong hình học đại số. Sự phát triển của phép tính Schubert lượng tử và các hướng mở rộng hiện đại đã mở ra những chân trời mới cho nghiên cứu và ứng dụng.
+
+Trong tương lai, việc phát triển các công cụ tính toán hiệu quả, như gói phần mềm \texttt{SchubertPy}, sẽ tiếp tục đóng vai trò quan trọng trong việc thúc đẩy nghiên cứu và ứng dụng của phép tính Schubert. Các hướng nghiên cứu mới, bao gồm việc kết hợp với các lĩnh vực khác như lý thuyết biểu diễn, hình học đại số và vật lý lý thuyết, hứa hẹn sẽ mang lại nhiều kết quả thú vị và bất ngờ.
+
+\input{07.schubertpy.tex}
+
+
+
+\nocite{graysonschubert2}
+\nocite{hiep2014schubert3}
+\nocite{katz1992schubert}
+\nocite{Kontsevich_1994}
+\nocite{PythonTyping2023}
+\nocite{PythonUnittestLib}
+\nocite{SageMath2024}
+\nocite{schubert1879kalkul}
+\nocite{Hiep2014IntersectionTheory}
+\nocite{Van2024BatBienDaiTap}
+
+\vspace{7pt}
+\bibliographystyle{alpha}
+\bibliography{bibliography}
+
+
+\appendix
+\input{appendixA.tex}
+\input{appendixB.tex}
+\input{appendixC.tex}
+\input{appendixD.tex}
+\input{appendixE.tex}
+\input{appendixF.tex}
+
+\end{document}
+
+

@@ -1,0 +1,168 @@
+% --- Giambelli Algorithms ---
+
+\subsection*{Thuật toán Giambelli (mọi loại Grassmannian) -- Python: \texttt{giambelli}, \texttt{giambelli\_rec}, \texttt{giambelli\_rec\_inner}}
+
+\begin{algorithm}[H]
+\caption{Giambelli Rule (Classical) (\texttt{giambelli})}
+\begin{algorithmic}[1]
+\REQUIRE $lc$ là LinearCombination các lớp Schubert
+\ENSURE Đa thức các lớp Schubert đặc biệt
+\STATE $lc \gets$ LinearCombination($lc$)
+\STATE $pieri \gets \lambda i, p \to \_pieri(i, p, \_k, \_n)$
+\RETURN GiambelliRec($lc$, $pieri$, $\_k$)
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Giambelli Recursive Driver (\texttt{giambelli\_rec})}
+\begin{algorithmic}[1]
+\REQUIRE $lc$ là LinearCombination, $pieri$ là function, $k \in \mathbb{N}$
+\ENSURE Đa thức các lớp Schubert đặc biệt
+\STATE $lc \gets$ LinearCombination($lc$)
+\RETURN ApplyLC($\lambda \mapsto$ GiambelliRecInner($\lambda$, $pieri$, $k$), $lc$)
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Giambelli Recursive Inner Core (\texttt{giambelli\_rec\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $pieri$ là function, $k \in \mathbb{N}$
+\ENSURE Đa thức các lớp Schubert đặc biệt
+\IF{$|\lambda| = 0$}
+    \RETURN $1$
+\ENDIF
+\STATE $p \gets \lambda_1$
+\IF{$p = k$ và $\lambda_l = 0$}
+    \STATE $p \gets -k$
+\ENDIF
+\STATE $\lambda' \gets \lambda[2:]$
+\IF{$\lambda_l = 0$ và $\lambda_2 < k$}
+    \STATE $\lambda' \gets \lambda[2:-1]$
+\ENDIF
+\STATE $pieriExpansion \gets$ pieri($p$, $\lambda'$)
+\STATE $stuff \gets$ pieriExpansion $- \sigma_\lambda$
+\STATE $a \gets$ GiambelliRecInner($\lambda'$, $pieri$, $k$)
+\STATE $b \gets$ GiambelliRec($stuff$, $pieri$, $k$)
+\STATE $result \gets$ Num2Spec($p$) $\cdot a - b$
+\RETURN Expand($result$)
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Helper Functions cho Giambelli}
+
+\begin{algorithm}[H]
+\caption{Special Schubert to Number (\texttt{spec2num})}
+\begin{algorithmic}[1]
+\REQUIRE $sc$ là special Schubert class
+\ENSURE $p \in \mathbb{Z}$
+\IF{$sc$ không phải Schubert class}
+    \STATE ERROR("special schubert class expected")
+\ENDIF
+\IF{$|sc| > 1$ và ($\_type \neq D$ hoặc $sc[2] \neq 0$)}
+    \STATE ERROR("single part expected")
+\ENDIF
+\IF{$|sc| > 1$}
+    \RETURN $-sc[1]$
+\ELSE
+    \RETURN $sc[1]$
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Number to Special Schubert (\texttt{num2spec})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{Z}$
+\ENSURE Special Schubert class
+\IF{$p > 0$}
+    \RETURN $\sigma_p$
+\ELSE
+    \RETURN $\sigma_{-p,0}$
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Apply Function to Linear Combination (\texttt{apply\_lc})}
+\begin{algorithmic}[1]
+\REQUIRE $f$ là function, $lc$ là LinearCombination
+\ENSURE LinearCombination mới
+\STATE \textit{(Xem chi tiết ở phần helper Type A)}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán Giambelli lượng tử (Quantum) -- Python: \texttt{qgiambelli}}
+
+\begin{algorithm}[H]
+\caption{Quantum Giambelli Rule (\texttt{qgiambelli})}
+\begin{algorithmic}[1]
+\REQUIRE $lc$ là LinearCombination các lớp Schubert
+\ENSURE Đa thức trong QH* với tham số lượng tử $q$
+\STATE $lc \gets$ LinearCombination($lc$)
+\STATE $qpieri \gets \lambda i, p \to \_qpieri(i, p, \_k, \_n)$
+\RETURN GiambelliRec($lc$, $qpieri$, $\_k$)
+\end{algorithmic}
+\end{algorithm}
+
+% --- Littlewood-Richardson Algorithms ---
+
+\subsection*{Thuật toán Littlewood-Richardson (mọi loại Grassmannian) -- Python: \texttt{mult}, \texttt{act}, \texttt{act\_lc}}
+
+\begin{algorithm}[H]
+\caption{Littlewood-Richardson Multiplication (Classical) (\texttt{mult})}
+\begin{algorithmic}[1]
+\REQUIRE $lc_1, lc_2$ là LinearCombination các lớp Schubert
+\ENSURE LinearCombination kết quả tích
+\STATE $lc_1 \gets$ LinearCombination($lc_1$)
+\STATE $lc_2 \gets$ LinearCombination($lc_2$)
+\STATE $polynomial \gets$ Giambelli($lc_1$)
+\STATE $result \gets$ Act($polynomial$, $lc_2$)
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Action of Polynomial via Pieri Rules (\texttt{act})}
+\begin{algorithmic}[1]
+\REQUIRE $expr$ là đa thức các lớp đặc biệt, $lc$ là LinearCombination
+\ENSURE Kết quả tác động $expr$ lên $lc$
+\STATE $expr \gets$ LinearCombination($expr$).expr
+\STATE $lc \gets$ LinearCombination($lc$)
+\STATE $pieri\_func \gets \lambda(i,p) \to \_pieri(i, p, \_k, \_n)$
+\RETURN ActLC($expr$, $lc$, $pieri\_func$)
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Action Linear Combination Core (\texttt{act\_lc})}
+\begin{algorithmic}[1]
+\REQUIRE $expr$ là đa thức, $lc$ là LinearCombination, $pieri$ là hàm Pieri
+\ENSURE Kết quả tác động
+\STATE $vars \gets$ Các biến trong $expr$ (bỏ $q$)
+\IF{$|vars| = 0$}
+    \RETURN $expr \cdot lc$
+\ENDIF
+\STATE $v \gets$ biến đầu tiên trong $vars$
+\STATE $i \gets$ Spec2Num($v$)
+\STATE $expr_0 \gets$ $expr$ với $v=0$
+\STATE $expr_1 \gets$ $(expr - expr_0)/v$
+\STATE $term1 \gets$ ApplyLC($p \to$ pieri($i$, $p$), ActLC($expr_1$, $lc$, $pieri$))
+\STATE $term2 \gets$ ActLC($expr_0$, $lc$, $pieri$)
+\RETURN $term1 + term2$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán Littlewood-Richardson lượng tử (Quantum) -- Python: \texttt{qmult}, \texttt{qact}}
+
+\begin{algorithm}[H]
+\caption{Quantum Littlewood-Richardson Multiplication (\texttt{qmult})}
+\begin{algorithmic}[1]
+\REQUIRE $lc_1, lc_2$ là LinearCombination các lớp Schubert
+\ENSURE Quantum product $lc_1 \cdot lc_2$ (có thể có $q$)
+\STATE $lc_1 \gets$ LinearCombination($lc_1$)
+\STATE $lc_2 \gets$ LinearCombination($lc_2$)
+\STATE $q\_polynomial \gets$ QGiambelli($lc_1$)
+\STATE $result \gets$ QAct($q\_polynomial$, $lc_2$)
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}

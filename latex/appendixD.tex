@@ -1,0 +1,286 @@
+% --- Pieri Type D Algorithms ---
+
+\subsection*{Thuật toán Pieri Type D (Grassmannian trực giao chẵn) -- Python: \texttt{pieriD\_inner}}
+
+\begin{algorithm}[H]
+\caption{Pieri Rule Type D (\texttt{pieriD\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{Z}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum \text{Dcoef}(p,\lambda,\mu,t_\lambda,k,n) \sigma_\mu \in H^*(OG(k,2n+2))$
+\STATE $result \gets 0$
+\STATE $t_\lambda \gets$ TypeParameter($\lambda$, $k$)
+\STATE $\mathcal{P} \gets$ PieriSet($|p|$, $\lambda$, $k$, $n$, $1$)
+\FOR{mỗi $\mu \in \mathcal{P}$}
+    \STATE $coef \gets$ Dcoef($p$, $\lambda$, $\mu$, $t_\lambda$, $k$, $n$)
+    \STATE $result \gets result + coef$
+\ENDFOR
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán hỗ trợ cho Pieri Type D}
+
+% Các thuật toán hỗ trợ chung như \texttt{pieri\_set}, \texttt{count\_comps}, \texttt{_pieri\_fill}, \texttt{_pieri\_itr}, \texttt{part\_conj}, \texttt{_part\_star}, \texttt{_part\_tilde}, ... đã được trình bày ở mục “Thuật toán hỗ trợ chung cho Pieri B/C/D”.
+% Dưới đây chỉ liệt kê các thuật toán đặc thù cho Type D.
+
+\begin{algorithm}[H]
+\caption{D Coefficient Calculation (\texttt{\_dcoef})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{Z}$, $\lambda, \mu$ là các partition, $t_\lambda$ là tham số kiểu, $k, n \in \mathbb{N}$
+\ENSURE Hệ số D tương ứng với quy tắc Pieri Type D
+\STATE $coef \gets 1$
+\IF{$p < 0$}
+    \STATE $coef \gets 2^{-|p|}$
+\ENDIF
+\IF{$\lambda = \mu$}
+    \RETURN $coef$
+\ENDIF
+\STATE $d \gets \lambda_{|\lambda|} - \mu_{|\mu|}$
+\IF{$d > 0$}
+    \STATE $coef \gets 0$
+\ENDIF
+\IF{$p > 0$}
+    \STATE $t \gets t_\lambda$
+    \STATE $t' \gets$ Đảo ngược $t$
+    \STATE $coef \gets coef \cdot \prod_{i=1}^{|p|} t'[i]$
+\ENDIF
+\RETURN $coef$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Tie-Breaking Value Calculation}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda, \mu$ là các partition, $t_\lambda$ là tham số kiểu, $k, n \in \mathbb{N}$
+\ENSURE Giá trị để phân biệt các trường hợp bằng nhau trong quy tắc Pieri Type D
+\STATE $value \gets 0$
+\IF{$\lambda = \mu$}
+    \RETURN $value$
+\ENDIF
+\STATE $d \gets \lambda_{|\lambda|} - \mu_{|\mu|}$
+\IF{$d > 0$}
+    \RETURN $value$
+\ENDIF
+\STATE $t \gets t_\lambda$
+\STATE $t' \gets$ Đảo ngược $t$
+\STATE $m \gets \min(|\lambda|, |\mu|)$
+\FOR{$i = 1$ đến $m$}
+    \IF{$\lambda[i] \neq \mu[i]$}
+        \STATE $value \gets t'[i]$
+        \RETURN $value$
+    \ENDIF
+\ENDFOR
+\RETURN $value$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Pieri Set Generation (\texttt{pieri\_set})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{Z}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE Tập hợp các partition tương ứng với quy tắc Pieri Type D
+\STATE $\mathcal{P} \gets \emptyset$
+\STATE $\mu \gets$ Partition chuẩn với độ dài $k$
+\WHILE{$\mu \neq \emptyset$}
+    \STATE $\mathcal{P} \gets \mathcal{P} \cup \{\mu\}$
+    \STATE $\mu \gets$ PieriIterD($\mu$, $\lambda$, $k$, $n$)
+\ENDWHILE
+\RETURN $\mathcal{P}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Count Connected Components (\texttt{count\_comps}, skipfirst=false, d=1)}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda, \mu$ là các partition, $flag \in \{true, false\}$, $k, d \in \mathbb{N}$
+\ENSURE Số lượng thành phần liên thông
+\STATE $c \gets 0$
+\STATE $used \gets$ đánh dấu tất cả các ô của $\lambda$ là chưa sử dụng
+\FOR{mỗi ô $u$ trong $\lambda$}
+    \IF{$used[u] = false$}
+        \STATE $c \gets c + 1$
+        \STATE Đánh dấu tất cả các ô liên thông với $u$ là đã sử dụng
+    \ENDIF
+\ENDFOR
+\RETURN $c$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Pieri Fill Type B/C/D (\texttt{\_pieri\_fill})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda$, $inner$, $outer$ là các partition, $row\_index$, $p \in \mathbb{N}$
+\ENSURE $\mu$ hoặc $\emptyset$
+\IF{$\lambda = \emptyset$}
+    \RETURN $\lambda$
+\ENDIF
+\STATE $res \gets \lambda.copy()$
+\STATE $pp \gets p$
+\STATE $rr \gets row\_index$
+\IF{$ rr = 0 $}
+    \STATE $x \gets \min(outer[0], inner[0] + pp)$
+    \STATE $res[0] \gets x$
+    \STATE $pp \gets pp - x + inner[0]$
+    \STATE $rr \gets 1$
+\ENDIF
+\WHILE{$rr < |\lambda|$}
+    \STATE $x \gets \min(outer[rr], inner[rr] + pp, res[rr-1])$
+    \STATE $res[rr] \gets x$
+    \STATE $pp \gets pp - x + inner[rr]$
+    \STATE $rr \gets rr + 1$
+\ENDWHILE
+\IF{$pp > 0$}
+    \RETURN $\emptyset$
+\ENDIF
+\RETURN $res[:|\lambda|]$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Pieri Iterator Type B/C/D (\texttt{\_pieri\_itr})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda$, $inner$, $outer$ là các partition
+\ENSURE $\mu$ hoặc $\emptyset$
+\IF{$\lambda = \emptyset$}
+    \RETURN $\emptyset$
+\ENDIF
+\STATE $p \gets \lambda_{|\lambda|} - inner_{|\lambda|}$
+\FOR{$r \gets |\lambda|-1$ down to $1$}
+    \IF{$\lambda[r] > inner[r]$}
+        \STATE $\mu \gets \lambda.copy()$
+        \STATE $\mu[r] \gets \mu[r] - 1$
+        \STATE $\mu \gets$ PieriFillB($\mu$, $inner$, $outer$, $r+1$, $p+1$)
+        \IF{$\mu \neq \emptyset$}
+            \RETURN $\mu$
+        \ENDIF
+    \ENDIF
+    \STATE $p \gets p + \lambda[r] - inner[r]$
+\ENDFOR
+\RETURN $\emptyset$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Partition Conjugate (\texttt{part\_conj})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+\ENSURE $\lambda'$ là phân hoạch liên hợp
+\STATE $\lambda' \gets (\lambda_l, ..., \lambda_1)$
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Part Star Operation (\texttt{\_part\_star})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $cols \in \mathbb{N}$
+\ENSURE Schur hoặc $0$
+\IF{$\lambda = \emptyset$ hoặc $\lambda_1 \neq cols$}
+    \RETURN $0$
+\ENDIF
+\IF{$|\lambda| = 1$}
+    \RETURN $\sigma_{\emptyset}$
+\ENDIF
+\RETURN $\sigma_{(\lambda_2, ..., \lambda_l)}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Part Tilde Operation (\texttt{\_part\_tilde})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+\ENSURE $\lambda'$ với các phần tử đã được biến đổi
+\STATE $\lambda' \gets \emptyset$
+\FOR{$i = 1$ đến $|\lambda|$}
+    \STATE $\lambda'[i] \gets \lambda[i] - 2 \cdot (i-1)$
+\ENDFOR
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Dualization Operation (\texttt{dualize})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+\ENSURE $\lambda^*$ là phân hoạch đối ngẫu
+\STATE $\lambda^* \gets (\lambda_l, ..., \lambda_1)$
+\RETURN $\lambda^*$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Index Dualization (\texttt{dualize\_index\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $i \in \mathbb{N}$
+\ENSURE $\lambda'$ với chỉ số đã được đối ngẫu
+\STATE $\lambda' \gets \lambda$
+\STATE $\lambda'[i] \gets \lambda[i] - 1$
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Type Swap Operation (\texttt{type\_swap})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+\ENSURE $\lambda'$ với kiểu đã được hoán đổi
+\STATE $\lambda' \gets \emptyset$
+\FOR{$i = 1$ đến $|\lambda|$}
+    \IF{$i$ lẻ}
+        \STATE $\lambda'[i] \gets \lambda[i] + 1$
+    \ELSE
+        \STATE $\lambda'[i] \gets \lambda[i] - 1$
+    \ENDIF
+\ENDFOR
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Partition Type Swap (\texttt{type\_swap\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+\ENSURE $\lambda'$ với kiểu đã được hoán đổi
+\STATE $\lambda' \gets \emptyset$
+\FOR{$i = 1$ đến $|\lambda|$}
+    \IF{$i$ lẻ}
+        \STATE $\lambda'[i] \gets \lambda[i] - 1$
+    \ELSE
+        \STATE $\lambda'[i] \gets \lambda[i] + 1$
+    \ENDIF
+\ENDFOR
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Quantum Helper: ToSchurFromIntnMu (\texttt{\_toSchurFromIntnMu})}
+\begin{algorithmic}[1]
+\REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(Gr(k,n))$
+\STATE $result \gets$ PieriA($i$, $\lambda$, $k$, $n$)
+\IF{$|\lambda| = n-k$ và $\lambda_{n-k} > 0$}
+    \IF{$k = 1$}
+        \RETURN $q \cdot \sigma_{\emptyset}$
+    \ENDIF
+    \STATE $\lambda' \gets \{\lambda_j - 1 : \lambda_j > 1\}$
+    \STATE $LC \gets$ PieriA($i-1$, $\lambda'$, $k-1$, $n$)
+    \STATE $Z \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $k-1$), $LC$)
+    \STATE $result \gets result + q \cdot Z$
+\ENDIF
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán Pieri lượng tử Type D (Quantum) -- Python: \texttt{qpieriD\_inner}}
+
+\begin{algorithm}[H]
+\caption{Quantum Pieri Rule Type D (\texttt{qpieriD\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{Z}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(OG(k,2n+2))$
+\STATE $result \gets$ PieriD($p$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
+% TODO: Bổ sung chi tiết các điều kiện lượng tử đặc thù cho Type D nếu có
+\RETURN $result$ % (hoặc thêm các số hạng lượng tử nếu có)
+\end{algorithmic}
+\end{algorithm}

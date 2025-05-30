@@ -1,0 +1,377 @@
+\documentclass[14pt]{beamer}
+%\usepackage[utf8]{vietnam}
+\usepackage{ragged2e}
+\usepackage{commath}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{ytableau}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\newtheorem{dinhly}{Định lý}
+\newtheorem {menhde}{Mệnh đề}
+\newtheorem{question}{Question}
+
+\theoremstyle{definition}
+\newtheorem {vidu}{Ví dụ}
+\newtheorem {exercise}[theorem]{Bài tập}
+\newtheorem {property}[theorem]{Tính chất}
+%\newtheorem {algorithm}[theorem]{Thuật toán}
+\DeclareMathOperator\sh{sh}
+\DeclareMathOperator\Pfaffian{Pfaffian}
+
+\title{\bf SchubertPy: A package for Schubert calculus}
+
+\author{{\bf Dang Tuan Hiep} and {\bf Tran Duy Thanh}}
+
+\institute{\small Dalat University}
+
+\date{\small Ba Vì, 24-26/4/2025} %\today
+
+\begin{document}
+
+{\setbeamertemplate{footline}{} 
+\frame{\titlepage}}
+
+\begin{frame}{\bf Outline}
+\tableofcontents\end{frame}
+
+\section{What is Schubert calculus?}
+
+\begin{frame}[plain]
+        \vfill
+      \centering
+      %\begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+        \usebeamerfont{title}\bf 
+        What is Schubert calculus?\par%
+        \color{blue}\noindent\rule{10cm}{1pt} \\
+        %\LARGE{\faFileTextO}
+      %\end{beamercolorbox}
+      \vfill
+    \end{frame}
+
+\frame{\frametitle{Counting problems in Algebraic Geometry}
+
+{\bf Q:} {\color{purple}How many} geometric {\color{red}objects} satisfy given geometric {\color{blue}conditions}?
+
+\begin{center}
+\begin{tabular}
+{ll}
+Objects: &  points, lines, curves, surfaces, ...\\
+Conditions: &  passing through given points, curves, ...\\
+&  tangent to given curves, surfaces, ...\\
+& having given shape: genus, degree
+\end{tabular}
+\end{center}
+
+The only requirement is that conditions are chosen so that the answer is {\it \color{purple} finite} (usually {\color{blue} general}).
+}
+
+%\frame{\frametitle{Example 0}
+
+%{\bf Q:} How many {\color{red}lines} {\color{blue}pass through $2$ general (distinct) points}? 
+
+%\only<2>{\fbox{\Large {\color{purple}1}}}
+
+%\fbox{\Large {\color{purple}1}}
+
+%\includegraphics[width=1.0\textwidth]{line1.png}
+
+%}
+
+\frame{\frametitle{\bf Example}
+
+How many {\color{red}lines} {\color{blue}pass through $4$ general lines in $\mathbb P^3$}?
+
+%\only<2>{\fbox{\Large {\color{purple}2}}}
+\fbox{\Large {\color{purple}2}}
+
+\includegraphics[width=1.0\textwidth]{line2.png}
+
+}
+
+%\frame{\frametitle{Example 2}
+
+%How many {\color{red}lines} lie on a general cubic surface in $\mathbb P^3$? 
+
+%\fbox{\Large {\color{purple}27}}
+
+%\begin{center}
+%\includegraphics[width=0.4\textwidth]{cubic.jpg}
+%\end{center}
+
+%}
+
+%\frame{\frametitle{Example 3}
+
+%How many {\color{red}lines} lie on a general quintic hypersurface in $\mathbb P^4$? \fbox{\Large {\color{purple}2875}}
+
+%More generally:
+
+%\begin{enumerate}
+%\item  How many {\color{red}lines} lie on a general hypersurface of degree $2n-3$ in $\mathbb P^n$?
+%\item  \begin{justify}
+%    How many {\color{red}$k$-planes} lie on a general hypersurface of degree $d$ in $\mathbb P^n$? If $k,d,n \in \mathbb{N}$ satisfy $d\geq 3$ and $\binom {d+k}{k} = (k+1)(n-k),$ then the answer is {\it finite}.
+%\end{justify}
+%\end{enumerate}
+%Solution: {\color{green}Schubert calculus} or {\color{blue}equivariant intersection theory (the localization theorem and Bott's formula).}$\leadsto $ explicit formulas
+
+%}
+
+
+%\frame{\frametitle{How to solve the counting problems?}
+%\begin{center}
+%Geometric objects: curves of degree $d \geq 1$.
+%\end{center}
+
+%\begin{enumerate}
+%\item \begin{justify}Find suitable {\it \color{blue}parameter spaces}:  Grassmannians (linear subspaces), projective bundles (conics), moduli spaces of stable maps (higher degree).\end{justify}
+%\item \begin{justify}Using {\it \color{red}intersection theory} on these parameter spaces, express the locus of geometric objects satisfying given geometric conditions as a certain $0$-dimensional {\it \color{red}charactersitic class} on the parameter space.\end{justify}
+%\item Compute the {\it \color{blue}degree} of the charactersitic class:
+%\begin{itemize}
+%\item {\color{red} Gr\"obner bases}
+%\item {\color{red}Localization in equivariant cohomology}.
+%\end{itemize}
+%\end{enumerate}
+%}
+
+\frame{\frametitle{\bf What is Schubert calculus?}
+\begin{justify}
+{\it \color{blue} Schubert calculus} is a classical field in algebraic geometry beginning from the 19th century.
+\end{justify}
+\begin{itemize}
+\item Hermann Schubert's book (1879) with many deep ideas.
+\end{itemize}
+%\only<1>{
+\begin{center}
+\includegraphics[width=0.3\textwidth]{schubert.png}
+\end{center}
+}
+
+\frame{\frametitle{\bf Hilbert's 15th Problem}
+\begin{justify}
+    Hilbert’s 15th Problem is one of the 23 famous problems proposed by David Hilbert in 1900, aimed at guiding and challenging future generations of mathematicians.
+\end{justify}
+\begin{block}{\bf Hilbert's 15th Problem (1900 -- )}
+\it {\color{red}Construct the rigorous foundation of Schubert's enumerative calculus}.
+\end{block}
+%Hilbert's 15th problem calls for a rigorous mathematical foundation for Schubert calculus, a method developed by Hermann Schubert in the 19th century for solving enumerative geometry problems.
+\begin{justify}
+    Schubert’s approach was powerful but lacked rigorous justification by the standards of modern mathematics in Hilbert's time.
+\end{justify}
+}
+
+\frame{\frametitle{\bf Classical Schubert calculus}
+\begin{itemize}
+    \item \begin{justify}
+        Focuses on computing intersection numbers of Schubert varieties in Grassmannians or more generally flag varieties, which often answers enumerative geometry questions.
+    \end{justify}
+    \item \begin{justify}
+        These numbers are encoded in the cohomology ring $H^\star(Gr(k,n))$ or $H^\star(GL_n/B)$, with Schubert classes as a distinguished basis.
+    \end{justify}
+\end{itemize}
+
+}
+
+\frame{\frametitle{\bf Modern Schubert calculus}
+
+%Modern Schubert calculus includes:
+
+\begin{itemize}
+\item \begin{justify}
+    {\color{blue}Quantum Schubert calculus}: Involves quantum cohomology, where one includes counts of rational curves (Gromov-Witten invariants).
+\end{justify}
+%, the former is well-founded on the basis of the topology of {\it \color{green}Grassmannians}, and {\it \color{red}intersection theory}.
+\item \begin{justify}
+    {\color{red}K-theoretic Schubert calculus}: Replaces cohomology with K-theory, keeping track of vector bundles.
+\end{justify}
+\item \begin{justify}
+    {\color{green}Equivariant versions}: Take into account group actions on the varieties.
+\end{justify}
+\end{itemize}
+}
+
+
+\section{Computational aspects of Schubert calculus}
+
+\begin{frame}[plain]
+        \vfill
+      \centering
+      %\begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+        \usebeamerfont{title}\bf Computational aspects of Schubert calculus \par%
+        \color{blue}\noindent\rule{10cm}{1pt} \\
+        %\LARGE{\faFileTextO}
+      %\end{beamercolorbox}
+      \vfill
+\end{frame}
+
+\frame{\frametitle{\bf Computation in Schubert calculus}
+It refers to explicit calculations with:
+
+\begin{itemize}
+    \item Schubert classes and their intersections,
+    \item Structure constants (like the Littlewood–Richardson coefficients),
+    \item Cohomological/K-theoric rings of Grassmannians and flag varieties,
+    \item Gromov-Witten invariants in quantum Schubert calculus.
+\end{itemize}
+\begin{justify}
+    {\color{red}The goal is to implement algorithms to compute these objects, often involving symbolic or combinatorial computation}.
+\end{justify}
+}
+\frame{\frametitle{\bf Key computational tasks}
+\only<1>{
+\begin{itemize}
+    \item {\color{blue}Classical Schubert calculus}:
+\begin{itemize}
+    \item Compute intersection numbers of Schubert classes.
+    \item Use Littlewood–Richardson rule to multiply Schubert classes.
+    \item Applications: enumerative geometry problems, e.g., counting lines or planes satisfying incidence conditions.
+\end{itemize}
+    \item {\color{blue}Quantum Schubert calculus}:
+        \begin{itemize}
+            \item Compute quantum products involving Gromov-Witten invariants.
+            \item Requires new combinatorics beyond classical Littlewood–Richardson coefficients.
+        \end{itemize}
+\end{itemize}
+}
+\only<2>{
+\begin{itemize}
+    \item {\color{blue}K-theoretic Schubert calculus}:
+        \begin{itemize}
+            \item Compute structure constants in K-theory rings.
+            \item Uses Grothendieck polynomials, tableaux combinatorics.
+        \end{itemize}
+    \item {\color{blue}Equivariant versions}:
+        \begin{itemize}
+            \item Incorporate torus actions, producing structure constants in terms of polynomials (rather than integers).
+        \end{itemize}
+    \item {\color{blue}Representation-theoretic interpretations}:
+    \begin{itemize}
+        \item Translate problems into weights and characters of Lie groups and compute using tools from representation theory.
+    \end{itemize}
+\end{itemize}
+}
+}
+
+\frame{\frametitle{\bf Softwares and tools}
+\only<1>{
+Algorithms based on algebraic geometry:
+\begin{itemize}
+    \item \begin{justify}
+        {\color{blue}Maple}: Schubert package (Katz-Stromme, 1992) for computations with Chern classes in intersection rings.
+    \end{justify}
+    \item \begin{justify}
+        {\color{blue}Macaulay2}: Schubert2 package (Grayson et.al., 2012) for intersection theory and degeneracy loci.
+    \end{justify}
+    \item {\color{blue}SageMath}: Schubert3 package (H., 2013) for intersection theory and enumerative geometry.
+    \item {\color{blue}Singular}: Schubert.lib (H., 2013).
+\end{itemize}
+}
+\only<2>{
+Algorithms based on combinatorics:
+\begin{itemize}
+    \item \begin{justify}
+        SageMath: Built-in support for symmetric functions, partitions, and combinatorics of Schubert calculus.
+    \end{justify}
+    \item Maple: Ander Buch's {\color{blue}lrcalc}, {\color{red}qcalc} for classical and quantum Schubert calculus.
+\end{itemize}
+}
+}
+
+
+\section{SchubertPy: A package for Schubert calculus}
+
+\begin{frame}[plain]
+        \vfill
+      \centering
+      %\begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+        \usebeamerfont{title}\bf SchubertPy: A package for Schubert calculus \par%
+        \color{blue}\noindent\rule{10cm}{1pt} \\
+        %\LARGE{\faFileTextO}
+      %\end{beamercolorbox}
+      \vfill
+\end{frame}
+
+\frame{\frametitle{\bf What is SchubertPy?}
+\begin{justify}
+    SchubertPy is a Python package designed to perform computations in Schubert calculus, particularly:
+\end{justify}
+\begin{itemize}
+    \item Classical and quantum Schubert calculus on Grassmannians (types A, B, C, D).
+    \item Support for rim-hook algorithm (quantum multiplication).
+    \item Functionalities such as Pieri, Giambelli and  Littlewood–Richardson rules.
+    \item Symbolic operations and class conversions via SymPy.
+\end{itemize}
+}
+
+\frame{\frametitle{\bf Classical Schubert calculus}
+\only<1>{
+The cohomology ring is graded and has a basis of Schubert classes:
+\[H^\star(Gr(k,n)) = \bigoplus_{\lambda \subseteq k \times (n-k)} \mathbb{Z} \cdot \sigma_\lambda.\]
+Products of Schubert classes are given by:
+\[\sigma_{\lambda} \cdot \sigma_{\mu} = \sum_{\nu} c_{\lambda, \mu}^{\nu} \, \sigma_{\nu}.\]
+}
+\only<2>{
+Classical algorithms include:
+\begin{itemize}
+    \item Pieri rule: special multiplication with row or column shapes.
+    \item Giambelli formula: expresses any $\sigma_\lambda$ as a determinant of special classes.
+    \item Littlewood–Richardson rule: a combinatorial rule for all products.
+\end{itemize}
+}
+\only<3>{
+Example: In the Grassmannian $Gr(2,4)$, let us compute:
+\[\sigma_{(1)} \cdot \sigma_{(1)} = \sigma_{(2)} + \sigma_{(1,1)},\]
+\[\sigma_{(2)}\cdot \sigma_{(1)} = \sigma_{(2,1)},\]
+\[\sigma_{(1,1)}\cdot \sigma_{(1)} = \sigma_{(2,1)},\]
+\[\sigma_{(2,1)}\cdot \sigma_{(1)} = \sigma_{(2,2)}.\]
+Do đó, ta có
+\[\sigma_{(1)}^4 = 2\sigma_{(2,2)}.\]
+This lead us there are $2$ lines intersecting with $4$ general lines in $\mathbb P^3$.
+}
+}
+
+\frame{\frametitle{\bf Quantum Schubert calculus}
+\only<1>{
+\begin{justify}
+Quantum Schubert calculus is an extension of classical Schubert calculus that studies the quantum cohomology of Grassmannians and flag varieties. It incorporates enumerative data about rational curves and connects geometry with string theory, mirror symmetry, and Gromov-Witten theory.
+\end{justify}
+}
+\only<2>{
+The quantum cohomology ring  
+\[QH^\star(Gr(k,n)) = \bigoplus_{\lambda \subseteq k \times (n-k)} \mathbb{Z}[q] \cdot \sigma_\lambda,\]
+where $q$ is a quantum parameter of degree $n$, and the quantum product is:
+\[\sigma_{\lambda} * \sigma_{\mu} = \sum_{d \geq 0} \sum_{\nu} c^{\nu, d}_{\lambda, \mu} \, q^d \, \sigma_{\nu},\]
+where $c^{\nu, d}_{\lambda, \mu}$ is the Gromov–Witten invariant.
+}
+}
+\frame{\frametitle{\bf Rim-Hook Algorithm}
+\only<1>{
+SchubertPy implements the rim-hook algorithm\footnote{Bertram, 
+A., Ciocan-Fontanine, I., \& Fulton, W. (1999). Quantum multiplication of schur polynomials. {\it Journal of Algebra}, 219(2), 728–746.} to perform quantum multiplication:
+\begin{itemize}
+    \item Extend the partition,
+    \item Remove rim hooks,
+    \item Each removal adds a $q$-factor,
+    \item Signs depend on the height of the hook. 
+\end{itemize}
+}
+\only<2>{
+Example: In classical cohomology:
+\[\sigma_{(2,1)} \cdot \sigma_{(2,1)} = \sigma_{(3,2)} + \sigma_{(4,1)},\]
+but $\sigma_{(3,2)}$ and $\sigma_{(4,1)}$ are too big for the $2 \times 2$ rectangle, so in quantum cohomology:
+\[\sigma_{(2,1)} * \sigma_{(2,1)} = q \cdot \sigma_{(1,1)} + q \cdot \sigma_{(2)},\]
+The result is expressed in smaller partitions with quantum corrections.
+}
+}
+
+\begin{frame}{}
+\center\bf 
+\Huge Thank you!
+
+\end{frame}
+\end{document}

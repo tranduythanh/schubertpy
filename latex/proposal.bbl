@@ -1,0 +1,99 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{BCFF99b}
+
+\bibitem[AW97]{agnihotri1997eigenvaluesproductsunitarymatrices}
+Sharad Agnihotri and Chris Woodward.
+\newblock Eigenvalues of products of unitary matrices and quantum schubert calculus, 1997.
+
+\bibitem[BCFF99a]{BERTRAM1999728}
+Aaron Bertram, Ionuţ Ciocan-Fontanine, and William Fulton.
+\newblock Quantum multiplication of schur polynomials.
+\newblock {\em Journal of Algebra}, 219(2):728--746, 1999.
+
+\bibitem[BCFF99b]{bertram1999quantum}
+Aaron Bertram, Ionuţ Ciocan-Fontanine, and William Fulton.
+\newblock Quantum multiplication of schur polynomials.
+\newblock {\em Journal of Algebra}, 219(2):728--746, 1999.
+
+\bibitem[BMT18]{ALCO_2018__1_3_327_0}
+Anna Bertiger, Elizabeth Mili\'cevi\'c, and Kaisa Taipale.
+\newblock Equivariant quantum cohomology of the {Grassmannian} via the rim hook rule.
+\newblock {\em Algebraic Combinatorics}, 1(3):327--352, 2018.
+
+\bibitem[Buc01]{buch2001quantumcohomologygrassmannians}
+Anders~Skovsted Buch.
+\newblock Quantum cohomology of grassmannians, 2001.
+
+\bibitem[Buc08]{buch2008qcalc}
+Anders~Skovsted Buch.
+\newblock \texttt{qcalc} - quantum calculator (the maple package), 2008.
+
+\bibitem[Enc]{Encyclo_schubert_calculus}
+Schubert calculus.
+\newblock \url{http://encyclopediaofmath.org/index.php?title=Schubert_calculus&oldid=23715}.
+\newblock Encyclopedia of Mathematics.
+
+\bibitem[GSS{\etalchar{+}}]{graysonschubert2}
+Daniel~R Grayson, Michael~E Stillman, Stein~A Str{\o}mme, David Eisenbud, and Charley Crissman.
+\newblock Schubert2 - a macaulay2 package for computation in intersection theory, 2010.
+
+\bibitem[Hie14a]{Hiep2014IntersectionTheory}
+Dang~Tuan Hiep.
+\newblock {\em Intersection Theory with Applications to the Computation of Gromov-Witten Invariants}.
+\newblock Dissertation, Technische Universität Kaiserslautern, Kaiserslautern, Germany, January 2014.
+\newblock Doktor der Naturwissenschaften (Dr. rer. nat.); Advisors: Prof. Dr. Wolfram Decker, Prof. Dr. Hannah Markwig.
+
+\bibitem[Hie14b]{hiep2014schubert3}
+Dang~Tuan Hiep.
+\newblock Schubert3 - a {S}age{M}ath package for intersection theory and enumerative geometry, 2014.
+
+\bibitem[HTDA24]{githubschubertpy}
+Dang~Tuan Hiep, Tran~Duy Thanh, Hoang~Minh Duc, and Nguyen Truong~Thien An.
+\newblock Source code of schubertpy on github, 2024.
+
+\bibitem[KM94]{Kontsevich_1994}
+M.~Kontsevich and Yu. Manin.
+\newblock Gromov-witten classes, quantum cohomology, and enumerative geometry.
+\newblock {\em Communications in Mathematical Physics}, 164(3):525–562, August 1994.
+
+\bibitem[KS92]{katz1992schubert}
+Sheldon Katz and Stein~A. Str{\o}mme.
+\newblock \texttt{Schubert} - a maple package for intersection theory and enumerative geometry, 1992.
+
+\bibitem[{nLa}25]{nlab:gromov-witten_invariants}
+{nLab authors}.
+\newblock {{G}}romov-{{W}}itten invariants.
+\newblock \url{https://ncatlab.org/nlab/show/Gromov-Witten+invariants}, May 2025.
+\newblock \href{https://ncatlab.org/nlab/revision/Gromov-Witten+invariants/34}{Revision 34}.
+
+\bibitem[{Pyt}23a]{PythonTyping2023}
+{Python Software Foundation}.
+\newblock Typing --- support for type hints, 2023.
+\newblock Accessed: 2023-05-01.
+
+\bibitem[{Pyt}23b]{PythonUnittestLib}
+{Python Software Foundation}.
+\newblock unittest — unit testing framework.
+\newblock \url{https://docs.python.org/3/library/unittest.html}, 2023.
+\newblock Accessed on: 2023-05-01.
+
+\bibitem[Sch79]{schubert1879kalkul}
+Hermann Schubert.
+\newblock {\em Kalk{\"u}l der abz{\"a}hlenden Geometrie}.
+\newblock BG Teubner, 1879.
+
+\bibitem[{The}24]{sagemath}
+{The Sage Developers}.
+\newblock {\em {S}ageMath, the {S}age {M}athematics {S}oftware {S}ystem ({V}ersion 10.4)}, 2024.
+
+\bibitem[Vâ24]{Van2024BatBienDaiTap}
+Nguyễn Thị~Mai Vân.
+\newblock {\em Một số bất biến của đa tạp đại số}.
+\newblock Luận án tiến sĩ, Trường Đại học Quy Nhơn, Bình Định, Việt Nam, 2024.
+\newblock Chuyên ngành: Đại số và lý thuyết số; Hướng dẫn khoa học: PGS. TS. Đặng Tuấn Hiệp, PGS. TS. Lê Công Trình; Phản biện: PGS. TS. Đoàn Trung Cường, TS. Trần Quang Hóa, PGS. TS. Nguyễn Thị Hồng Loan.
+
+\bibitem[Wit93]{witten1993verlindealgebracohomologygrassmannian}
+Edward Witten.
+\newblock The verlinde algebra and the cohomology of the grassmannian, 1993.
+
+\end{thebibliography}

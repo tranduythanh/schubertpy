@@ -1,0 +1,239 @@
+\section{Công cụ \texttt{SchubertPy} và ví dụ minh họa}
+Trong phần này, chúng tôi giới thiệu \texttt{SchubertPy} – một gói Python cho phép tính Schubert được phát triển nhằm hỗ trợ tính toán và nghiên cứu. Gói \texttt{SchubertPy} cung cấp các lớp đối tượng cho các đa tạp Grassmann loại A, B, C, D (bao gồm cả các trường hợp Grassmannian cổ điển và các Grassmannian đẳng hướng trong không gian đối xứng) và các hàm để thực hiện các phép tính đồng điều và đồng điều lượng tử trên đó. Phần mềm này được xây dựng lấy cảm hứng từ gói \textit{qcalc} trên Maple của Buch \cite{buch2008qcalc}, và cũng có chức năng tương tự như một số phần trong SageMath \cite{SageMath2024}, nhưng chuyên biệt hơn cho phép tính Schubert và tối ưu cho môi trường Python. \texttt{SchubertPy} được viết bằng Python 3, mã nguồn mở trên GitHub và phân phối qua PyPI (có thể cài đặt nhanh bằng \texttt{pip install schubertpy}). Dưới đây, chúng tôi sẽ minh họa một số tính năng chính của \texttt{SchubertPy} thông qua các ví dụ tương tác.
+
+\subsection{Các đa tạp Grassmann hỗ trợ}
+Gói \texttt{SchubertPy} hiện hỗ trợ các loại Grassmannian sau:
+\begin{itemize}
+    \item Loại A: Grassmann thông thường $Gr(k,n)$.
+    \item Loại C: Grassmann các không gian đẳng hướng trong không gian symplectic (ký hiệu $IG$).
+    \item Loại B và D: Grassmann các không gian đẳng hướng trong không gian chính quy (ký hiệu $OG$ cho cả hai trường hợp).
+\end{itemize}
+Các đối tượng Grassmannian tương ứng có thể được tạo ra bằng các lớp Python \texttt{Grassmannian}, \texttt{IsotropicGrassmannian}, \texttt{OrthogonalGrassmannian}. Người dùng có thể xác định loại của Grassmannian bằng cách in đối tượng, tương tự như cách gói qcalc làm trên Maple. Ví dụ:
+
+Ví dụ:
+\small
+\begin{verbatim}
+>>> gr = Grassmannian(2, 5)
+>>> print(gr)
+Type A; (k,n)=(3,5); Gr(2,5); deg(q)=5
+
+>>> ig = IsotropicGrassmannian(2, 6)
+>>> print(ig)
+Type C; (k,n)=(1,3); IG(2,6); deg(q)=5
+
+>>> og = OrthogonalGrassmannian(2, 7)
+>>> print(og)
+Type B; (k,n)=(1,3); OG(2,7); deg(q)=4
+
+>>> og = OrthogonalGrassmannian(2, 6)
+>>> print(og)
+Type D; (k,n)=(1,2); OG(2,6); deg(q)=3
+\end{verbatim}
+\normalsize
+
+Trong các thông tin in ra:
+- \texttt{Type A/B/C/D} cho biết loại Grassmannian.
+- $(k,n)$ là các tham số của Grassmann (ví dụ $Gr(2,5)$ tương ứng với $k=2, n=5$).
+- \texttt{deg(q)} là bậc của biến $q$ trong vòng đồng điều lượng tử (tức là số điều kiện cần để có đường cong độ 1 trong không gian đó).
+
+\subsection{Lớp Schubert và các lớp đặc biệt}
+Trong \texttt{SchubertPy}, các \textit{lớp Schubert} được đánh chỉ số bằng các phân hoạch (partition) phù hợp với từng loại Grassmann. Với các Grassmannian đẳng hướng (loại B, C, D), gói sử dụng phân hoạch $k$-strict (phân hoạch với một số ràng buộc bổ sung) để biểu diễn các lớp Schubert tương ứng tính đến điều kiện đẳng hướng. Người dùng có thể liệt kê các lớp Schubert và nhận diện lớp điểm (lớp có codimension lớn nhất) cũng như các lớp sinh (các lớp Schubert đặc biệt tạo sinh vành đồng điều) bằng các hàm tiện ích:
+\begin{itemize}
+    \item \texttt{schub\_classes()} – liệt kê toàn bộ các lớp Schubert (ký hiệu $S[\lambda]$ với $\lambda$ là phân hoạch).
+    \item \texttt{point\_class()} – trả về lớp điểm (ứng với phân hoạch lớn nhất).
+    \item \texttt{generators()} – trả về danh sách các lớp sinh đặc biệt của vành đồng điều (thường tương ứng với các phân hoạch dạng một ô ở các góc của lưới Young $k \times (n-k)$).
+\end{itemize}
+
+Ví dụ:
+\small
+\begin{verbatim}
+>>> gr = Grassmannian(2,5)
+>>> print(gr)
+Type A; (k,n)=(3,5); Gr(2,5); deg(q)=5
+
+>>> gr.schub_classes()
+[S[],
+ S[1],   S[1,1],
+ S[2], S[2,1], S[2,2],
+ S[3], S[3,1], S[3,2], S[3,3]]
+
+>>> gr.point_class()
+S[3,3]
+
+>>> gr.generators()
+[S[1], S[2], S[3]]
+\end{verbatim}
+\normalsize
+
+Kết quả cho $Gr(2,5)$ cho thấy các lớp Schubert $S[\lambda]$ với $\lambda$ từ rỗng cho đến $(3,3)$ (phân hoạch lớn nhất $3,3$ ứng với lớp điểm). Các lớp sinh là $S[1], S[2], S[3]$ tương ứng với các điều kiện cơ bản nhất (các phân hoạch một ô trong hàng 1, 2, 3).
+
+Tương tự, với một Grassmannian đẳng hướng:
+\small
+\begin{verbatim}
+>>> ig = IsotropicGrassmannian(2,6)
+>>> print(ig)
+Type C; (k,n)=(1,3); IG(2,6); deg(q)=5
+
+>>> ig.schub_classes()
+[S[],
+ S[1], S[1,1],
+ S[2], S[2,1],
+ S[3], S[3,1], S[3,2],
+ S[4], S[4,1], S[4,2], S[4,3]]
+
+>>> ig.point_class()
+S[4,3]
+
+>>> ig.generators()
+[S[1], S[2], S[3], S[4]]
+\end{verbatim}
+\normalsize
+
+Trong trường hợp $IG(2,6)$ (Grassmann đẳng hướng loại C), ta thấy xuất hiện các phân hoạch $k$-strict (ví dụ $4,3$ cho lớp điểm). Số lượng lớp nhiều hơn so với $Gr(2,5)$, phản ánh sự khác biệt về cấu trúc đồng điều của các không gian đẳng hướng.
+
+\subsection{Phép nhân đồng điều và đồng điều lượng tử}
+\texttt{SchubertPy} cung cấp các hàm để thực hiện những phép nhân trong vành đồng điều và đồng điều lượng tử:
+\begin{itemize}
+    \item \texttt{pieri(p, expr)} – tính tích $\sigma_{(p)} \cdot \texttt{expr}$ (với $p$ là một số nguyên dương, tạo lớp đặc biệt một hàng $p$ ô) bằng quy tắc Pieri.
+    \item \texttt{giambelli(expr)} – biểu diễn lớp Schubert cho trước (dưới dạng biểu thức tổ hợp các $S[\lambda]$) về các lớp sinh sử dụng công thức Giambelli.
+    \item \texttt{mult(expr1, expr2)} – tính tích của hai biểu thức \texttt{expr1} và \texttt{expr2} trong vành đồng điều.
+    \item Các hàm tương tự cho vành đồng điều lượng tử: \texttt{qpieri}, \texttt{qgiambelli}, \texttt{qmult} – thực hiện phép nhân trong vành lượng tử (tức là có xét thêm phần $q$).
+\end{itemize}
+
+Tất cả các hàm trên nhận các biểu thức đa thức Schubert dưới dạng chuỗi (string) với ký hiệu $S[\lambda]$ cho lớp Schubert. Kết quả trả về cũng ở dạng biểu thức chuỗi. Dưới đây là một số ví dụ minh họa trên $Gr(2,5)$ (loại A) và $IG(2,6)$ (loại C):
+
+Ví dụ trên $Gr(2,5)$:
+\small
+\begin{verbatim}
+>>> gr = Grassmannian(2, 5)
+>>> gr.pieri(1, 'S[2,1] - 7*S[3,2]')
+S[2,2] + S[3,1] - 7*S[3,3]
+
+>>> gr.giambelli('S[2,1] * S[2,1]')
+S[1]^2*S[2]^2 - 2*S[1]*S[2]*S[3] + S[3]^2
+
+>>> gr.mult('S[2,1]', 'S[2,1] + S[3,2]')
+S[3,3]
+
+>>> gr.qpieri(1, 'S[2,1] - 7*S[3,2]')
+-7*S[1]*q + S[2,2] + S[3,1] - 7*S[3,3]
+
+>>> gr.qgiambelli('S[2,1] * S[2,1]')
+S[1]^2*S[2]^2 - 2*S[1]*S[2]*S[3] + S[3]^2
+
+>>> gr.qmult('S[2,1]', 'S[2,1] + S[3,2]')
+S[1]*q + S[2,1]*q + S[3]*q + S[3,3]
+\end{verbatim}
+\normalsize
+
+Trong các kết quả trên:
+\begin{itemize}
+    \item \texttt{pieri(1, 'S[2,1] - 7*S[3,2]')} áp dụng quy tắc Pieri với $p=1$ (tức nhân với $\sigma_{(1)}$) cho biểu thức $S[2,1] - 7S[3,2]$.
+    \item \texttt{giambelli('S[2,1] * S[2,1]')} biểu diễn lớp $S[2,1] * S[2,1]$ (tương ứng $\sigma_{(2,1)}$ bình phương) về các $S[1], S[2], S[3]$.
+    \item \texttt{mult('S[2,1]', 'S[2,1] + S[3,2]')} tính tích của $S[2,1]$ với $S[2,1] + S[3,2]$ cho ra kết quả $S[3,3]$ (lớp điểm, nghĩa là hai lớp đó giao nhau tại hữu hạn 1 điểm).
+    \item Các hàm \texttt{q*} cho kết quả trong đó có thể xuất hiện thêm các số hạng chứa $q$. Ví dụ $-7*S[1]*q$ trong kết quả của \texttt{qpieri} cho biết có một đường cong bậc 1 (hệ số $q$) xuất hiện trong phép nhân lượng tử.
+\end{itemize}
+
+Ví dụ tương tự trên $IG(2,6)$:
+\small
+\begin{verbatim}
+>>> ig = IsotropicGrassmannian(2, 6)
+>>> ig.pieri(1, 'S[2,1] - 7*S[3,2]')
+2*S[3,1] + S[4] - 7*S[4,2]
+
+>>> ig.giambelli('S[2,1]*S[2,1]')
+S[1]^2*S[2]^2 - 2*S[1]*S[2]*S[3] + S[3]^2
+
+>>> ig.mult('S[2,1]', 'S[2,1]+S[3,2]')
+2*S[4,2]
+
+>>> ig.qpieri(1, 'S[2,1] - 7*S[3,2]')
+2*S[3,1] + S[4] - 7*S[4,2]
+
+>>> ig.qgiambelli('S[2,1]*S[2,1]')
+S[1]^2*S[2]^2 - 2*S[1]*S[2]*S[3] + S[3]^2
+
+>>> ig.qmult('S[2,1]', 'S[2,1]+S[3,2]')
+S[1]*q + S[3]*q + 2*S[4,2]
+\end{verbatim}
+\normalsize
+
+Ta có thể thấy hầu hết các kết quả trên $IG(2,6)$ tương tự với trường hợp $Gr(2,5)$, ngoại trừ một số hệ số khác biệt (ví dụ: kết quả \texttt{mult} có hệ số 2, do tính chất đẳng hướng làm xuất hiện các bội số). Điều này minh họa sự phức tạp tăng thêm khi làm việc với các Grassmannian loại B/C/D. Giải thuật sử dụng trong \texttt{SchubertPy} được trình bày trong phần phụ lục \ref{appendix:pseudocode}.
+
+
+\subsection{Chuyển đổi và tiện ích khác}
+Ngoài các phép tính nhân, \texttt{SchubertPy} còn cung cấp một số hàm chuyển đổi hữu ích:
+\begin{itemize}
+    \item \texttt{dualize(expr)} – lấy mỗi lớp Schubert trong biểu thức \texttt{expr} thành lớp đối ngẫu Poincaré của nó (đối ngẫu trong vành đồng điều).
+    \item \texttt{part2index(expr)} và \texttt{index2part(expr)} – chuyển đổi giữa ký hiệu phân hoạch (partition) và ký hiệu chỉ số (index set) biểu diễn cùng một lớp Schubert. Ký hiệu index set cho thấy điều kiện hình học của lớp Schubert (thông qua vị trí các điều kiện trong cờ).
+\end{itemize}
+
+Ví dụ:
+\small
+\begin{verbatim}
+>>> gr = Grassmannian(2, 5)
+>>> gr.dualize('S[1]+S[2]')
+S[3,1] + S[3,2]
+
+>>> gr.part2index('S[1]+S[2]')
+S[2,5] + S[3,5]
+\end{verbatim}
+\normalsize
+
+Kết quả:
+\begin{itemize}
+    \item \texttt{dualize('S[1]+S[2]')} trên $Gr(2,5)$ lấy đối ngẫu của lớp $S[1]$ và $S[2]$, cho ra $S[3,1] + S[3,2]$ (vì $(3,1)$ và $(3,2)$ là phân hoạch bổ sung của $(1)$ và $(2)$ trong lưới $3\times 2$).
+    \item - \texttt{part2index('S[1]+S[2]')} chuyển $S[1]$ thành $S[2,5]$ và $S[2]$ thành $S[3,5]$. Ở đây ký hiệu $S[a,b]$ trong kết quả là ký hiệu index set: ví dụ $S[2,5]$ nghĩa là lớp Schubert gồm các mặt phẳng $P$ trong $\mathbb{C}^5$ sao cho $\dim(P \cap F_3) \ge 2$ và $\dim(P \cap F_4) \ge 3$ (điều kiện này tương ứng với phân hoạch $(1)$ ban đầu). Những ký hiệu này giúp người dùng kiểm tra điều kiện hình học tương ứng với mỗi phân hoạch nếu cần.
+\end{itemize}
+
+
+\subsection{Thuật toán Rim-Hook}
+
+SchubertPy triển khai \textit{thuật toán remove rim-hook} (loại bỏ móc viền) để thực hiện phép nhân lượng tử giữa các lớp Schubert, đặc biệt là trong vành đồng điều lượng tử của không gian Grassmann. Thuật toán dựa trên công trình của Bertram, Ciocan-Fontanine và Fulton \cite{bertram1999quantum}, với các bước chính như sau:
+
+\begin{itemize}
+    \item Mở rộng phân hoạch $\lambda$ thành một phân hoạch mới trong hình chữ nhật $k \times (n-k)$ bằng cách cộng thêm các ô sao cho hợp lệ.    
+    \item Loại bỏ các rim hooks. Một rim hook là một chuỗi các ô kề nhau, nằm dọc hoặc ngang ở biên, có độ dài chính xác $d$. Mỗi lần loại bỏ một rim hook, ta tiến một bước trong việc thu gọn phân hoạch.
+    \item Mỗi lần loại bỏ một rim hook độ dài $d$, kết quả sẽ nhận được một hệ số $(-1)^{\mathrm{ht} - 1} q^d$, với $\mathrm{ht}$ là chiều cao của hook.
+\end{itemize}
+
+
+Tổng hợp lại tất cả các khả năng loại bỏ rim hook từ $\lambda$ để được các phân hoạch $\mu$, ta có công thức tổng quát cho tích lượng tử:
+
+$$
+\sigma_{\lambda} * \sigma_{\mu} = \sum_{\nu, d} c_{\lambda,\mu}^{\nu,d} \, q^d \, \sigma_{\nu}
+$$
+
+trong đó:
+\begin{itemize}
+    \item $\sigma_{\lambda}, \sigma_{\mu}, \sigma_{\nu}$ là các lớp Schubert,
+    \item $c_{\lambda,\mu}^{\nu,d}$ là hệ số đếm số cách loại bỏ các rim hook có tổng độ dài $d$, dẫn đến phân hoạch $\nu$.
+\end{itemize}
+
+Ví dụ: trong đồng điều cổ điển, ta có:
+\[
+\sigma_{(2,1)} \cdot \sigma_{(2,1)} = \sigma_{(3,2)} + \sigma_{(4,1)},
+\]
+nhưng \(\sigma_{(3,2)}\) và \(\sigma_{(4,1)}\) đều quá lớn so với hình chữ nhật \(2 \times 2\), do đó trong đồng điều lượng tử, ta có:
+\[
+\sigma_{(2,1)} * \sigma_{(2,1)} = q \cdot \sigma_{(1,1)} + q \cdot \sigma_{(2)},
+\]
+Kết quả được biểu diễn bằng các phân hoạch nhỏ hơn kèm theo hiệu chỉnh lượng tử.
+
+\section{Kết luận và hướng phát triển}
+Chúng tôi đã trình bày tổng quan về phép tính Schubert – từ nền tảng lịch sử đến các khái niệm và công cụ tính toán cổ điển – và giới thiệu \texttt{SchubertPy} như một công cụ hỗ trợ mạnh mẽ cho việc tính toán trong lĩnh vực này. Phép tính Schubert là một lĩnh vực quan trọng của hình học đại số, với ứng dụng rộng rãi trong hình học liệt kê cổ điển, lý thuyết biểu diễn, và vật lý lý thuyết (thông qua đồng điều lượng tử và lý thuyết Gromov–Witten) \cite{Kontsevich_1994}. Việc có các công cụ phần mềm như \texttt{SchubertPy} giúp các nhà toán học và sinh viên dễ dàng thực hiện các phép tính thử nghiệm, kiểm chứng giả thuyết và khám phá các mẫu hình tổ hợp ẩn sau các con số đếm.
+
+\texttt{SchubertPy} được thiết kế theo hướng mô-đun và mở rộng, tuân thủ các nguyên tắc lập trình hướng đối tượng, điều này cho phép dễ dàng bảo trì và phát triển thêm. Trong quá trình phát triển, chúng tôi đã chú trọng sử dụng \textit{type hints} của Python nhằm tăng độ rõ ràng của mã và tận dụng sự hỗ trợ của các trình kiểm tra tĩnh, cũng như xây dựng bộ kiểm thử tự động với \textit{Pytest} đạt độ bao phủ trên 80\% để đảm bảo độ tin cậy của các chức năng \cite{PythonTyping2023,PythonUnittestLib}. Gói \texttt{SchubertPy} hiện được phát hành dưới giấy phép mã nguồn mở GPL, cho phép cộng đồng tự do sử dụng và đóng góp.
+
+Về định hướng tương lai, chúng tôi dự kiến một số hướng phát triển sau cho \texttt{SchubertPy}:
+\begin{itemize}
+    \item \textbf{Tích hợp với NumPy:} Tích hợp các cấu trúc dữ liệu và thuật toán của \texttt{SchubertPy} với thư viện \texttt{NumPy} để tăng hiệu quả tính toán, đặc biệt cho các phép tính ma trận lớn và nhiều phép nhân lặp lại \cite{githubschubertpy}.
+    \item \textbf{Tối ưu hiệu năng:} Cải thiện hiệu năng của các thuật toán, ví dụ bằng cách cài đặt bộ nhớ đệm cho các kết quả đã tính để tránh tính toán lặp lại, hoặc chuyển các đoạn mã quan trọng sang C/C++ và liên kết với Python thông qua Cython/pybind11 \cite{githubschubertpy}.
+    \item \textbf{Tích hợp với SageMath:} Kết nối \texttt{SchubertPy} vào hệ sinh thái SageMath \cite{sagemath}, cho phép người dùng SageMath gọi trực tiếp các hàm của \texttt{SchubertPy} như một module, từ đó kết hợp ưu điểm của cả hai nền tảng.
+    \item \textbf{Tăng cường trực quan hóa:} Phát triển các chức năng trực quan hóa hình học, ví dụ vẽ hình ảnh của một vài trường hợp đa tạp Schubert hoặc mô phỏng vị trí các không gian con thỏa điều kiện, giúp người dùng có trực giác tốt hơn về các đối tượng đang nghiên cứu \cite{githubschubertpy}.
+    \item \textbf{Mở rộng chức năng:} Bổ sung các thuật toán và hàm tính toán mới theo nhu cầu của người dùng và theo tiến triển của nghiên cứu về phép tính Schubert. Ví dụ, hiện chúng tôi đang xem xét triển khai thuật toán tính \textit{hệ số Littlewood-Richardson} trực tiếp, tính số \textit{Kostka} và các đại lượng quan trọng khác trong đại số tổ hợp liên quan \cite{githubschubertpy}. Mục tiêu lâu dài là làm cho \texttt{SchubertPy} trở thành một công cụ toàn diện cho cả phép tính Schubert cổ điển lẫn các mở rộng như đồng điều lượng tử và $K$-theory.
+\end{itemize}
+
+Những định hướng trên thể hiện cam kết của chúng tôi trong việc phát triển \texttt{SchubertPy} thành một công cụ mạnh mẽ, hiệu quả và thân thiện cho cộng đồng nghiên cứu phép tính Schubert. Chúng tôi hoan nghênh sự đóng góp ý kiến, báo lỗi và bổ sung tính năng từ cộng đồng mã nguồn mở nhằm cùng nhau hoàn thiện gói phần mềm này.
+
+Về mặt toán học, phép tính Schubert vẫn tiếp tục là một lĩnh vực sôi động. Việc kết nối với các lý thuyết mới (chẳng hạn đối ngẫu gương, lý thuyết đồng điều lượng tử cho các đa tạp phức tổng quát, v.v.) mở ra nhiều câu hỏi và cơ hội nghiên cứu. Chúng tôi hy vọng rằng sự kết hợp giữa một nền tảng lý thuyết vững chắc và các công cụ tính toán tiện lợi sẽ giúp đẩy nhanh quá trình khám phá và đưa ra những kết quả mới trong tương lai.

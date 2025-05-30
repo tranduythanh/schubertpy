@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2024)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: proposal.aux
+The style file: alpha.bst
+Database file #1: bibliography.bib
+Warning--entry type for "githubschubertpy" isn't style-file defined
+--line 52 of file bibliography.bib
+Warning--I didn't find a database entry for "XXX"
+Warning--I didn't find a database entry for "SageMath2024"
+Warning--to sort, need author or key in Encyclo_schubert_calculus
+You've used 20 entries,
+            2543 wiz_defined-function locations,
+            668 strings with 7876 characters,
+and the built_in function-call counts, 6358 in all, are:
+= -- 609
+> -- 287
+< -- 11
++ -- 96
+- -- 92
+* -- 394
+:= -- 1048
+add.period$ -- 55
+call.type$ -- 20
+change.case$ -- 113
+chr.to.int$ -- 17
+cite$ -- 22
+duplicate$ -- 238
+empty$ -- 505
+format.name$ -- 121
+if$ -- 1290
+int.to.chr$ -- 4
+int.to.str$ -- 0
+missing$ -- 6
+newline$ -- 99
+num.names$ -- 57
+pop$ -- 162
+preamble$ -- 1
+purify$ -- 135
+quote$ -- 0
+skip$ -- 221
+stack$ -- 0
+substring$ -- 240
+swap$ -- 21
+text.length$ -- 11
+text.prefix$ -- 11
+top$ -- 0
+type$ -- 156
+warning$ -- 1
+while$ -- 52
+width$ -- 24
+write$ -- 239
+(There were 4 warnings)

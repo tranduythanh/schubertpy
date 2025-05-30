@@ -1,0 +1,49 @@
+% --- Pieri Type B Algorithms ---
+
+\subsection*{Thuật toán Pieri Type B (Grassmannian trực giao lẻ) -- Python: \texttt{pieriB\_inner}}
+
+\begin{algorithm}[H]
+\caption{Pieri Rule Type B (\texttt{pieriB\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum 2^{c(\lambda,\mu)-b} \sigma_\mu \in H^*(OG(k,2n+1))$
+\STATE $result \gets 0$
+\STATE $b \gets \begin{cases}0 & \text{nếu } p \leq k \\ 1 & \text{nếu } p > k\end{cases}$
+\STATE $\mathcal{P} \gets$ PieriSet($p$, $\lambda$, $k$, $n$, $0$)
+\FOR{mỗi $\mu \in \mathcal{P}$}
+    \STATE $c \gets$ CountComps($\lambda$, $\mu$, false, $k$, $0$)
+    \STATE $a_\mu \gets 2^{c-b}$
+    \STATE $result \gets result + a_\mu \cdot \sigma_\mu$
+\ENDFOR
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Thuật toán Pieri lượng tử Type B (Quantum) -- Python: \texttt{qpieriB\_inner}}
+
+\begin{algorithm}[H]
+\caption{Quantum Pieri Rule Type B (\texttt{qpieriB\_inner})}
+\begin{algorithmic}[1]
+\REQUIRE $p \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+\ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(OG(k,2n+1))$
+\STATE $result \gets$ PieriB($p$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
+\IF{$k = 0$}
+    \IF{$|\lambda| > 0$ và $\lambda_1 = n + k$}
+        \STATE $T_1 \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $n+k$), PieriB($p$, $\lambda[2:]$, $k$, $n$))
+        \STATE $result \gets result + q \cdot T_1$
+    \ENDIF
+\ELSE
+    \IF{$|\lambda| = n-k$ và $\lambda_{n-k} > 0$}
+        \STATE $T_2 \gets$ ApplyLC($\mu \mapsto$ PartTilde($\mu$, $n-k+1$, $n+k$), PieriB($p$, $\lambda$, $k$, $n+1$))
+        \STATE $result \gets result + q \cdot T_2$
+    \ENDIF
+    \IF{$|\lambda| > 0$ và $\lambda_1 = n + k$}
+        \STATE $T_3 \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $n+k$), PieriB($p$, $\lambda[2:]$, $k$, $n$))
+        \STATE $result \gets result + q^2 \cdot T_3$
+    \ENDIF
+\ENDIF
+\RETURN $result$
+\end{algorithmic}
+\end{algorithm}
+
+% Các thuật toán hỗ trợ chung cho Pieri B đã được trình bày ở appendixE ("Thuật toán hỗ trợ chung cho Pieri B/C/D"). Vui lòng tham khảo appendixE cho các hàm: \texttt{pieri\_set}, \texttt{count\_comps}, \texttt{_pieri\_fill}, \texttt{_pieri\_itr}, \texttt{part\_conj}, \texttt{_part\_star}, \texttt{_part\_tilde}, \texttt{part\_clip}.

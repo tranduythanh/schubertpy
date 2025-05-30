@@ -1,0 +1,92 @@
+\section{Cơ sở lý thuyết của phép tính Schubert}
+
+\subsection{Đa tạp Grassmann và các đa tạp cờ}
+
+Để giải quyết các bài toán đếm hình học một cách có hệ thống, ta cần mô tả không gian của tất cả các đối tượng hình học cần đếm dưới dạng một \textit{đa tạp đại số}. Trong các bài toán của Schubert, đối tượng thường gặp nhất là các không gian con tuyến tính trong một không gian vector cố định—gọi là \textit{không gian nền} (ambient space), thường ký hiệu là $\mathbb{C}^n$ hoặc $\mathbb{R}^n$. Tuỳ vào mục tiêu nghiên cứu, ta có thể xây dựng đa tạp Grassmann $Gr(k,n)$ dưới hai dạng: $Gr(k, \mathbb{R}^n)$ khi không gian nền là thực, hoặc $Gr(k, \mathbb{C}^n)$ khi làm việc trong ngữ cảnh phức. Trong hình học Schubert và hình học đại số, ta thường dùng $\mathbb{C}^n$ vì không gian này cho phép áp dụng các công cụ đại số mạnh như định lý Bézout, tính đồng điều và phân rã theo phân hoạch.Trong phạm vi bài viết này, ta giả định không gian nền là $\mathbb{C}^n$.
+
+\subsubsection{\textbf{Grassmannian---Không gian của các không gian con}}
+Đa tạp Grassmann $Gr(k,n)$ là không gian tham số hóa tất cả các không gian con tuyến tính $k$-chiều trong $\mathbb{C}^n$:
+\[ Gr(k,n) = \left\{ V \subset \mathbb{C}^n \mid \dim V = k \right\}. \]
+
+Mỗi điểm trong $Gr(k,n)$ không phải là một vector cụ thể mà là một \textit{không gian con} $k$-chiều. Đây là bước nhảy tư duy quan trọng: từ việc xét một đối tượng cụ thể, ta chuyển sang xét toàn bộ tập hợp của các không gian con có cùng chiều.
+
+\textbf{Ví dụ}: $Gr(2,4)$ là không gian của tất cả các mặt phẳng hai chiều trong $\mathbb{C}^4$. Trong hình học xạ ảnh, điều này tương đương với tập hợp các đường thẳng trong $\mathbb{P}^3$.
+
+Việc gom các không gian con vào trong một đa tạp chung như $Gr(k,n)$ có ý nghĩa toán học sâu sắc: nó cho phép ta áp dụng các công cụ hình học và đại số để xử lý các bài toán đếm mà trước đây vốn mang tính hình dung trực tiếp.
+
+\subsubsection{\textbf{Từ hình học đến đại số thông qua giao cắt}}
+Thay vì đếm từng trường hợp cụ thể, ta xem mỗi điều kiện hình học (ví dụ: “đi qua một điểm”, “nằm trong mặt phẳng”, “cắt một đường thẳng”) là một tập con hình học trong $Gr(k,n)$. Khi đó, bài toán đếm trở thành bài toán giao cắt các tập con này. Nếu giao cắt cho ra số hữu hạn điểm, số lượng các điểm đó chính là nghiệm cần tìm.
+
+\textit{Ví dụ}: Trong $Gr(2,4)$, bài toán “có bao nhiêu đường thẳng cắt bốn đường tổng quát trong $\mathbb{P}^3$?” trở thành bài toán tìm giao của bốn tập con hình học trong $Gr(2,4)$, mỗi tập tương ứng với một điều kiện “cắt một đường”.
+
+\subsubsection{\textbf{Cờ toàn phần: Hệ trục chuẩn để mô tả vị trí}}
+Để mô tả một cách hình học và đại số chính xác các điều kiện như "đi qua điểm", "nằm trong mặt phẳng", ta cần một hệ quy chiếu hình học – đó là \textit{cờ toàn phần} $F_\bullet$:
+\[ 0 \subset F_1 \subset F_2 \subset \cdots \subset F_n = \mathbb{C}^n, \quad \dim F_i = i. \]
+
+Cờ chia không gian thành các lớp con theo thứ bậc. Mỗi điều kiện vị trí sẽ tương ứng với yêu cầu về cách không gian con $P$ cắt các lớp này. Một điều kiện cụ thể có thể được viết dưới dạng:
+\[ \dim(P \cap F_{n - k + i - \lambda_i}) \geq i, \quad \text{với } i = 1,\dots,k. \]
+Trong đó $\lambda = (\lambda_1, \dots, \lambda_k)$ là một phân hoạch mô tả "mức độ khắt khe" của điều kiện.
+
+\subsubsection{\textbf{Tập Schubert $\Omega_\lambda$}}
+Với mỗi phân hoạch 
+$$\lambda = (\lambda_1, \dots, \lambda_k)$$
+và một cờ toàn phần $F_\bullet$, ta định nghĩa \textit{tập Schubert}:
+$$
+\Omega_\lambda(F_\bullet) = \left\{ P \in Gr(k,n) \mid \dim(P \cap F_{n-k+i - \lambda_i}) \geq i\right\}
+$$
+với $i = 1, \dots, k$.
+
+Đây là tập hợp các không gian con $k$-chiều thỏa mãn các điều kiện vị trí được mã hóa bởi $\lambda$. Tập $\Omega_\lambda$ là một đa tạp con đại số trong $Gr(k,n)$, thường là bất khả quy và có codimension bằng tổng các phần tử của $\lambda$.
+
+\textbf{Ví dụ}: Xét $Gr(2,4)$, tức không gian của các mặt phẳng trong $\mathbb{C}^4$. Giả sử ta chọn cờ chuẩn:
+\begin{align*}
+F_1 &= \langle e_1 \rangle, \\
+F_2 &= \langle e_1, e_2 \rangle, \\
+F_3 &= \langle e_1, e_2, e_3 \rangle, \\
+F_4 &= \mathbb{C}^4.
+\end{align*}
+
+Xét mặt phẳng $P = \text{span}(e_2 + e_3,\ e_3 + e_4)$. Ta tính các giao với cờ:
+\begin{align*}
+\dim(P \cap F_1) &= 0, \\
+\dim(P \cap F_2) &= 1, \\
+\dim(P \cap F_3) &= 2, \\
+\dim(P \cap F_4) &= 2.
+\end{align*}
+
+Dựa vào công thức điều kiện của $\Omega_\lambda$, ta thấy $P$ thỏa mãn:
+\[ \dim(P \cap F_3) \geq 1, \quad \dim(P \cap F_2) \geq 0. \]
+Tức là $P \in \Omega_{(1,0)}(F_\bullet)$. Ngoài ra, ta cũng có thể kiểm tra liệu $P$ có thuộc các tập Schubert khác như $\Omega_{(2,1)}(F_\bullet)$ hay không. Điều kiện tương ứng là:
+\[ \dim(P \cap F_1) \geq 1, \quad \dim(P \cap F_2) \geq 2. \]
+Tuy nhiên, trong ví dụ này ta có:
+\[ \dim(P \cap F_1) = 0, \quad \dim(P \cap F_2) = 1, \]
+nên $P \notin \Omega_{(2,1)}(F_\bullet)$. Điều này cho thấy các phân hoạch với tổng số ô lớn hơn sẽ mô tả các điều kiện vị trí chặt hơn và tập các $P$ thỏa mãn sẽ nhỏ hơn.
+
+
+Biểu đồ Young tương ứng với $\lambda = (1,0)$ gồm một ô ở hàng đầu tiên, biểu thị một điều kiện cắt bổ sung. Tổng số ô là 1, nên codimension của $\Omega_{(1,0)}$ là 1 trong $Gr(2,4)$.
+
+Khi ta lấy giao của nhiều $\Omega_\lambda$ khác nhau (với các cờ tổng quát), ta mô tả tập các $P$ thỏa đồng thời nhiều điều kiện vị trí. Nếu tổng các codimension đúng bằng $\dim Gr(k,n)$, giao sẽ là tập hữu hạn các điểm.
+
+\textbf{Ví dụ mở rộng}: Trong $Gr(2,4)$, giao của bốn $\Omega_{(1,0)}$ tương ứng với bài toán đếm số đường thẳng cắt bốn đường tổng quát trong $\mathbb{P}^3$. Kết quả là đúng hai điểm rời rạc – tương ứng với hai đường thỏa mãn tất cả các điều kiện.
+
+\subsubsection{\textbf{Kết nối với đồng điều}}
+Đa tạp Schubert là cầu nối giữa hình học đại số và lý thuyết đồng điều: mỗi điều kiện hình học trở thành một lớp trong vành đồng điều. Khi tính giao các tập Schubert, ta thực chất đang nhân các lớp đại số tương ứng. Việc đếm số giao chính là bài toán tổ hợp trong ngôn ngữ của đại số – đây là điểm mạnh của phép tính Schubert, sẽ được trình bày chi tiết hơn trong phần tiếp theo.
+
+
+
+\subsection{Lớp Schubert và vành đồng điều của Grassmann}
+Vành đồng điều của Grassmannian $Gr(k,n)$ có dạng:
+$$
+H^\star(Gr(k,n)) = \bigoplus_{\lambda \subseteq k \times (n-k)} \mathbb{Z} \cdot \sigma_\lambda.
+$$
+Khi đó, tích của hai lớp Schubert được định nghĩa:
+$$
+\sigma_{\lambda} \cdot \sigma_{\mu} = \sum_{\nu} c_{\lambda, \mu}^{\nu} \, \sigma_{\nu}.
+$$
+Mỗi đa tạp Schubert $\Omega_\lambda(F_\bullet)$ trong $Gr(k,n)$ xác định một \textit{lớp đồng điều} (cohomology class) $[\Omega_\lambda]$ trong vành đồng điều $H^*(Gr(k,n), \mathbb{Z})$ của đa tạp Grassmann tương ứng. Các lớp này không phụ thuộc vào lựa chọn cụ thể của cờ $F_\bullet$ (vì nếu thay đổi cờ ở vị trí tổng quát thì lớp đồng điều thu được vẫn giống nhau). Tập hợp tất cả các \textit{lớp Schubert} $\{\sigma_\lambda = [\Omega_\lambda]\}$, ứng với mọi partition $\lambda$ khả dĩ, tạo thành một cơ sở $\mathbb{Z}$-tự do của $H^*(Gr(k,n),\mathbb{Z})$. Nói cách khác, bất kỳ lớp đồng điều nào trên $Gr(k,n)$ cũng có thể biểu diễn duy nhất dưới dạng tổ hợp tuyến tính (hữu hạn) các lớp Schubert.
+
+Cấu trúc của vành đồng điều $H^*(Gr(k,n),\mathbb{Z})$ rất đặc biệt: nó là một vành giao hoán có đơn vị, trong đó phép nhân hai lớp đồng điều $[\Omega_{\lambda}] \cdot [\Omega_{\mu}]$ cũng chính là phép tính giao của hai đa tạp Schubert tương ứng trong $Gr(k,n)$. Kết quả của phép nhân là một lớp đồng điều mới, có thể biểu diễn trên cơ sở Schubert:
+\[ [\Omega_{\lambda}] \cdot [\Omega_{\mu}] \;=\; \sum_{\nu} c_{\lambda,\mu}^{\,\nu}\, [\Omega_{\nu}], \]
+trong đó các hệ số $c_{\lambda,\mu}^{\,\nu}$ là các số nguyên không âm gọi là các \textit{hệ số Littlewood-Richardson}. Mỗi hệ số $c_{\lambda,\mu}^{\,\nu}$ về mặt hình học biểu thị số lượng (đếm theo bội số thích hợp) các điểm giao của ba đa tạp Schubert $\Omega_{\lambda}, \Omega_{\mu}$ và $\Omega_{\nu^c}$ trong $Gr(k,n)$, với $\nu^c$ là phân hoạch bổ sung đảm bảo tổng các điều kiện bằng đúng $\dim Gr(k,n)$. Khi $\lambda, \mu, \nu$ thỏa mãn điều kiện tổng các phần bằng $k(n-k)$, khi đó $\Omega_{\lambda} \cap \Omega_{\mu} \cap \Omega_{\nu}$ gồm một số hữu hạn điểm, và số điểm này chính là $c_{\lambda,\mu}^{\,\nu}$. Do đó, việc tìm số nghiệm của bài toán hình học liệt kê ban đầu tương đương với việc xác định một hệ số $c_{\lambda,\mu}^{\,\nu}$ tương ứng trong phép nhân các lớp Schubert.
+
+Bằng cách chuyển bài toán hình học về ngôn ngữ của vành đồng điều, ta đã đưa vấn đề đếm hình học về một bài toán đại số tổ hợp: tính các hệ số xuất hiện khi nhân các phần tử cơ sở (các lớp Schubert) trong một vành giao hoán. Bài toán này, thường được gọi là \textit{bài toán đặc trưng} (characteristic problem) theo cách gọi của Schubert, chính là trọng tâm của phép tính Schubert. Trong phần tiếp theo, chúng ta sẽ điểm qua những công cụ cổ điển để giải quyết bài toán này, bao gồm các công thức và quy tắc mang tên Pieri, Giambelli và Littlewood-Richardson.
