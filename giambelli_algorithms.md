@@ -4,10 +4,10 @@ Tài liệu này mô tả chi tiết các thuật toán Giambelli được tri�
 
 ## Tổng Quan
 
-**Ý nghĩa:** Quy tắc Giambelli là công thức chính xác để biểu diễn bất kỳ lớp Schubert σ_λ nào dưới dạng polynomial của các lớp Schubert đặc biệt (chỉ có một phần).
+**Ý nghĩa:** Quy tắc Giambelli là công thức chính xác để biểu diễn bất kỳ lớp Schubert $\sigma_\lambda$ nào dưới dạng polynomial của các lớp Schubert đặc biệt (chỉ có một phần).
 
 **Ý tưởng cơ bản:** Dùng thuật toán đệ quy để:
-1. Giảm dần từ partition λ đầy đủ về các partition đơn giản hơn 
+1. Giảm dần từ partition $\lambda$ đầy đủ về các partition đơn giản hơn 
 2. Sử dụng quy tắc Pieri để tính các tích cần thiết
 3. Áp dụng công thức đệ quy để thu được kết quả cuối cùng
 
@@ -39,7 +39,7 @@ Biểu diễn linear combination của các lớp Schubert dưới dạng polyno
 - `lc`: Linear combination của các lớp Schubert (có thể là một partition, Schur class, hoặc tổ hợp phức tạp)
 
 ### Đầu ra  
-- Polynomial của các lớp Schubert đặc biệt σ_p (p > 0) và σ_{p,0} (p < 0)
+- Polynomial của các lớp Schubert đặc biệt $\sigma_p$ (p > 0) và $\sigma_{p,0}$ (p < 0)
 
 ### Thuật toán
 ```
@@ -70,19 +70,19 @@ Output: Polynomial of special Schubert classes
 ## Thuật Toán Cốt Lõi: `giambelli_rec_inner(lam, pieri, k)`
 
 ### Mô tả
-Thuật toán đệ quy cốt lõi để biểu diễn một lớp Schubert σ_λ dưới dạng polynomial của các lớp đặc biệt.
+Thuật toán đệ quy cốt lõi để biểu diễn một lớp Schubert $\sigma_\lambda$ dưới dạng polynomial của các lớp đặc biệt.
 
 ### Công thức toán học
 Quy tắc Giambelli dựa trên công thức đệ quy:
 
-```
-σ_λ = σ_p · G(λ') - G(stuff)
-```
+$$
+\sigma_\lambda = \sigma_p \cdot G(\lambda') - G(\text{stuff})
+$$
 
 Trong đó:
-- `p = λ₁` (phần tử đầu tiên của λ)  
-- `λ' = λ[2:]` (partition con từ phần tử thứ 2)
-- `stuff = pieri(p, λ') - σ_λ` (hiệu số để khử σ_λ từ Pieri expansion)
+- $p = \lambda_1$ (phần tử đầu tiên của $\lambda$)  
+- $\lambda' = \lambda[2:]$ (partition con từ phần tử thứ 2)
+- $\text{stuff} = \text{pieri}(p, \lambda') - \sigma_\lambda$ (hiệu số để khử $\sigma_\lambda$ từ Pieri expansion)
 
 ### Thuật toán
 ```
@@ -117,27 +117,27 @@ Output: Polynomial ∈ SpecialSchubertClasses
 ### Giải thích chi tiết:
 
 **Base case (line 1):**
-- Partition rỗng tương ứng với lớp đơn vị σ_∅ = 1
+- Partition rỗng tương ứng với lớp đơn vị $\sigma_\emptyset = 1$
 
 **Parameter extraction (lines 2-3):**
-- Lấy phần tử đầu tiên `p = λ₁` làm "tham số Pieri"  
-- Trường hợp đặc biệt Type D: nếu `p = k` và có trailing zero thì `p = -k`
+- Lấy phần tử đầu tiên $p = \lambda_1$ làm "tham số Pieri"  
+- Trường hợp đặc biệt Type D: nếu $p = k$ và có trailing zero thì $p = -k$
 
 **Sub-partition computation (lines 5-8):**
-- Mặc định: λ' = λ[2:] (loại bỏ phần tử đầu)
-- Đặc biệt: nếu có trailing zero và λ₂ < k thì λ' = λ[2:-1] (loại bỏ cả đầu và cuối)
+- Mặc định: $\lambda' = \lambda[2:]$ (loại bỏ phần tử đầu)
+- Đặc biệt: nếu có trailing zero và $\lambda_2 < k$ thì $\lambda' = \lambda[2:-1]$ (loại bỏ cả đầu và cuối)
 
 **Pieri expansion (lines 10-11):**
-- Tính `pieri(p, λ')` để có expansion chứa σ_λ
-- `stuff` là phần còn lại sau khi trừ đi σ_λ
+- Tính $\text{pieri}(p, \lambda')$ để có expansion chứa $\sigma_\lambda$
+- $\text{stuff}$ là phần còn lại sau khi trừ đi $\sigma_\lambda$
 
 **Recursion (lines 13-14):**
-- `a`: Giambelli cho partition đơn giản hơn λ'
-- `b`: Giambelli cho các terms phức tạp trong `stuff`
+- $a$: Giambelli cho partition đơn giản hơn $\lambda'$
+- $b$: Giambelli cho các terms phức tạp trong $\text{stuff}$
 
 **Final formula (line 16):**
-- Công thức Giambelli: σ_λ = σ_p · G(λ') - G(stuff)
-- Rearrange: G(σ_λ) = σ_p · G(λ') - G(stuff)
+- Công thức Giambelli: $\sigma_\lambda = \sigma_p \cdot G(\lambda') - G(\text{stuff})$
+- Rearrange: $G(\sigma_\lambda) = \sigma_p \cdot G(\lambda') - G(\text{stuff})$
 
 ## Helper Functions
 
@@ -162,8 +162,8 @@ Output: p ∈ ℤ
 ```
 
 **Ví dụ:**
-- `σ₃ → 3`
-- `σ_{5,0} → -5` (chỉ cho Type D)
+- $\sigma_3 \rightarrow 3$
+- $\sigma_{5,0} \rightarrow -5$ (chỉ cho Type D)
 
 ### 2. `num2spec(p)`
 
@@ -180,8 +180,8 @@ Output: SpecialSchubertClass
 ```
 
 **Ví dụ:**
-- `3 → σ₃`
-- `-5 → σ_{5,0}`
+- $3 \rightarrow \sigma_3$
+- $-5 \rightarrow \sigma_{5,0}$
 
 ### 3. `apply_lc(f, lc)`
 
@@ -266,7 +266,7 @@ Special cases:
 
 ## Ví Dụ Chi Tiết
 
-### Ví dụ 1: Giambelli cho σ_{3,1} trong Type A
+### Ví dụ 1: Giambelli cho $\sigma_{3,1}$ trong Type A
 ```
 Input: σ_{3,1}
 Step 1: p = 3, λ' = [1]
@@ -282,31 +282,6 @@ Step 6: result = σ₃ · σ₁ - σ₄
 Input: σ_{2,1} in quantum setting
 Result: Có thể có dạng σ₂ · σ₁ - σ₃ + q · (quantum terms)
 ```
-
-## Độ Phức Tạp
-
-- **Thời gian:** O(recursive calls × Pieri complexity)
-- **Không gian:** O(cache size + recursion depth)
-- **Memoization hiệu quả:** Giảm đáng kể thời gian tính toán
-
-## So Sánh với Pieri Rules
-
-| Khía cạnh | Pieri Rules | Giambelli Rules |
-|-----------|-------------|-----------------|
-| **Input** | Partition + number | General Schubert class |
-| **Output** | Linear combination | Polynomial expression |
-| **Complexity** | Medium | High (recursive) |
-| **Purpose** | Multiplication by special class | Express any class |
-| **Dependencies** | Partition operations | Pieri rules |
-
-## Ý Nghĩa Toán Học
-
-**Định lý Giambelli:** Mọi lớp Schubert σ_λ đều có thể biểu diễn duy nhất dưới dạng polynomial của các lớp Schubert đặc biệt.
-
-**Ứng dụng:**
-- **Multiplication:** `mult(lc1, lc2) = act(giambelli(lc1), lc2)`
-- **Basis conversion:** Chuyển từ Schubert basis sang special class basis
-- **Cohomology ring:** Hiểu cấu trúc nhân trong H*(X)
 
 ## Tham Khảo
 

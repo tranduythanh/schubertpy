@@ -40,41 +40,6 @@ graph TD
     QA --> PT[_part_tilde]
     QA --> TS[type_swap]
     QA --> DZ[dualize]
-    
-    %% Classical dependencies through pieriD_inner
-    PA --> B[pieri_set]
-    PA --> C[_dcoef]
-    
-    %% Recursive calls for different k values
-    QA --> PA2[pieriD_inner<br/>recursive k=0]
-    QA --> PA3[pieriD_inner<br/>recursive n+1]
-    QA --> PA4[pieriD_inner<br/>recursive abs(p)-1]
-    
-    %% Complex transformations
-    QA --> TRANS[_toSchurFromIntnMu]
-    
-    %% Dependencies
-    C --> D[count_comps]
-    B --> F[part_conj]
-    B --> G[part_clip]
-    
-    %% Styling
-    QA -.-> |"quantum terms"| Q1[q · terms]
-    QA -.-> |"quantum terms"| Q2[q1·q2 · terms]
-    QA -.-> |"quantum terms"| Q3[q² · terms]
-    
-    style QA fill:#e1f5fe
-    style PA fill:#f3e5f5
-    style PA2 fill:#f3e5f5  
-    style PA3 fill:#f3e5f5
-    style PA4 fill:#f3e5f5
-    style PS fill:#fff3e0
-    style PT fill:#ffebee
-    style TS fill:#e8eaf6
-    style DZ fill:#f1f8e9
-    style Q1 fill:#e8f5e8
-    style Q2 fill:#e8f5e8
-    style Q3 fill:#e8f5e8
 ```
 
 ## Thuật Toán Chính: `pieriD_inner(p, lam, k, n)`
@@ -89,7 +54,7 @@ Tính toán tích Pieri của một lớp Schubert với lớp Schubert đặc b
 - `n`: Tham số chiều (liên quan đến chiều không gian 2n+2)
 
 ### Đầu ra
-- Tổng tuyến tính của các lớp Schubert với hệ số phức tạp ∈ H*(OG(k,2n+2))
+- $\sum \text{Dcoef}(p,\lambda,\mu,t_\lambda,k,n) \sigma_\mu \in H^*(OG(k,2n+2))$
 
 ### Thuật toán
 ```
@@ -411,12 +376,12 @@ Quantum: Chỉ kiểm tra λ₁ = n+k condition
 - Cấu trúc trực giao chẵn tạo ra complexity đặc biệt
 - Type D có đặc điểm đặc biệt về spinor representations
 
-## Ký Hiệu Toán Học
+## Ký Hiệu
 
-- **σ_μ**: Lớp Schubert tương ứng với partition μ
+- **$\sigma_\mu$**: Lớp Schubert tương ứng với partition $\mu$
 - **q, q1, q2**: Các tham số lượng tử
 - **cc**: Connected components count
-- **tlam**: Type parameter (0, 1, hoặc 2)
+- **$t_\lambda$**: Type parameter (0, 1, hoặc 2)
 - **OG(k,2n+2)**: Grassmannian trực giao chẵn
-- **QH*(OG(k,2n+2))**: Quantum cohomology ring của OG(k,2n+2)
+- **$QH^*(OG(k,2n+2))$**: Quantum cohomology ring của OG(k,2n+2)
 - **h**: Tie-breaking value 

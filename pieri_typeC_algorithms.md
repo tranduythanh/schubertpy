@@ -35,20 +35,6 @@ graph TD
     %% Quantum root function
     QA[qpieriC_inner] --> PA[pieriC_inner]
     QA --> PS[_part_star]
-    
-    %% Classical dependencies through pieriC_inner
-    PA --> B[pieri_set]
-    PA --> C[count_comps]
-    
-    %% Dependencies
-    B --> D[part_conj]
-    B --> E[part_clip]
-    B --> F[part_itr_between]
-    B --> G[_pieri_fill]
-    B --> H[_pieri_itr]
-    
-    C --> D
-    C --> E
 ```
 
 ## Thuật Toán Chính: `pieriC_inner(i, lam, k, n)`
@@ -63,7 +49,7 @@ Tính toán tích Pieri của một lớp Schubert với lớp Schubert đặc b
 - `n`: Tham số chiều (liên quan đến chiều không gian 2n)
 
 ### Đầu ra
-- Tổng tuyến tính của các lớp Schubert ∑ 2^c(λ,μ) σ_μ ∈ H*(IG(k,2n))
+- Tổng tuyến tính của các lớp Schubert $\sum 2^{c(\lambda,\mu)} \sigma_\mu \in H^*(IG(k,2n))$
 
 ### Thuật toán
 ```
@@ -199,11 +185,12 @@ Note: Hệ số q/2 là đặc trưng của Type C
 - Cấu trúc symplectic tạo ra đặc điểm riêng trong quantum cohomology
 - Hệ số q/2 phản ánh "half" của cấu trúc symplectic
 
-## Ký Hiệu Toán Học
+## Ký Hiệu
 
-- **σ_μ**: Lớp Schubert tương ứng với partition μ
+- **$\sigma_\mu$**: Lớp Schubert tương ứng với partition $\mu$
 - **q**: Tham số lượng tử
-- **c(λ,μ)**: Số connected components giữa λ và μ (với skipfirst=true)
-- **IG(k,2n)**: Grassmannian symplectic (isotropic)
-- **QH*(IG(k,2n))**: Quantum cohomology ring của IG(k,2n)
+- **cc**: Connected components count  
+- **$c(\lambda,\mu)$**: Số connected components giữa partitions $\lambda$ và $\mu$
+- **IG(k,2n)**: Isotropic Grassmannian (symplectic)
+- **$QH^*(IG(k,2n))$**: Quantum cohomology ring của IG(k,2n)
 - **H*(IG(k,2n))**: Cohomology ring của IG(k,2n) 

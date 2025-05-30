@@ -24,28 +24,6 @@ graph TD
     %% Quantum root function
     QA[qpieriA_inner] --> PA[pieriA_inner]
     QA --> PS[_part_star]
-    
-    %% Classical dependencies through pieriA_inner
-    PA --> B[padding_right]
-    PA --> C[_pieri_fillA]
-    PA --> D[_pieri_itrA] 
-    PA --> E[part_clip]
-    
-    %% Quantum specific - recursive call to classical PieriA
-    QA --> PA2[pieriA_inner<br/>recursive call]
-    PA2 --> B2[padding_right]
-    PA2 --> C2[_pieri_fillA]
-    PA2 --> D2[_pieri_itrA]
-    PA2 --> E2[part_clip]
-    
-    %% Styling
-    QA -.-> |"quantum term"| Q[q · σ_∅]
-    
-    style QA fill:#e1f5fe
-    style PA fill:#f3e5f5
-    style PA2 fill:#f3e5f5
-    style PS fill:#fff3e0
-    style Q fill:#e8f5e8
 ```
 
 ## Thuật Toán Chính: `pieriA_inner(i, lam, k, n)`
@@ -60,7 +38,7 @@ Tính toán tích Pieri của một lớp Schubert với lớp Schubert đặc b
 - `n`: Tham số chiều (chiều của không gian vector)
 
 ### Đầu ra
-- Tổng tuyến tính của các lớp Schubert σ_μ ∈ H*(Gr(k,n))
+- Tổng tuyến tính của các lớp Schubert $\sigma_\mu \in H^*(Gr(k,n))$
 
 ### Thuật toán
 ```
@@ -260,15 +238,31 @@ Output: σ_(3,2) + σ_(2,2,1) + q·σ_∅
 - **Thời gian:** O(số lượng partitions hợp lệ × độ dài trung bình partition)
 - **Không gian:** O(độ dài tối đa partition)
 
-## Ký Hiệu Toán Học
+## Ký Hiệu
 
-- **σ_μ**: Lớp Schubert tương ứng với partition μ
-- **q**: Tham số lượng tử  
-- **λ ∪ S**: Phép hợp (concatenation) partition λ với tập S
-- **⊳**: Comment trong algorithm
-- **∅**: Tập rỗng hoặc partition rỗng
-- **|λ|**: Số hàng của partition λ
-- **QH*(Gr(k,n))**: Quantum cohomology ring của Grassmannian Gr(k,n)
-- **H*(Gr(k,n))**: Cohomology ring của Grassmannian Gr(k,n)
-- **∈**: Thuộc về
-- **∧**: Logical AND 
+- **$\sigma_\mu$**: Lớp Schubert tương ứng với partition $\mu$
+- **q**: Tham số lượng tử
+- **Gr(k,n)**: Grassmannian thông thường  
+- **$H^*(Gr(k,n))$**: Cohomology ring của Gr(k,n)
+- **$QH^*(Gr(k,n))$**: Quantum cohomology ring của Gr(k,n)
+- **$\lambda \subseteq \mu$**: $\mu$ chứa $\lambda$ (componentwise $\leq$)
+- **$|\lambda|$**: Số hàng của partition $\lambda$
+- **$\emptyset$**: Partition rỗng
+
+## Ví Dụ Chi Tiết
+
+### Ví dụ 1: Classical Pieri
+
+Xét việc nhân $\sigma_{(1)}$ với lớp Schubert đặc biệt có kích thước 1:
+```
+Input: pieriA_inner(1, [1], k=2, n=4)
+Algorithm: padding_right([1], 0, 1) = [1,0] 
+Result: σ_{(2)} + σ_{(1,1)}
+```
+
+### Ví dụ 2: Quantum Pieri  
+
+```
+Input: qpieriA_inner(2, [1,1], k=2, n=4)
+Output: σ_{(3,2)} + σ_{(2,2,1)} + q·σ_∅
+``` 

@@ -9,9 +9,9 @@ Quy tắc Pieri là thuật toán cơ bản trong phép tính Schubert, mô tả
 ### Cấu Trúc Chung
 
 Tất cả thuật toán Pieri đều có cấu trúc tương tự:
-1. **Sinh tập partitions hợp lệ**: Tìm tất cả các partition μ có thể thu được từ λ bằng cách thêm p boxes
+1. **Sinh tập partitions hợp lệ**: Tìm tất cả các partition $\mu$ có thể thu được từ $\lambda$ bằng cách thêm $p$ boxes
 2. **Tính hệ số**: Mỗi partition có hệ số riêng dựa trên connected components
-3. **Trả về tổ hợp tuyến tính**: ∑ aμ σμ
+3. **Trả về tổ hợp tuyến tính**: $\sum a_\mu \sigma_\mu$
 
 ## Các Loại Grassmannian
 
@@ -46,32 +46,24 @@ Tất cả thuật toán Pieri đều có cấu trúc tương tự:
 ## Thuật Toán Hỗ Trợ Cốt Lõi
 
 ### 1. Sinh Tập Partition: `pieri_set(p, lam, k, n, d)`
-```
-Input: p (số boxes), λ (partition), k, n (tham số Grassmannian), d (type parameter)
-Output: Tập tất cả partition μ hợp lệ
-```
 Chuyển đổi partition thành cặp (top, bot), sinh các partition hợp lệ, rồi chuyển ngược lại.
 - **Chi tiết**: [Type B Algorithm 1.1](pieri_typeB_algorithms.md#1-pieri_setp-lam-k-n-d)
 
 ### 2. Đếm Connected Components: `count_comps(lam1, lam2, skipfirst, k, d)`
-```
-Input: λ, μ (hai partitions), skipfirst (boolean), k, d
-Output: Số connected components
-```
 Tính toán dựa trên phương pháp cặp partition và mảng components.
 - **Chi tiết**: [Type B Algorithm 1.2](pieri_typeB_algorithms.md#2-count_compslam1-lam2-skipfirst-k-d)
 
 ### 3. Chuyển Đổi Partition-Pair: `part2pair`, `pair2part`
 ```
-part2pair: λ → (top, bot)
-pair2part: (top, bot) → λ
+part2pair: $\lambda$ $\rightarrow$ (top, bot)
+pair2part: (top, bot) $\rightarrow$ $\lambda$
 ```
 Phép biến đổi cơ bản giữa partition và cặp partition.
 
 ### 4. Các Phép Toán Partition
 - **`part_conj(lam)`**: Conjugate partition (phép đối xứng qua đường chéo)
   - **Chi tiết**: [Type B Algorithm 1.6](pieri_typeB_algorithms.md#6-part_conjlam)
-- **`part_star(lam, cols)`**: Phép toán star λ* = (cols-λₙ, ..., cols-λ₁)
+- **`part_star(lam, cols)`**: Phép toán star $\lambda*$ = (cols-$\lambda_n$, ..., cols-$\lambda_1$)
   - **Chi tiết**: [Type A Algorithm 1.5](pieri_typeA_algorithms.md#5-_part_starlam-cols)
 - **`part_tilde(lam, rows, cols)`**: Phép toán tilde phức tạp hơn
   - **Chi tiết**: [Type B Algorithm 1.8](pieri_typeB_algorithms.md#8-_part_tildelam-rows-cols)
@@ -108,9 +100,9 @@ Phép biến đổi cơ bản giữa partition và cặp partition.
 
 Các quy tắc lượng tử mở rộng quy tắc cổ điển bằng cách thêm các số hạng có tham số q:
 
-```
-QH*(X) = H*(X)[q] / (quan hệ lượng tử)
-```
+$$
+QH*(X) = H*(X)[q] / \text{(quan hệ lượng tử)}
+$$
 
 Mỗi loại có điều kiện lượng tử riêng:
 - **Type A**: Đơn giản nhất, chỉ một điều kiện
@@ -120,14 +112,14 @@ Mỗi loại có điều kiện lượng tử riêng:
 
 ## Ký Hiệu
 
-- **σμ**: Lớp Schubert cho partition μ
+- **$\sigma_\mu$**: Lớp Schubert cho partition $\mu$
 - **q**: Tham số lượng tử
 - **H*(X)**: Cohomology ring
 - **QH*(X)**: Quantum cohomology ring
-- **λ ⊆ μ**: μ chứa λ (componentwise ≤)
-- **|λ|**: Số hàng của partition λ
-- **λ[i:]**: Partition con từ phần tử thứ i
-- **∅**: Partition rỗng
+- **$\lambda \subseteq \mu$**: $\mu$ chứa $\lambda$ (componentwise $\leq$)
+- **$|\lambda|$**: Số hàng của partition $\lambda$
+- **$\lambda[i:]$**: Partition con từ phần tử thứ i
+- **$\emptyset$**: Partition rỗng
 
 ## Tổng Kết Các Phép Toán và Link References
 
@@ -143,7 +135,7 @@ Mỗi loại có điều kiện lượng tử riêng:
 | Operation | Link | Description |
 |-----------|------|-------------|
 | `part_conj` | [Type B Algorithm 1.6](pieri_typeB_algorithms.md#6-part_conjlam) | Conjugate partition |
-| `part_star` | [Type A Algorithm 1.5](pieri_typeA_algorithms.md#5-_part_starlam-cols) | Star operation λ* |
+| `part_star` | [Type A Algorithm 1.5](pieri_typeA_algorithms.md#5-_part_starlam-cols) | Star operation $\lambda*$ |
 | `part_tilde` | [Type B Algorithm 1.8](pieri_typeB_algorithms.md#8-_part_tildelam-rows-cols) | Tilde operation |
 | `part_clip` | [Type A Algorithm 1.4](pieri_typeA_algorithms.md#4-part_cliplambda) | Trim trailing zeros |
 
@@ -181,7 +173,7 @@ Mỗi loại có điều kiện lượng tử riêng:
 ## Ý Nghĩa Hình học
 
 **Grassmannian Trực Giao Chẵn OG(k,2n+2):**
-- Không gian các k-dimensional isotropic subspaces trong ℂ^(2n+2)
+- Không gian các k-dimensional isotropic subspaces trong $\mathbb{C}^{2n+2}$
 - Cấu trúc trực giao chẵn tạo ra complexity đặc biệt
 - Type D có đặc điểm đặc biệt về spinor representations
 
@@ -203,7 +195,7 @@ Ngoài các quy tắc Pieri, SchubertPy còn triển khai quy tắc Giambelli - 
 
 ## Ký Hiệu
 
-- **σμ**: Lớp Schubert cho partition μ
+- **$\sigma_\mu$**: Lớp Schubert cho partition $\mu$
 - **q, q1, q2**: Các tham số lượng tử
 - **cc**: Connected components count
 - **tlam**: Type parameter (0, 1, hoặc 2)

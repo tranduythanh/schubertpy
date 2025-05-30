@@ -35,21 +35,7 @@ graph TD
     %% Quantum root function
     QA[qpieriB_inner] --> PA[pieriB_inner]
     QA --> PS[_part_star]
-    QA --> PT[_part_tilde]
-    
-    %% Classical dependencies through pieriB_inner
-    PA --> B[pieri_set]
-    PA --> C[count_comps]
-    
-    %% Dependencies
-    B --> D[part_conj]
-    B --> E[part_clip]
-    B --> F[part_itr_between]
-    B --> G[_pieri_fill]
-    B --> H[_pieri_itr]
-    
-    C --> D
-    C --> E
+    QA --> PT[_part_tilde]    
 ```
 
 ## Thuật Toán Chính: `pieriB_inner(p, lam, k, n)`
@@ -64,7 +50,7 @@ Tính toán tích Pieri của một lớp Schubert với lớp Schubert đặc b
 - `n`: Tham số chiều (liên quan đến chiều không gian 2n+1)
 
 ### Đầu ra
-- Tổng tuyến tính của các lớp Schubert ∑ 2^(c(λ,μ)-b) σ_μ ∈ H*(OG(k,2n+1))
+- Tổng tuyến tính của các lớp Schubert $\sum 2^{c(\lambda,\mu)-b} \sigma_\mu \in H^*(OG(k,2n+1))$
 
 ### Thuật toán
 ```
@@ -383,6 +369,16 @@ Quantum: λ₁ = 2 = n+k, nên có thêm q·ApplyLC(_part_star(·,2), PieriB(2, 
 | Quantum corrections | 1 loại | 2 loại (k=0 vs k>0) |
 | Helper functions | _part_star | _part_star + _part_tilde |
 | Complexity | Thấp | Cao hơn |
+
+## Ký Hiệu
+
+- **$\sigma_\mu$**: Lớp Schubert tương ứng với partition $\mu$
+- **q**: Tham số lượng tử
+- **cc**: Connected components count
+- **$c(\lambda,\mu) - b$**: Số connected components có điều chỉnh offset
+- **OG(k,2n+1)**: Grassmannian trực giao lẻ
+- **$QH^*(OG(k,2n+1))$**: Quantum cohomology ring của OG(k,2n+1)
+- **$H^*(OG(k,2n+1))$**: Cohomology ring của OG(k,2n+1)
 
 ## Ký Hiệu Toán Học
 
