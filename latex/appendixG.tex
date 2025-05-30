@@ -52,20 +52,3 @@
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
-
-% Quantum Schubert class calculation using remove_rim_hooks
-\begin{algorithm}[H]
-\caption{quantum\_schubert\_class (Python: grassmannian.quantum\_schubert\_class)}
-\begin{algorithmic}[1]
-\REQUIRE Partition $\lambda$, quantum grid size $n$, quantum parameter $q$
-\ENSURE Quantum Schubert class $\sigma_\lambda$ in $QH^*(Gr(k,n))$
-\STATE $\text{result} \gets 0$
-\FOR{each $\mu$ in all partitions fitting in $k \times (n-k)$ grid}
-    \STATE $(\nu, q\_power, \text{sign}) \gets \text{remove\_rim\_hooks}(\lambda, n)$
-    \IF{$\nu$ fits in $k \times (n-k)$}
-        \STATE $\text{result} \gets \text{result} + \text{sign} \cdot q^{q\_power} \cdot \sigma_\nu$
-    \ENDIF
-\ENDFOR
-\RETURN $\text{result}$
-\end{algorithmic}
-\end{algorithm}
