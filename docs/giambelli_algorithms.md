@@ -41,15 +41,14 @@ Biểu diễn linear combination của các lớp Schubert dưới dạng polyno
 ### Đầu ra  
 - Polynomial của các lớp Schubert đặc biệt $\sigma_p$ (p > 0) và $\sigma_{p,0}$ (p < 0)
 
-### Thuật toán
+### Thuật Toán
 ```
 Algorithm 1: Giambelli Rule (Classical)
 Input: lc ∈ LinearCombination of Schubert classes
 Output: Polynomial expression in special Schubert classes
 
-1: lc ← LinearCombination(lc)              ⊳ Chuẩn hóa input
-2: pieri ← λ i, p → _pieri(i, p, _k, _n)   ⊳ Classical Pieri function
-3: return GiambelliRec(lc, pieri, _k)      ⊳ Recursive computation
+1: pieri ← λ i, p → _pieri(i, p, _k, _n)   ⊳ Classical Pieri function
+2: return GiambelliRec(lc, pieri, _k)      ⊳ Recursive computation
 ```
 
 ## Thuật Toán Đệ Quy: `giambelli_rec(lc, pieri, k)`
@@ -57,14 +56,13 @@ Output: Polynomial expression in special Schubert classes
 ### Mô tả
 Áp dụng thuật toán Giambelli đệ quy cho linear combination, sử dụng function pieri cho trước.
 
-### Thuật toán
+### Thuật Toán
 ```
 Algorithm 2: Giambelli Recursive Driver
 Input: lc ∈ LinearCombination, pieri ∈ Function, k ∈ ℕ
 Output: Polynomial of special Schubert classes
 
-1: lc ← LinearCombination(lc)
-2: return ApplyLC(λ ↦ GiambelliRecInner(λ, pieri, k), lc)
+1: return ApplyLC(λ ↦ GiambelliRecInner(λ, pieri, k), lc)
 ```
 
 ## Thuật Toán Cốt Lõi: `giambelli_rec_inner(lam, pieri, k)`
@@ -84,7 +82,7 @@ Trong đó:
 - $\lambda' = \lambda[2:]$ (partition con từ phần tử thứ 2)
 - $\text{stuff} = \text{pieri}(p, \lambda') - \sigma_\lambda$ (hiệu số để khử $\sigma_\lambda$ từ Pieri expansion)
 
-### Thuật toán
+### Thuật Toán
 ```
 Algorithm 3: Giambelli Recursive Inner Core
 Input: λ = (λ₁, λ₂, ..., λₗ) ∈ Partition, pieri ∈ Function, k ∈ ℕ
@@ -194,15 +192,14 @@ Output: SpecialSchubertClass
 ### Mô tả
 Tương tự như Giambelli cổ điển nhưng sử dụng quy tắc Pieri lượng tử, cho phép có tham số q trong kết quả.
 
-### Thuật toán
+### Thuật Toán
 ```
-Algorithm 6: Quantum Giambelli Rule
+Algorithm 1: Quantum Giambelli Rule
 Input: lc ∈ LinearCombination of Schubert classes
-Output: Polynomial in QH*(X) with quantum parameter q
+Output: Polynomial in QH* with quantum parameter q
 
-1: lc ← LinearCombination(lc)
-2: qpieri ← λ i, p → _qpieri(i, p, _k, _n)  ⊳ Quantum Pieri function  
-3: return GiambelliRec(lc, qpieri, _k)     ⊳ Use quantum Pieri
+1: qpieri ← λ i, p → _qpieri(i, p, _k, _n)
+2: return GiambelliRec(lc, qpieri, _k)
 ```
 
 ### Đặc điểm:
@@ -288,4 +285,4 @@ Result: Có thể có dạng σ₂ · σ₁ - σ₃ + q · (quantum terms)
 - **Lý thuyết:** Fulton "Young Tableaux", Chapter on Giambelli formula
 - **Implementation:** SchubertPy source code
 - **Tests:** `test_giambelli()` trong test cases
-- **Related:** [Pieri Type A](pieri_typeA_algorithms.md), [Pieri Overview](pieri_algorithms.md) 
+- **Related:** [Pieri Type A](pieri_typeA_algorithms.md), [Pieri Overview](pieri_algorithms.md)

@@ -69,6 +69,30 @@ Phép biến đổi cơ bản giữa partition và cặp partition.
   - **Chi tiết**: [Type B Algorithm 1.8](pieri_typeB_algorithms.md#8-_part_tildelam-rows-cols)
 - **`part_clip(lam)`**: Loại bỏ các số 0 ở cuối partition
   - **Chi tiết**: [Type A Algorithm 1.4](pieri_typeA_algorithms.md#4-part_cliplambda)
+- **`remove_rim_hooks(lam, rim_size, acceptable_grid)`**: Loại bỏ các rim hook kích thước cố định khỏi partition để phù hợp với lưới cho trước, trả về partition mới, số rim hook đã loại và tổng chiều cao rim hook đã loại.
+  - **Mô tả**: Xem chi tiết bên dưới.
+
+### Thuật toán: remove_rim_hooks
+
+```python
+Input: λ = (λ₁, ..., λₗ) ∈ Partition, rim_size ∈ ℕ, acceptable_grid = (nrow, ncol)
+Output: (λ', num_rim_hooks, total_height)
+
+1: Nếu λ rỗng hoặc rim_size ≤ 0, trả về (λ, 0, 0)
+2: Đặt current_partition ← λ, total_rim_hooks_removed ← 0
+3: Lặp:
+    a. Tìm rim hook kích thước rim_size có thể loại khỏi current_partition
+    b. Nếu tìm được:
+        - Loại rim hook đó khỏi current_partition
+        - total_rim_hooks_removed += 1
+        - Nếu partition mới phù hợp với acceptable_grid, trả về (partition mới, total_rim_hooks_removed, tổng chiều cao)
+        - Nếu không còn thay đổi, trả về (∅, total_rim_hooks_removed, tổng chiều cao)
+        - Cập nhật current_partition
+    c. Nếu không tìm được rim hook phù hợp, trả về (0, 0, 0)
+```
+
+- **Ý nghĩa toán học:** Thuật toán này dùng trong các quy tắc quantum để đưa partition về dạng phù hợp với lưới (grid) cho trước bằng cách loại bỏ các rim hook kích thước cố định.
+- **Ứng dụng:** Quantum Pieri, kiểm tra tính hợp lệ của partition sau khi loại rim hook.
 
 ### 5. Thuật Toán Điền và Lặp
 - **`_pieri_fillA(lam, inner, outer, row_index, p)`**: Điền boxes cho Type A
@@ -201,4 +225,23 @@ Ngoài các quy tắc Pieri, SchubertPy còn triển khai quy tắc Giambelli - 
 - **tlam**: Type parameter (0, 1, hoặc 2)
 - **OG(k,2n+2)**: Grassmannian trực giao chẵn
 - **QH*(OG(k,2n+2))**: Quantum cohomology ring của OG(k,2n+2)
-- **h**: Tie-breaking value 
+- **h**: Tie-breaking value
+
+## Quantum Schubert Class Calculation using `remove_rim_hooks`
+
+**Python function:** `grassmannian.quantum_schubert_class`
+
+**Pseudocode:**
+
+```python
+# Input: Partition lambda, quantum grid size n, quantum parameter q
+# Output: Quantum Schubert class sigma_lambda in QH^*(Gr(k,n))
+result = 0
+for mu in all_partitions_fitting_in_k_by_n_minus_k_grid():
+    nu, q_power, sign = remove_rim_hooks(lambda, n)
+    if nu fits in k x (n-k) grid:
+        result += sign * q**q_power * sigma_nu
+return result
+```
+
+This algorithm computes the quantum Schubert class by reducing the partition using `remove_rim_hooks`, determining the quantum power and sign, and summing over all valid resulting partitions.
