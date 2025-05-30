@@ -163,3 +163,13 @@ Please ensure your pull requests are well-documented and include any necessary t
 ## Citing
 
 We encourage you to cite our work if you have used our package. See "Cite this repository" on this page.
+
+## Documentation
+
+- [Pieri Algorithms](docs/pieri_algorithms.md)
+- [Pieri Type A Algorithms](docs/pieri_typeA_algorithms.md)
+- [Pieri Type B Algorithms](docs/pieri_typeB_algorithms.md)
+- [Pieri Type C Algorithms](docs/pieri_typeC_algorithms.md)
+- [Pieri Type D Algorithms](docs/pieri_typeD_algorithms.md)
+- [Giambelli Algorithms](docs/giambelli_algorithms.md)
+- [Littlewood-Richardson Algorithms](docs/littlewood_richardson_algorithms.md)

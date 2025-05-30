@@ -2,6 +2,11 @@
 
 Tài liệu này mô tả chi tiết các thuật toán quy tắc Pieri Type C được triển khai trong SchubertPy cho Grassmannian symplectic (isotropic) IG(k,2n).
 
+📘 **[Ví dụ chi tiết và test cases ← Pieri Type C Examples](./pieri_typeC_examples.md)**  
+📘 **[So sánh với Type A ← Pieri Type A Algorithms](./pieri_typeA_algorithms.md)**  
+📘 **[So sánh với Type B ← Pieri Type B Algorithms](./pieri_typeB_algorithms.md)**  
+📘 **[Test code thực tế ← test_pieri_C_examples.py](../test_pieri_C_examples.py)**
+
 ## Tổng Quan
 
 Quy tắc Pieri Type C là thuật toán để nhân một lớp Schubert với một lớp Schubert đặc biệt trên Grassmannian symplectic IG(k,2n). Type C có đặc điểm riêng về connected components counting với `skipfirst=true` và quantum corrections đơn giản hơn Type B.
@@ -143,6 +148,17 @@ Classical: PieriC(2, (2,1), 1, 2)
 Quantum: q/2·ApplyLC(_part_star(·,4), PieriC(2, (2,1), 1, 3))
 Note: Hệ số q/2 là đặc trưng của Type C
 ```
+
+### Tài Liệu Ví Dụ Chi Tiết
+
+📖 **[Xem tất cả ví dụ chi tiết với kết quả thực tế →](./pieri_typeC_examples.md)**
+
+Tài liệu ví dụ bao gồm:
+- Ví dụ cho từng thuật toán hỗ trợ với input/output cụ thể
+- Ví dụ classical và quantum Pieri với nhiều trường hợp
+- So sánh kết quả với Type A, B, D
+- Interface examples qua IsotropicGrassmannian class
+- Demonstration của skipfirst=True và quantum coefficient q/2
 
 ## Độ Phức Tạp
 

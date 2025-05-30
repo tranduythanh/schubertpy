@@ -2,6 +2,10 @@
 
 Tài liệu này mô tả chi tiết các thuật toán quy tắc Pieri Type B được triển khai trong SchubertPy cho Grassmannian trực giao lẻ OG(k,2n+1).
 
+📘 **[Ví dụ chi tiết và test cases ← Pieri Type B Examples](./pieri_typeB_examples.md)**  
+📘 **[So sánh với Type A ← Pieri Type A Algorithms](./pieri_typeA_algorithms.md)**  
+📘 **[Test code thực tế ← test_pieri_B_examples.py](../test_pieri_B_examples.py)**
+
 ## Tổng Quan
 
 Quy tắc Pieri Type B là thuật toán để nhân một lớp Schubert với một lớp Schubert đặc biệt trên Grassmannian trực giao lẻ OG(k,2n+1). Khác với Type A, Type B sử dụng hệ số với lũy thừa của 2 và có cơ chế đếm connected components phức tạp hơn.
@@ -43,6 +47,8 @@ graph TD
 ### Mô tả
 Tính toán tích Pieri của một lớp Schubert với lớp Schubert đặc biệt có kích thước p trong cohomology ring của Grassmannian trực giao lẻ OG(k,2n+1).
 
+🔗 **[Xem ví dụ thực tế](./pieri_typeB_examples.md#3-classical-pieri-type-b-algorithm)**
+
 ### Đầu vào
 - `p`: Kích thước của lớp Schubert đặc biệt
 - `lam`: Phân hoạch biểu diễn lớp Schubert gốc
@@ -76,6 +82,8 @@ Output: ∑ 2^(c(λ,μ)-b) σ_μ ∈ H*(OG(k,2n+1))
 
 **Mục đích:** Tạo tập hợp tất cả các partitions hợp lệ trong quy tắc Pieri Type B.
 
+🔗 **[Xem ví dụ với kết quả cụ thể](./pieri_typeB_examples.md#21-pieri_set---generation-for-type-b)**
+
 **Thuật toán:**
 ```
 Algorithm 1.1: Pieri Set Generation  
@@ -87,7 +95,7 @@ Output: 𝒫 ⊆ {Partitions}
 3: top ← top ∪ {0}^(k-|top|)                    ⊳ Padding to length k
 4: bot ← PartClip([max(0, λᵢ-k) : i ∈ [1,|λ|]]) ⊳ Bottom part
 5: bot ← bot ∪ {0}                              ⊳ Add sentinel
-6: 
+6:
 7: ⊳ Find bounds for new top partition
 8: outer ← [min(rows, topⱼ+1) : j ∈ [1,k]]
 9: inner ← ComputeInnerBounds(top, bot, k, d)
@@ -114,6 +122,8 @@ Output: 𝒫 ⊆ {Partitions}
 ### 2. `count_comps(lam1, lam2, skipfirst, k, d)`
 
 **Mục đích:** Đếm số connected components trong biểu đồ chuyển đổi giữa hai partitions.
+
+🔗 **[Xem ví dụ đếm components](./pieri_typeB_examples.md#22-count_comps---component-counting)**
 
 **Thuật toán:**
 ```
@@ -168,6 +178,8 @@ Output: count ∈ ℕ
 
 **Mục đích:** Điền boxes vào partition theo ràng buộc inner/outer bounds (khác với Type A).
 
+🔗 **[So sánh với Type A _pieri_fillA](./pieri_typeA_algorithms.md#2-_pieri_filla-lam-inner-outer-row_index-p)**
+
 **Thuật toán:**
 ```
 Algorithm 1.3: Pieri Fill Type B/C/D
@@ -196,6 +208,8 @@ Output: μ ∈ Partition ∪ {∅}
 
 **Mục đích:** Tạo partition tiếp theo trong iteration (tương tự Type A nhưng dùng `_pieri_fill`).
 
+🔗 **[So sánh với Type A _pieri_itrA](./pieri_typeA_algorithms.md#3-_pieri_itra-lam-inner-outer)**
+
 **Thuật toán:**
 ```
 Algorithm 1.4: Pieri Iterator Type B/C/D
@@ -218,11 +232,13 @@ Output: μ ∈ Partition ∪ {∅}
 
 ### 5. Common Helper Functions
 
-**`part_clip`, `part_conj`, `part_itr_between`**: Xem [Algorithm 1.4 trong Type A](pieri_typeA_algorithms.md#4-part_cliplambda) và các utility functions tương ứng.
+**`part_clip`, `part_conj`, `part_itr_between`**: Xem [Algorithm 1.4 trong Type A](./pieri_typeA_algorithms.md#4-part_cliplambda) và các utility functions tương ứng.
 
 ### 6. `part_conj(lam)`
 
 **Mục đích:** Tính conjugate partition (hoán vị qua đường chéo) của partition λ.
+
+🔗 **[Tham khảo thuật toán tương tự Type A](./pieri_typeA_algorithms.md)**
 
 **Thuật toán:**
 ```
@@ -261,11 +277,31 @@ Output: λ' ∈ Partition (conjugate của λ)
 
 ### 7. `_part_star(lam, cols)`
 
-**Mục đích và Thuật toán**: Xem [Algorithm 1.5 trong Type A](pieri_typeA_algorithms.md#5-_part_starlam-cols).
+**Mục đích và Thuật toán**: Xem [Algorithm 1.5 trong Type A](./pieri_typeA_algorithms.md#5-_part_starlam-cols).
+
+🔗 **[Xem ví dụ _part_star trong Type B](./pieri_typeB_examples.md#11-part_star---quantum-correction-helper)**
+
+**Thuật toán:**
+```
+Algorithm 1.5: Part Star Operation  
+Input: λ = (λ₁, λ₂, ..., λₗ) ∈ Partition, cols ∈ ℕ
+Output: Schur ∪ {0}
+
+1: if |λ| ≠ cols then          ⊳ Kiểm tra điều kiện cơ bản
+2:    return 0
+3: end if
+4: result ← (λ₂, λ₃, ..., λᵣ)               ⊳ Lấy phần giữa
+5: if λ|λ| = 0 then                        ⊳ Xử lý trailing zero
+6:    result ← result ∪ {0}
+7: end if
+8: return σ_result
+```
 
 ### 8. `_part_tilde(lam, rows, cols)`
 
 **Mục đích:** Kiểm tra và biến đổi partition theo điều kiện đặc biệt trong Type B quantum corrections.
+
+🔗 **[Xem ví dụ _part_tilde cụ thể](./pieri_typeB_examples.md#12-part_tilde---type-b-specific-helper)**
 
 **Thuật toán:**
 ```
@@ -292,6 +328,8 @@ Output: Schur ∪ {0}
 
 ### Mô tả
 Tính toán tích Pieri trong quantum cohomology ring của Grassmannian trực giao lẻ, bao gồm số hạng cổ điển và các số hạng lượng tử.
+
+🔗 **[Xem ví dụ quantum corrections](./pieri_typeB_examples.md#4-quantum-pieri-type-b-algorithm)**
 
 ### Thuật toán
 ```
@@ -336,6 +374,12 @@ Output: ∑ aμ σμ + ∑ bν q^d σν ∈ QH*(OG(k,2n+1))
 
 ## Ví Dụ và Ứng Dụng
 
+🔗 **[Tài liệu ví dụ chi tiết với kết quả thực tế](./pieri_typeB_examples.md)**  
+🔗 **[Test code Python để chạy thử](../test_pieri_B_examples.py)**  
+🔗 **[Sử dụng qua OrthogonalGrassmannian class](./pieri_typeB_examples.md#5-orthogonalgrassmannian-class-interface)**
+
+🔗 **[Xem kết quả cụ thể trong examples](./pieri_typeB_examples.md#31-pierib_inner---thuật-toán-chính)**
+
 ### Ví dụ 1: OG(1,3) (k=1, n=1)
 Xét việc nhân σ_(1) với lớp Schubert đặc biệt có kích thước p=1:
 
@@ -354,11 +398,15 @@ Classical: PieriB(2, (2), 0, 2)
 Quantum: λ₁ = 2 = n+k, nên có thêm q·ApplyLC(_part_star(·,2), PieriB(2, (), 0, 2))
 ```
 
+🔗 **[Xem quantum case examples](./pieri_typeB_examples.md#41-qpierib_inner---phiên-bản-quantum)**
+
 ## Độ Phức Tạp
 
 - **Thời gian:** O(|pieri_set| × độ phức tạp count_comps)
 - **Không gian:** O(số lượng partitions trong kết quả)
 - **Pieri_set:** Phức tạp hơn Type A do cần xử lý PR pairs
+
+🔗 **[So sánh complexity với Type A](./pieri_typeA_algorithms.md)**
 
 ## So Sánh với Type A
 
@@ -369,6 +417,35 @@ Quantum: λ₁ = 2 = n+k, nên có thêm q·ApplyLC(_part_star(·,2), PieriB(2, 
 | Quantum corrections | 1 loại | 2 loại (k=0 vs k>0) |
 | Helper functions | _part_star | _part_star + _part_tilde |
 | Complexity | Thấp | Cao hơn |
+
+🔗 **[Chi tiết Type A algorithms](./pieri_typeA_algorithms.md)**  
+🔗 **[Examples Type A](./pieri_typeA_examples.md)**
+
+## Tài Liệu Liên Quan
+
+📚 **Related Documentation:**
+- **[Type A (Grassmannian thông thường)](./pieri_typeA_algorithms.md)**
+- **[Type C (Symplectic Grassmannian)](./pieri_typeC_algorithms.md)**  
+- **[Type D (Orthogonal Grassmannian chẵn)](./pieri_typeD_algorithms.md)**
+- **[Giambelli Algorithms](./giambelli_algorithms.md)**
+- **[Littlewood-Richardson Rules](./littlewood_richardson_algorithms.md)**
+
+📝 **Practical Resources:**
+- **[Ví dụ chi tiết Type B](./pieri_typeB_examples.md)**
+- **[Test cases Python](../test_pieri_B_examples.py)**
+- **[General Pieri algorithms overview](./pieri_algorithms.md)**
+
+### Files liên quan
+
+- **Main algorithms:** `schubertpy/qcalc.py`
+- **OG class:** `schubertpy/orthogonal_grassmannian.py`  
+- **Test examples:** `test_pieri_B_examples.py`
+- **Documentation:** `docs/pieri_typeB_algorithms.md` (file này)
+- **Practical examples:** `docs/pieri_typeB_examples.md`
+
+🔗 **[→ Chuyển đến Examples với kết quả cụ thể](./pieri_typeB_examples.md)**  
+🔗 **[→ So sánh với Type A algorithms](./pieri_typeA_algorithms.md)**  
+🔗 **[→ Xem test code để reproduce](../test_pieri_B_examples.py)**
 
 ## Ký Hiệu
 

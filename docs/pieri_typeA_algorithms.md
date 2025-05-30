@@ -215,24 +215,6 @@ ApplyLC(f, LC) = 2·_part_star((1,1),1) + 3·_part_star((2),1)
 - Coefficients và các phép toán (cộng, nhân) trong LC được bảo toàn
 - Chỉ các Schur functions (partitions) được transform bởi function `f`
 
-## Ví Dụ và Ứng Dụng
-
-### Ví dụ 1: Grassmannian Gr(2,4)
-Xét việc nhân σ_(1) với lớp Schubert đặc biệt có kích thước 1:
-
-```
-Input: i = 1, λ = (1), k = 2, n = 4
-Output: σ_(2) + σ_(1,1)
-```
-
-### Ví dụ 2: Quantum case
-Trong quantum cohomology, khi gặp điều kiện lượng tử:
-
-```
-Input: i = 1, λ = (2,2), k = 2, n = 4  
-Output: σ_(3,2) + σ_(2,2,1) + q·σ_∅
-```
-
 ## Độ Phức Tạp
 
 - **Thời gian:** O(số lượng partitions hợp lệ × độ dài trung bình partition)
@@ -249,20 +231,36 @@ Output: σ_(3,2) + σ_(2,2,1) + q·σ_∅
 - **$|\lambda|$**: Số hàng của partition $\lambda$
 - **$\emptyset$**: Partition rỗng
 
-## Ví Dụ Chi Tiết
+## Ví Dụ và Ứng Dụng
 
-### Ví dụ 1: Classical Pieri
+### Ví Dụ Tóm Tắt
 
-Xét việc nhân $\sigma_{(1)}$ với lớp Schubert đặc biệt có kích thước 1:
+#### Classical Pieri trong Gr(2,4)
 ```
-Input: pieriA_inner(1, [1], k=2, n=4)
-Algorithm: padding_right([1], 0, 1) = [1,0] 
-Result: σ_{(2)} + σ_{(1,1)}
+Input: pieriA_inner(i=1, lam=[1], k=2, n=4)
+Output: S[1,1] + S[2]
+Ý nghĩa: σ_(1) * σ_1 = σ_(2) + σ_(1,1)
 ```
 
-### Ví dụ 2: Quantum Pieri  
-
+#### Quantum Pieri với quantum correction
 ```
-Input: qpieriA_inner(2, [1,1], k=2, n=4)
-Output: σ_{(3,2)} + σ_{(2,2,1)} + q·σ_∅
-``` 
+Input: qpieriA_inner(i=1, lam=[2,2], k=2, n=4) 
+Output: S[1]*q
+Ý nghĩa: Khi partition đạt "boundary", xuất hiện quantum term
+```
+
+### Tài Liệu Ví Dụ Chi Tiết
+
+📖 **[Xem tất cả ví dụ chi tiết với kết quả thực tế →](./pieri_typeA_examples.md)**
+
+Tài liệu ví dụ bao gồm:
+- Ví dụ cho từng thuật toán hỗ trợ với input/output cụ thể
+- Ví dụ classical và quantum Pieri với nhiều trường hợp
+- So sánh kết quả classical vs quantum
+- Interface examples qua Grassmannian class
+
+## Tham Khảo
+
+- **Ví dụ chi tiết:** [Pieri Type A Examples](./pieri_typeA_examples.md)
+- **Test code:** [`test_pieri_examples.py`](../test_pieri_examples.py)
+- **SchubertPy documentation:** [Main repository](../README.md) 

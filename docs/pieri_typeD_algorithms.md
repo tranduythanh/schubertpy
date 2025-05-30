@@ -313,19 +313,40 @@ Output: ∑ aμ σμ + ∑ bν q^d σν ∈ QH*(OG(k,2n+2))
 
 ## Ví Dụ và Ứng Dụng
 
-### Ví dụ 1: OG(1,4) (k=1, n=1) - Case phức tạp
+### Ví dụ 1: OG(1,6) - Classical Type D
 ```
-Input: p = 1, λ = (1), k = 1, n = 1
-Classical: PieriD(1, (1), 1, 1) với _dcoef logic
-Quantum: Case k=1 - kiểm tra nhiều điều kiện, có thể có dualize operations
+Input: p = 1, λ = (1), k = 1, n = 2
+Classical: pieriD_inner(1, (1), 1, 2) với _dcoef calculation
+Output: S[1,1]
+Ý nghĩa: Type D cho clean result khác với Type B
 ```
 
-### Ví dụ 2: Case k=0 - Đơn giản nhất
+### Ví dụ 2: Complex Coefficient Calculation
 ```
-Input: p = 2, λ = (2), k = 0, n = 2
-Classical: PieriD(2, (2), 0, 2)
-Quantum: Chỉ kiểm tra λ₁ = n+k condition
+Input: p = 1, λ = (1), μ = (2), k = 1, n = 2
+_dcoef: Tính với tie-breaking logic và tlam parameter
+Output: Complex coefficient specific to Type D
 ```
+
+### Ví dụ 3: Quantum Type D với Multiple Cases
+```
+Quantum behavior phức tạp với nhiều điều kiện k khác nhau:
+- k=0: Special case với dualize operations
+- k=1: _part_star với dualization  
+- k≥2: _part_tilde và type_swap operations
+```
+
+### Tài Liệu Ví Dụ Chi Tiết
+
+📖 **[Xem tất cả ví dụ chi tiết với kết quả thực tế →](./pieri_typeD_examples.md)**
+
+Tài liệu ví dụ bao gồm:
+- Ví dụ cho từng thuật toán hỗ trợ với input/output cụ thể
+- Ví dụ classical và quantum Pieri với nhiều trường hợp
+- So sánh kết quả với Type A, B, C
+- Interface examples qua OrthogonalGrassmannian class
+- Demonstration của _dcoef function và tie-breaking logic
+- Complex quantum cases với dualize và type_swap
 
 ## Độ Phức Tạp
 
