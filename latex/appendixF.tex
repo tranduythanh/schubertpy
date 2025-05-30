@@ -7,7 +7,6 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc$ là LinearCombination các lớp Schubert
 \ENSURE Đa thức các lớp Schubert đặc biệt
-\STATE $lc \gets$ LinearCombination($lc$)
 \STATE $pieri \gets \lambda i, p \to \_pieri(i, p, \_k, \_n)$
 \RETURN GiambelliRec($lc$, $pieri$, $\_k$)
 \end{algorithmic}
@@ -18,7 +17,6 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc$ là LinearCombination, $pieri$ là function, $k \in \mathbb{N}$
 \ENSURE Đa thức các lớp Schubert đặc biệt
-\STATE $lc \gets$ LinearCombination($lc$)
 \RETURN ApplyLC($\lambda \mapsto$ GiambelliRecInner($\lambda$, $pieri$, $k$), $lc$)
 \end{algorithmic}
 \end{algorithm}
@@ -98,7 +96,6 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc$ là LinearCombination các lớp Schubert
 \ENSURE Đa thức trong QH* với tham số lượng tử $q$
-\STATE $lc \gets$ LinearCombination($lc$)
 \STATE $qpieri \gets \lambda i, p \to \_qpieri(i, p, \_k, \_n)$
 \RETURN GiambelliRec($lc$, $qpieri$, $\_k$)
 \end{algorithmic}
@@ -113,8 +110,6 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc_1, lc_2$ là LinearCombination các lớp Schubert
 \ENSURE LinearCombination kết quả tích
-\STATE $lc_1 \gets$ LinearCombination($lc_1$)
-\STATE $lc_2 \gets$ LinearCombination($lc_2$)
 \STATE $polynomial \gets$ Giambelli($lc_1$)
 \STATE $result \gets$ Act($polynomial$, $lc_2$)
 \RETURN $result$
@@ -126,8 +121,6 @@
 \begin{algorithmic}[1]
 \REQUIRE $expr$ là đa thức các lớp đặc biệt, $lc$ là LinearCombination
 \ENSURE Kết quả tác động $expr$ lên $lc$
-\STATE $expr \gets$ LinearCombination($expr$).expr
-\STATE $lc \gets$ LinearCombination($lc$)
 \STATE $pieri\_func \gets \lambda(i,p) \to \_pieri(i, p, \_k, \_n)$
 \RETURN ActLC($expr$, $lc$, $pieri\_func$)
 \end{algorithmic}
@@ -159,8 +152,6 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc_1, lc_2$ là LinearCombination các lớp Schubert
 \ENSURE Quantum product $lc_1 \cdot lc_2$ (có thể có $q$)
-\STATE $lc_1 \gets$ LinearCombination($lc_1$)
-\STATE $lc_2 \gets$ LinearCombination($lc_2$)
 \STATE $q\_polynomial \gets$ QGiambelli($lc_1$)
 \STATE $result \gets$ QAct($q\_polynomial$, $lc_2$)
 \RETURN $result$

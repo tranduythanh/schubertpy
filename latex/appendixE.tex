@@ -141,3 +141,32 @@
 \RETURN $(\lambda_1, ..., \lambda_i)$
 \end{algorithmic}
 \end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Remove Rim Hooks (\texttt{remove\_rim\_hooks})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$ là partition, $rim\_size \in \mathbb{N}$, $acceptable\_grid = (nrow, ncol)$
+\ENSURE $(\lambda', \text{num\_rim\_hooks}, \text{total\_height})$
+\IF{$\lambda$ rỗng hoặc $rim\_size \leq 0$}
+    \RETURN $(\lambda, 0, 0)$
+\ENDIF
+\STATE $current\_partition \gets \lambda$
+\STATE $total\_rim\_hooks\_removed \gets 0$
+\WHILE{True}
+    \STATE Tìm rim hook kích thước $rim\_size$ có thể loại khỏi $current\_partition$
+    \IF{tìm được}
+        \STATE Loại rim hook đó khỏi $current\_partition$
+        \STATE $total\_rim\_hooks\_removed \gets total\_rim\_hooks\_removed + 1$
+        \IF{partition mới phù hợp với $acceptable\_grid$}
+            \RETURN (partition mới, $total\_rim\_hooks\_removed$, tổng chiều cao)
+        \ENDIF
+        \IF{không còn thay đổi}
+            \RETURN $(\emptyset, total\_rim\_hooks\_removed, tổng chiều cao)$
+        \ENDIF
+        \STATE Cập nhật $current\_partition$
+    \ELSE
+        \RETURN $(0, 0, 0)$
+    \ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
