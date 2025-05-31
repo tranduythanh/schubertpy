@@ -1,172 +1,65 @@
-% --- Thuật toán hỗ trợ chung cho Pieri B/C/D ---
+% % --- Thuật toán hỗ trợ chung cho Pieri B/C/D ---
 
-\subsection*{Thuật toán hỗ trợ chung cho Pieri B/C/D}
+% \subsection*{Thuật toán hỗ trợ chung cho Pieri B/C/D}
 
-\begin{algorithm}[H]
-\caption{Pieri Set Generation (\texttt{pieri\_set})}
-\begin{algorithmic}[1]
-\REQUIRE $p \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
-\ENSURE Tập hợp các partition tương ứng với quy tắc Pieri Type B
-\STATE $\mathcal{P} \gets \emptyset$
-\STATE $\mu \gets$ Partition chuẩn với độ dài $k$
-\WHILE{$\mu \neq \emptyset$}
-    \STATE $\mathcal{P} \gets \mathcal{P} \cup \{\mu\}$
-    \STATE $\mu \gets$ PieriIterB($\mu$, $\lambda$, $k$, $n$)
-\ENDWHILE
-\RETURN $\mathcal{P}$
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}[H]
+% \caption{Partition Conjugate (\texttt{part\_conj})}
+% \begin{algorithmic}[1]
+% \REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+% \ENSURE $\lambda'$ là phân hoạch liên hợp
+% \STATE $\lambda' \gets (\lambda_l, ..., \lambda_1)$
+% \RETURN $\lambda'$
+% \end{algorithmic}
+% \end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Count Connected Components (\texttt{count\_comps})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda, \mu$ là các partition, $flag \in \{true, false\}$, $k, d \in \mathbb{N}$
-\ENSURE Số lượng thành phần liên thông
-\STATE $c \gets 0$
-\STATE $used \gets$ đánh dấu tất cả các ô của $\lambda$ là chưa sử dụng
-\FOR{mỗi ô $u$ trong $\lambda$}
-    \IF{$used[u] = false$}
-        \STATE $c \gets c + 1$
-        \STATE Đánh dấu tất cả các ô liên thông với $u$ là đã sử dụng
-    \ENDIF
-\ENDFOR
-\RETURN $c$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Pieri Fill Type B/C/D (\texttt{\_pieri\_fill})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda$, $inner$, $outer$ là các partition, $row\_index$, $p \in \mathbb{N}$
-\ENSURE $\mu$ hoặc $\emptyset$
-\IF{$\lambda = \emptyset$}
-    \RETURN $\lambda$
-\ENDIF
-\STATE $res \gets \lambda.copy()$
-\STATE $pp \gets p$
-\STATE $rr \gets row\_index$
-\IF{$rr = 0$}
-    \STATE $x \gets \min(outer[0], inner[0] + pp)$
-    \STATE $res[0] \gets x$
-    \STATE $pp \gets pp - x + inner[0]$
-    \STATE $rr \gets 1$
-\ENDIF
-\WHILE{$rr < |\lambda|$}
-    \STATE $x \gets \min(outer[rr], inner[rr] + pp, res[rr-1])$
-    \STATE $res[rr] \gets x$
-    \STATE $pp \gets pp - x + inner[rr]$
-    \STATE $rr \gets rr + 1$
-\ENDWHILE
-\IF{$pp > 0$}
-    \RETURN $\emptyset$
-\ENDIF
-\RETURN $res[:|\lambda|]$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Pieri Iterator Type B/C/D (\texttt{\_pieri\_itr})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda$, $inner$, $outer$ là các partition
-\ENSURE $\mu$ hoặc $\emptyset$
-\IF{$\lambda = \emptyset$}
-    \RETURN $\emptyset$
-\ENDIF
-\STATE $p \gets \lambda_{|\lambda|} - inner_{|\lambda|}$
-\FOR{$r \gets |\lambda|-1$ down to $1$}
-    \IF{$\lambda[r] > inner[r]$}
-        \STATE $\mu \gets \lambda.copy()$
-        \STATE $\mu[r] \gets \mu[r] - 1$
-        \STATE $\mu \gets$ PieriFillB($\mu$, $inner$, $outer$, $r+1$, $p+1$)
-        \IF{$\mu \neq \emptyset$}
-            \RETURN $\mu$
-        \ENDIF
-    \ENDIF
-    \STATE $p \gets p + \lambda[r] - inner[r]$
-\ENDFOR
-\RETURN $\emptyset$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Partition Conjugate (\texttt{part\_conj})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
-\ENSURE $\lambda'$ là phân hoạch liên hợp
-\STATE $\lambda' \gets (\lambda_l, ..., \lambda_1)$
-\RETURN $\lambda'$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Part Star Operation (\texttt{\_part\_star})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $cols \in \mathbb{N}$
-\ENSURE Schur hoặc $0$
-\IF{$\lambda = \emptyset$ hoặc $\lambda_1 \neq cols$}
-    \RETURN $0$
-\ENDIF
-\IF{$|\lambda| = 1$}
-    \RETURN $\sigma_{\emptyset}$
-\ENDIF
-\RETURN $\sigma_{(\lambda_2, ..., \lambda_l)}$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Part Tilde Operation (\texttt{\_part\_tilde})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
-\ENSURE $\lambda'$ với các phần tử đã được biến đổi
-\STATE $\lambda' \gets \emptyset$
-\FOR{$i = 1$ đến $|\lambda|$}
-    \STATE $\lambda'[i] \gets \lambda[i] - 2 \cdot (i-1)$
-\ENDFOR
-\RETURN $\lambda'$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Trim Trailing Zeros (\texttt{part\_clip})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
-\ENSURE $\lambda'$ không có số 0 ở cuối
-\STATE $i \gets |\lambda|$
-\WHILE{$i > 0$ và $\lambda[i-1] = 0$}
-    \STATE $i \gets i - 1$
-\ENDWHILE
-\IF{$i = 0$}
-    \RETURN $\emptyset$
-\ENDIF
-\RETURN $(\lambda_1, ..., \lambda_i)$
-\end{algorithmic}
-\end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Remove Rim Hooks (\texttt{remove\_rim\_hooks})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$ là partition, $rim\_size \in \mathbb{N}$, $acceptable\_grid = (nrow, ncol)$
-\ENSURE $(\lambda', \text{num\_rim\_hooks}, \text{total\_height})$
-\IF{$\lambda$ rỗng hoặc $rim\_size \leq 0$}
-    \RETURN $(\lambda, 0, 0)$
-\ENDIF
-\STATE $current\_partition \gets \lambda$
-\STATE $total\_rim\_hooks\_removed \gets 0$
-\WHILE{True}
-    \STATE Tìm rim hook kích thước $rim\_size$ có thể loại khỏi $current\_partition$
-    \IF{tìm được}
-        \STATE Loại rim hook đó khỏi $current\_partition$
-        \STATE $total\_rim\_hooks\_removed \gets total\_rim\_hooks\_removed + 1$
-        \IF{partition mới phù hợp với $acceptable\_grid$}
-            \RETURN (partition mới, $total\_rim\_hooks\_removed$, tổng chiều cao)
-        \ENDIF
-        \IF{không còn thay đổi}
-            \RETURN $(\emptyset, total\_rim\_hooks\_removed, tổng chiều cao)$
-        \ENDIF
-        \STATE Cập nhật $current\_partition$
-    \ELSE
-        \RETURN $(0, 0, 0)$
-    \ENDIF
-\ENDWHILE
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}[H]
+%     \caption{Partition Conjugate (\texttt{part\_conj})}
+%     \begin{algorithmic}[1]
+%     \REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+%     \ENSURE $\lambda'$ là phân hoạch liên hợp
+%     \STATE $\lambda' \gets (\lambda_l, ..., \lambda_1)$
+%     \RETURN $\lambda'$
+%     \end{algorithmic}
+%     \end{algorithm}
+    
+    
+    
+    
+%     \begin{algorithm}[H]
+%     \caption{Index Dualization (\texttt{dualize\_index\_inner})}
+%     \begin{algorithmic}[1]
+%     \REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $i \in \mathbb{N}$
+%     \ENSURE $\lambda'$ với chỉ số đã được đối ngẫu
+%     \STATE $\lambda' \gets \lambda$
+%     \STATE $\lambda'[i] \gets \lambda[i] - 1$
+%     \RETURN $\lambda'$
+%     \end{algorithmic}
+%     \end{algorithm}
+    
+    
+    
+%     \begin{algorithm}[H]
+%     \caption{Partition Type Swap (\texttt{type\_swap\_inner})}
+%     \begin{algorithmic}[1]
+%     \REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+%     \ENSURE $\lambda'$ với kiểu đã được hoán đổi
+%     \STATE $\lambda' \gets \emptyset$
+%     \FOR{$i = 1$ đến $|\lambda|$}
+%         \IF{$i$ lẻ}
+%             \STATE $\lambda'[i] \gets \lambda[i] - 1$
+%         \ELSE
+%             \STATE $\lambda'[i] \gets \lambda[i] + 1$
+%         \ENDIF
+%     \ENDFOR
+%     \RETURN $\lambda'$
+%     \end{algorithmic}
+%     \end{algorithm}
+    
+    

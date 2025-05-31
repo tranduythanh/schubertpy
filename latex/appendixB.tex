@@ -1,6 +1,6 @@
 % --- Pieri Type B Algorithms ---
 
-\subsection*{Thuật toán Pieri Type B (Grassmannian trực giao lẻ) -- Python: \texttt{pieriB\_inner}}
+\subsection*{Thuật toán Pieri Type B (Grassmannian trực giao lẻ): \texttt{pieriB\_inner} và các thuật toán bổ trợ}
 
 \begin{algorithm}[H]
 \caption{Pieri Rule Type B (\texttt{pieriB\_inner})}
@@ -9,9 +9,9 @@
 \ENSURE $\sum 2^{c(\lambda,\mu)-b} \sigma_\mu \in H^*(OG(k,2n+1))$
 \STATE $result \gets 0$
 \STATE $b \gets \begin{cases}0 & \text{nếu } p \leq k \\ 1 & \text{nếu } p > k\end{cases}$
-\STATE $\mathcal{P} \gets$ PieriSet($p$, $\lambda$, $k$, $n$, $0$)
-\FOR{mỗi $\mu \in \mathcal{P}$}
-    \STATE $c \gets$ CountComps($\lambda$, $\mu$, false, $k$, $0$)
+\STATE $\mathcal{P} \gets$ $\mathtt{pieri\_set}$($p$, $\lambda$, $k$, $n$, $0$)
+\FOR{$\mu \in \mathcal{P}$}
+    \STATE $c \gets$ $\mathtt{count\_comps}$($\lambda$, $\mu$, \texttt{False}, $k$, $0$)
     \STATE $a_\mu \gets 2^{c-b}$
     \STATE $result \gets result + a_\mu \cdot \sigma_\mu$
 \ENDFOR
@@ -19,26 +19,120 @@
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{Thuật toán Pieri lượng tử Type B (Quantum) -- Python: \texttt{qpieriB\_inner}}
+\begin{algorithm}[H]
+    \caption{Pieri Set Generation (\texttt{pieri\_set})}
+    \begin{algorithmic}[1]
+    \REQUIRE $p \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
+    \ENSURE Tập hợp các partition tương ứng với quy tắc Pieri Type B
+    \STATE $\mathcal{P} \gets \emptyset$
+    \STATE $\mu \gets$ Partition chuẩn với độ dài $k$
+    \WHILE{$\mu \neq \emptyset$}
+        \STATE $\mathcal{P} \gets \mathcal{P} \cup \{\mu\}$
+        \STATE $\mu \gets$ $\mathtt{\_pieri\_itr}$($\mu$, $\lambda$, $k$, $n$)
+    \ENDWHILE
+    \RETURN $\mathcal{P}$
+    \end{algorithmic}
+    \end{algorithm}
+
+\begin{algorithm}[H]
+    \caption{Count Connected Components (\texttt{count\_comps})}
+    \begin{algorithmic}[1]
+    \REQUIRE $\lambda, \mu$ là các partition, $flag \in \{true, false\}$, $k, d \in \mathbb{N}$
+    \ENSURE Số lượng thành phần liên thông
+    \STATE $c \gets 0$
+    \STATE $used \gets$ đánh dấu tất cả các ô của $\lambda$ là chưa sử dụng
+    \FORALL{ô $u$ trong $\lambda$}
+        \IF{$used[u] = false$}
+            \STATE $c \gets c + 1$
+            \STATE Đánh dấu tất cả các ô liên thông với $u$ là đã sử dụng
+        \ENDIF
+    \ENDFOR
+    \RETURN $c$
+    \end{algorithmic}
+    \end{algorithm}
+
+\begin{algorithm}[H]
+        \caption{Pieri Iterator Type B/C/D (\texttt{\_pieri\_itr})}
+        \begin{algorithmic}[1]
+        \REQUIRE $\lambda$, $inner$, $outer$ là các partition
+        \ENSURE $\mu$ hoặc $\emptyset$
+        \IF{$\lambda = \emptyset$}
+            \RETURN $\emptyset$
+        \ENDIF
+        \STATE $p \gets \lambda_{|\lambda|} - inner_{|\lambda|}$
+        \FOR{$r \gets |\lambda|-1$ down to $1$}
+            \IF{$\lambda[r] > inner[r]$}
+                \STATE $\mu \gets \lambda.\mathtt{copy}()$
+                \STATE $\mu[r] \gets \mu[r] - 1$
+                \STATE $\mu \gets$ $\mathtt{pieri\_fill}$($\mu$, $inner$, $outer$, $r+1$, $p+1$)
+                \IF{$\mu \neq \emptyset$}
+                    \RETURN $\mu$
+                \ENDIF
+            \ENDIF
+            \STATE $p \gets p + \lambda[r] - inner[r]$
+        \ENDFOR
+        \RETURN $\emptyset$
+        \end{algorithmic}
+        \end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Pieri Fill Type B/C/D (\texttt{\_pieri\_fill})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda$, $inner$, $outer$ là các partition, $row\_index$, $p \in \mathbb{N}$
+\ENSURE $\mu$ hoặc $\emptyset$
+\IF{$\lambda = \emptyset$}
+    \RETURN $\lambda$
+\ENDIF
+\STATE $res \gets \lambda.\mathtt{copy}()$
+\STATE $pp \gets p$
+\STATE $rr \gets row\_index$
+\IF{$rr = 0$}
+    \STATE $x \gets \min(outer[0], inner[0] + pp)$
+    \STATE $res[0] \gets x$
+    \STATE $pp \gets pp - x + inner[0]$
+    \STATE $rr \gets 1$
+\ENDIF
+\WHILE{$rr < |\lambda|$}
+    \STATE $x \gets \min(outer[rr], inner[rr] + pp, res[rr-1])$
+    \STATE $res[rr] \gets x$
+    \STATE $pp \gets pp - x + inner[rr]$
+    \STATE $rr \gets rr + 1$
+\ENDWHILE
+\IF{$pp > 0$}
+    \RETURN $\emptyset$
+\ENDIF
+\RETURN $res[:|\lambda|]$
+\end{algorithmic}
+\end{algorithm}        
+
+
+\subsection*{Thuật toán Pieri lượng tử Type B (Quantum): \texttt{qpieriB\_inner} và các thuật toán bổ trợ}
 
 \begin{algorithm}[H]
 \caption{Quantum Pieri Rule Type B (\texttt{qpieriB\_inner})}
 \begin{algorithmic}[1]
 \REQUIRE $p \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
 \ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(OG(k,2n+1))$
-\STATE $result \gets$ PieriB($p$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
+\STATE $result \gets$ $\mathtt{pieriB\_inner}$($p$, $\lambda$, $k$, $n$)
 \IF{$k = 0$}
     \IF{$|\lambda| > 0$ và $\lambda_1 = n + k$}
-        \STATE $T_1 \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $n+k$), PieriB($p$, $\lambda[2:]$, $k$, $n$))
+        \STATE $LC \gets$ $\mathtt{pieriB\_inner}$($p$, $\lambda[2:]$, $k$, $n$)
+        \STATE $f \gets$ ($\mu \mapsto$ $\mathtt{\_part\_star}$($\mu$, $n+k$))
+        \STATE $T_1 \gets$ $\mathtt{apply\_lc}$($f$, $LC$)
         \STATE $result \gets result + q \cdot T_1$
     \ENDIF
 \ELSE
     \IF{$|\lambda| = n-k$ và $\lambda_{n-k} > 0$}
-        \STATE $T_2 \gets$ ApplyLC($\mu \mapsto$ PartTilde($\mu$, $n-k+1$, $n+k$), PieriB($p$, $\lambda$, $k$, $n+1$))
+        \STATE $LC \gets$ $\mathtt{pieriB\_inner}$($p$, $\lambda$, $k$, $n+1$)
+        \STATE $f \gets$ ($\mu \mapsto$ $\mathtt{\_part\_tilde}$($\mu$, $n-k+1$, $n+k$))
+        \STATE $T_2 \gets$ $\mathtt{apply\_lc}$($f$, $LC$)
         \STATE $result \gets result + q \cdot T_2$
     \ENDIF
     \IF{$|\lambda| > 0$ và $\lambda_1 = n + k$}
-        \STATE $T_3 \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $n+k$), PieriB($p$, $\lambda[2:]$, $k$, $n$))
+        \STATE $LC \gets$ $\mathtt{pieriB\_inner}$($p$, $\lambda[2:]$, $k$, $n$)
+        \STATE $f \gets$ ($\mu \mapsto$ $\mathtt{\_part\_star}$($\mu$, $n+k$))
+        \STATE $T_3 \gets$ $\mathtt{apply\_lc}$($f$, $LC$)
         \STATE $result \gets result + q^2 \cdot T_3$
     \ENDIF
 \ENDIF
@@ -46,4 +140,30 @@
 \end{algorithmic}
 \end{algorithm}
 
-% Các thuật toán hỗ trợ chung cho Pieri B đã được trình bày ở appendixE ("Thuật toán hỗ trợ chung cho Pieri B/C/D"). Vui lòng tham khảo appendixE cho các hàm: \texttt{pieri\_set}, \texttt{count\_comps}, \texttt{_pieri\_fill}, \texttt{_pieri\_itr}, \texttt{part\_conj}, \texttt{_part\_star}, \texttt{_part\_tilde}, \texttt{part\_clip}.
+\begin{algorithm}[H]
+\caption{Part Tilde Operation (\texttt{\_part\_tilde})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
+\ENSURE $\lambda'$ với các phần tử đã được biến đổi
+\STATE $\lambda' \gets \emptyset$
+\FOR{$i = 1$ đến $|\lambda|$}
+    \STATE $\lambda'[i] \gets \lambda[i] - 2 \cdot (i-1)$
+\ENDFOR
+\RETURN $\lambda'$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Part Star Operation (\texttt{\_part\_star})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $cols \in \mathbb{N}$
+\ENSURE Schur hoặc $0$
+\IF{$\lambda = \emptyset$ hoặc $\lambda_1 \neq cols$}
+    \RETURN $0$
+\ENDIF
+\IF{$|\lambda| = 1$}
+    \RETURN $\sigma_{\emptyset}$
+\ENDIF
+\RETURN $\sigma_{(\lambda_2, ..., \lambda_l)}$
+\end{algorithmic}
+\end{algorithm}

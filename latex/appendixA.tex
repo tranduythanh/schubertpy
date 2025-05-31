@@ -1,35 +1,23 @@
 \section*{Phụ lục: Pseudocode của Quy tắc Pieri cho các loại Grassmannian} \label{appendix:pseudocode}
 
 
-\subsection*{Thuật toán Pieri Type A (Grassmannian thường) -- Python: \texttt{pieriA\_inner}}
+\subsection*{Thuật toán Pieri Type A (Grassmannian thường): \texttt{pieriA\_inner} và các thuật toán bổ trợ}
 
 \begin{algorithm}[H]
 \caption{Pieri Rule Type A (\texttt{pieriA\_inner})}
 \begin{algorithmic}[1]
 \REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
 \ENSURE $\sum \sigma_\mu \in H^*(Gr(k,n))$
-\STATE $\lambda_{pad} \gets \lambda$ nối thêm $0$ cho đủ độ dài $n-k$
-\STATE $inner \gets \lambda_{pad}$
-\STATE $outer \gets (k, \lambda_{pad,1}, ..., \lambda_{pad,n-k-1})$
+\STATE $\bar\lambda \gets \lambda$ nối thêm $0$ cho đủ độ dài $n-k$
+\STATE $inner \gets \bar\lambda$
+\STATE $outer \gets (k, \bar\lambda_1, ..., \bar\lambda_{n-k-1})$
 \STATE $result \gets 0$
-\STATE $\mu \gets$ PieriFillA($inner$, $outer$, $0$, $i$)
+\STATE $\mu \gets$ $\mathtt{\_pieri\_fillA}$($inner$, $outer$, $0$, $i$)
 \WHILE{$\mu \neq \emptyset$}
-    \STATE $result \gets result + \sigma_{trim(\mu)}$
-    \STATE $\mu \gets$ PieriIterA($\mu$, $inner$, $outer$)
+    \STATE $result \gets result + \sigma_{\mathtt{trim}(\mu)}$
+    \STATE $\mu \gets$ $\mathtt{\_pieri\_itrA}$($\mu$, $inner$, $outer$)
 \ENDWHILE
 \RETURN $result$
-\end{algorithmic}
-\end{algorithm}
-
-\subsection*{Thuật toán hỗ trợ cho Pieri Type A}
-
-\begin{algorithm}[H]
-\caption{Padding Right (\texttt{padding\_right})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda \in$ Partition, $value \in \mathbb{N}$, $count \in \mathbb{N}$
-\ENSURE $\lambda'$ với $count$ phần tử $value$ nối vào phải
-\STATE $\lambda' \gets \lambda$ nối thêm $count$ phần tử $value$
-\RETURN $\lambda'$
 \end{algorithmic}
 \end{algorithm}
 
@@ -41,7 +29,7 @@
 \IF{$\lambda = \emptyset$}
     \RETURN $\lambda$
 \ENDIF
-\STATE $res \gets \lambda.copy()$
+\STATE $res \gets \lambda.\mathtt{copy}()$
 \STATE $pp \gets p$
 \STATE $rr \gets row\_index$
 \IF{$rr = 0$}
@@ -74,9 +62,9 @@
 \STATE $p \gets \lambda_{|\lambda|} - inner_{|\lambda|}$
 \FOR{$r \gets |\lambda|-1$ down to $1$}
     \IF{$\lambda[r] > inner[r]$}
-        \STATE $\mu \gets \lambda.copy()$
+        \STATE $\mu \gets \lambda.\mathtt{copy}()$
         \STATE $\mu[r] \gets \mu[r] - 1$
-        \STATE $\mu \gets$ PieriFillA($\mu$, $inner$, $outer$, $r+1$, $p+1$)
+        \STATE $\mu \gets$ $\mathtt{\_pieri\_fillA}$($\mu$, $inner$, $outer$, $r+1$, $p+1$)
         \IF{$\mu \neq \emptyset$}
             \RETURN $\mu$
         \ENDIF
@@ -87,24 +75,58 @@
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{Thuật toán Pieri lượng tử Type A (Quantum) -- Python: \texttt{qpieriA\_inner}}
+\subsection*{Thuật toán Pieri lượng tử Type A (Quantum): \texttt{qpieriA\_inner} và các thuật toán bổ trợ}
 
 \begin{algorithm}[H]
 \caption{Quantum Pieri Rule Type A (\texttt{qpieriA\_inner})}
 \begin{algorithmic}[1]
 \REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
 \ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(Gr(k,n))$
-\STATE $result \gets$ PieriA($i$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
+\STATE $result \gets$ $\mathtt{pieriA\_inner}$($i$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
 \IF{$|\lambda| = n-k$ và $\lambda_{n-k} > 0$}
     \IF{$k = 1$}
         \RETURN $q \cdot \sigma_{\emptyset}$
     \ENDIF
     \STATE $\lambda' \gets \{\lambda_j - 1 : \lambda_j > 1\}$
-    \STATE $LC \gets$ PieriA($i-1$, $\lambda'$, $k-1$, $n$)
-    \STATE $Z \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $k-1$), $LC$)
+    \STATE $LC \gets$ $\mathtt{pieriA\_inner}$($i-1$, $\lambda'$, $k-1$, $n$)
+    \STATE $f \gets$ ($\mu \mapsto$ $\mathtt{\_part\_star}$($\mu$, $k-1$))
+    \STATE $Z \gets$ $\mathtt{apply\_lc}$($f$, $LC$)
     \STATE $result \gets result + q \cdot Z$
 \ENDIF
 \RETURN $result$
 \end{algorithmic}
 \end{algorithm}
+
+\begin{algorithm}[H]
+    \caption{Áp dụng biến đổi tuyến tính (\texttt{apply\_lc})}
+    \begin{algorithmic}[1]
+    \REQUIRE $f: \mathcal{P} \to \mathcal{H}$ là phép biến đổi partition, $L = \sum_\lambda a_\lambda \sigma_\lambda$ là tổ hợp tuyến tính các hàm Schur
+    \ENSURE Tổ hợp tuyến tính mới $L' = \sum_\lambda a_\lambda \sigma_{f(\lambda)}$
+    \STATE $result \gets 0$
+    \IF{$L$ là tổ hợp tuyến tính}
+        \FORALL{hạng tử $a_\lambda \sigma_\lambda$ trong $L$}
+            \STATE $\mu \gets f(\lambda)$
+            \STATE $result \gets result + a_\lambda \cdot \sigma_\mu$
+        \ENDFOR
+    \ELSE
+        \STATE $result \gets f(L)$ \COMMENT{Áp dụng $f$ trực tiếp cho biểu thức đơn}
+    \ENDIF
+    \RETURN $result$
+    \end{algorithmic}
+    \end{algorithm}
+
+\begin{algorithm}[H]
+    \caption{Part Star Operation (\texttt{\_part\_star})}
+    \begin{algorithmic}[1]
+    \REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $cols \in \mathbb{N}$
+    \ENSURE Schur hoặc $0$
+    \IF{$\lambda = \emptyset$ hoặc $\lambda_1 \neq cols$}
+        \RETURN $0$
+    \ENDIF
+    \IF{$|\lambda| = 1$}
+        \RETURN $\sigma_{\emptyset}$
+    \ENDIF
+    \RETURN $\sigma_{(\lambda_2, ..., \lambda_l)}$
+    \end{algorithmic}
+    \end{algorithm}
 

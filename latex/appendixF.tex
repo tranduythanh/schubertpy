@@ -8,7 +8,7 @@
 \REQUIRE $lc$ là LinearCombination các lớp Schubert
 \ENSURE Đa thức các lớp Schubert đặc biệt
 \STATE $pieri \gets \lambda i, p \to \_pieri(i, p, \_k, \_n)$
-\RETURN GiambelliRec($lc$, $pieri$, $\_k$)
+\RETURN \texttt{giambelli\_rec}($lc$, $pieri$, $\_k$)
 \end{algorithmic}
 \end{algorithm}
 
@@ -17,7 +17,7 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc$ là LinearCombination, $pieri$ là function, $k \in \mathbb{N}$
 \ENSURE Đa thức các lớp Schubert đặc biệt
-\RETURN ApplyLC($\lambda \mapsto$ GiambelliRecInner($\lambda$, $pieri$, $k$), $lc$)
+\RETURN \texttt{apply\_lc}($\lambda \mapsto$ \texttt{giambelli\_rec\_inner}($\lambda$, $pieri$, $k$), $lc$)
 \end{algorithmic}
 \end{algorithm}
 
@@ -39,10 +39,10 @@
 \ENDIF
 \STATE $pieriExpansion \gets$ pieri($p$, $\lambda'$)
 \STATE $stuff \gets$ pieriExpansion $- \sigma_\lambda$
-\STATE $a \gets$ GiambelliRecInner($\lambda'$, $pieri$, $k$)
-\STATE $b \gets$ GiambelliRec($stuff$, $pieri$, $k$)
-\STATE $result \gets$ Num2Spec($p$) $\cdot a - b$
-\RETURN Expand($result$)
+\STATE $a \gets$ \texttt{giambelli\_rec\_inner}($\lambda'$, $pieri$, $k$)
+\STATE $b \gets$ \texttt{giambelli\_rec}($stuff$, $pieri$, $k$)
+\STATE $result \gets$ \texttt{num2spec}($p$) $\cdot a - b$
+\RETURN \texttt{expand}($result$)
 \end{algorithmic}
 \end{algorithm}
 
@@ -97,7 +97,7 @@
 \REQUIRE $lc$ là LinearCombination các lớp Schubert
 \ENSURE Đa thức trong QH* với tham số lượng tử $q$
 \STATE $qpieri \gets \lambda i, p \to \_qpieri(i, p, \_k, \_n)$
-\RETURN GiambelliRec($lc$, $qpieri$, $\_k$)
+\RETURN \texttt{giambelli\_rec}($lc$, $qpieri$, $\_k$)
 \end{algorithmic}
 \end{algorithm}
 
@@ -110,8 +110,8 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc_1, lc_2$ là LinearCombination các lớp Schubert
 \ENSURE LinearCombination kết quả tích
-\STATE $polynomial \gets$ Giambelli($lc_1$)
-\STATE $result \gets$ Act($polynomial$, $lc_2$)
+\STATE $polynomial \gets$ \texttt{giambelli}($lc_1$)
+\STATE $result \gets$ \texttt{act}($polynomial$, $lc_2$)
 \RETURN $result$
 \end{algorithmic}
 \end{algorithm}
@@ -122,7 +122,7 @@
 \REQUIRE $expr$ là đa thức các lớp đặc biệt, $lc$ là LinearCombination
 \ENSURE Kết quả tác động $expr$ lên $lc$
 \STATE $pieri\_func \gets \lambda(i,p) \to \_pieri(i, p, \_k, \_n)$
-\RETURN ActLC($expr$, $lc$, $pieri\_func$)
+\RETURN \texttt{act\_lc}($expr$, $lc$, $pieri\_func$)
 \end{algorithmic}
 \end{algorithm}
 
@@ -136,10 +136,10 @@
     \RETURN $expr \cdot lc$
 \ENDIF
 \STATE $v \gets$ biến đầu tiên trong $vars$
-\STATE $i \gets$ Spec2Num($v$)
+\STATE $i \gets$ \texttt{spec2num}($v$)
 \STATE $expr_0 \gets$ $expr$ với $v=0$
 \STATE $expr_1 \gets$ $(expr - expr_0)/v$
-\STATE $term1 \gets$ ApplyLC($p \to$ pieri($i$, $p$), ActLC($expr_1$, $lc$, $pieri$))
+\STATE $term1 \gets$ \texttt{act\_lc}($p \to$ \texttt{pieri}($i$, $p$), \texttt{act\_lc}($expr_1$, $lc$, $pieri$))
 \STATE $term2 \gets$ ActLC($expr_0$, $lc$, $pieri$)
 \RETURN $term1 + term2$
 \end{algorithmic}
@@ -152,8 +152,8 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc_1, lc_2$ là LinearCombination các lớp Schubert
 \ENSURE Quantum product $lc_1 \cdot lc_2$ (có thể có $q$)
-\STATE $q\_polynomial \gets$ QGiambelli($lc_1$)
-\STATE $result \gets$ QAct($q\_polynomial$, $lc_2$)
+\STATE $q\_polynomial \gets$ \texttt{qgiambelli}($lc_1$)
+\STATE $result \gets$ \texttt{qact}($q\_polynomial$, $lc_2$)
 \RETURN $result$
 \end{algorithmic}
 \end{algorithm}

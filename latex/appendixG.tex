@@ -52,3 +52,59 @@
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
+
+\section*{Thuật toán Quantum Multiplication via Rim Hook Removal (\texttt{qmult\_rh})}
+
+\begin{algorithm}[H]
+\caption{Quantum Multiplication Type A via Rim Hook Removal (\texttt{qmult\_rh})}
+\begin{algorithmic}[1]
+\REQUIRE $lc_1, lc_2$ là các linear combination của Schubert classes, $k, n$ là tham số Grassmannian Type A
+\ENSURE Tích lượng tử $lc_1 \star lc_2$ trong $QH^*(Gr(n-k,n))$
+\STATE $kp \gets n - k$
+\STATE Tạo Grassmannian mở rộng $\widetilde{Gr}$ với $\widetilde{n} \gets 2n - 1$, $\widetilde{k} \gets \widetilde{n} - kp$
+\STATE $res \gets \widetilde{Gr}.mult(lc_1, lc_2)$ \COMMENT{Phép nhân thông thường trong không gian mở rộng}
+\STATE Áp dụng hàm \textbf{RimHookReduction} cho mỗi partition trong $res$
+\RETURN $res$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Rim Hook Reduction (\texttt{\_\_rm\_rim\_hook})}
+\begin{algorithmic}[1]
+\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$ là partition, $n, k$ là tham số Grassmannian ban đầu
+\ENSURE Schubert class lượng tử tương ứng
+\STATE $acceptable\_grid \gets (n-k, k)$
+\STATE $rim\_size \gets n$
+\STATE $kp \gets n - k$
+\IF{$\lambda$ nằm trong $acceptable\_grid$}
+    \RETURN $\sigma_\lambda$ \COMMENT{Partition đã phù hợp, không cần xử lý}
+\ENDIF
+\STATE $(\lambda', q\_num, height) \gets$ remove\_rim\_hooks($\lambda$, $rim\_size$, $acceptable\_grid$)
+\STATE $sign \gets (-1)^{height - kp}$
+\IF{$q\_num > 0$}
+    \RETURN $\sigma_{\lambda'} \cdot q^{q\_num} \cdot sign$ \COMMENT{Có quantum correction}
+\ELSIF{$\lambda' = \emptyset$ hoặc $|\lambda'| = 0$}
+    \RETURN $0$ \COMMENT{Partition rỗng}
+\ELSE
+    \RETURN $\sigma_{\lambda'} \cdot sign$ \COMMENT{Chỉ có sign correction}
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Giải thích thuật toán}
+
+Thuật toán \texttt{qmult\_rh} thực hiện phép nhân lượng tử trong cohomology ring của Grassmannian Type A theo các bước:
+
+\begin{enumerate}
+\item \textbf{Mở rộng không gian}: Tạo Grassmannian mở rộng $Gr(kp, 2n-1)$ với $kp = n-k$, cho phép thực hiện phép nhân thông thường mà không gặp quantum correction.
+
+\item \textbf{Tính toán trong không gian mở rộng}: Sử dụng phép nhân thông thường $mult(lc_1, lc_2)$ trong $H^*(Gr(kp, 2n-1))$.
+
+\item \textbf{Rim hook reduction}: Đưa mỗi partition trong kết quả về lưới hợp lệ $(n-k) \times k$ bằng cách:
+   \begin{itemize}
+   \item Loại bỏ các rim hook kích thước $n$ 
+   \item Tính số lượng rim hook đã loại ($q\_num$)
+   \item Tính tổng chiều cao rim hook ($height$)
+   \item Áp dụng quantum correction $q^{q\_num}$ và sign correction $(-1)^{height-kp}$
+   \end{itemize}
+\end{enumerate}

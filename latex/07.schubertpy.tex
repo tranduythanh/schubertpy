@@ -8,7 +8,13 @@ Gói \texttt{SchubertPy} hiện hỗ trợ các loại Grassmannian sau:
     \item Loại C: Grassmann các không gian đẳng hướng trong không gian symplectic (ký hiệu $IG$).
     \item Loại B và D: Grassmann các không gian đẳng hướng trong không gian chính quy (ký hiệu $OG$ cho cả hai trường hợp).
 \end{itemize}
-Các đối tượng Grassmannian tương ứng có thể được tạo ra bằng các lớp Python \texttt{Grassmannian}, \texttt{IsotropicGrassmannian}, \texttt{OrthogonalGrassmannian}. Người dùng có thể xác định loại của Grassmannian bằng cách in đối tượng, tương tự như cách gói qcalc làm trên Maple. Ví dụ:
+Các đối tượng Grassmannian tương ứng có thể được tạo ra bằng các lớp Python 
+\begin{itemize}
+    \item \texttt{Grassmannian},
+    \item \texttt{IsotropicGrassmannian},
+    \item \texttt{OrthogonalGrassmannian}.
+\end{itemize}
+Người dùng có thể xác định loại của Grassmannian bằng cách in đối tượng, tương tự như cách gói qcalc làm trên Maple. 
 
 Ví dụ:
 \small
@@ -32,9 +38,11 @@ Type D; (k,n)=(1,2); OG(2,6); deg(q)=3
 \normalsize
 
 Trong các thông tin in ra:
-- \texttt{Type A/B/C/D} cho biết loại Grassmannian.
-- $(k,n)$ là các tham số của Grassmann (ví dụ $Gr(2,5)$ tương ứng với $k=2, n=5$).
-- \texttt{deg(q)} là bậc của biến $q$ trong vòng đồng điều lượng tử (tức là số điều kiện cần để có đường cong độ 1 trong không gian đó).
+\begin{itemize}
+    \item \texttt{Type A/B/C/D} cho biết loại Grassmannian.
+    \item $(k,n)$ là các tham số của Grassmann (ví dụ $Gr(2,5)$ tương ứng với $k=2, n=5$).
+    \item \texttt{deg(q)} là bậc của biến $q$ trong vòng đồng điều lượng tử (tức là số điều kiện cần để có đường cong độ 1 trong không gian đó).
+\end{itemize}
 
 \subsection{Lớp Schubert và các lớp đặc biệt}
 Trong \texttt{SchubertPy}, các \textit{lớp Schubert} được đánh chỉ số bằng các phân hoạch (partition) phù hợp với từng loại Grassmann. Với các Grassmannian đẳng hướng (loại B, C, D), gói sử dụng phân hoạch $k$-strict (phân hoạch với một số ràng buộc bổ sung) để biểu diễn các lớp Schubert tương ứng tính đến điều kiện đẳng hướng. Người dùng có thể liệt kê các lớp Schubert và nhận diện lớp điểm (lớp có codimension lớn nhất) cũng như các lớp sinh (các lớp Schubert đặc biệt tạo sinh vành đồng điều) bằng các hàm tiện ích:

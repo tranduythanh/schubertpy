@@ -11,6 +11,8 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{parskip}
+% \usepackage{titlesec}
 
 \setlength\epigraphwidth{8cm}
 \setlength\epigraphrule{0pt}
@@ -49,6 +51,20 @@
 % Add page numbering
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
+% Custom spacing for subsubsection to match subsection
+% \titlespacing*{\subsubsection}
+% {0pt}% left margin
+% {3.5ex plus 1ex minus .2ex}% space before (same as subsection)
+% {2.3ex plus .2ex}% space after (same as subsection)
+
+% Alternative method if titlesec conflicts with IEEEtran:
+\let\oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}[1]{%
+  \vspace{0.5ex}%
+  \oldsubsubsection{#1}%
+  \vspace{0.5ex}%
+}
 
 \begin{document}
 \title{SchubertPy: A Python Package for Schubert Calculus and Its Applications in Algebraic Geometry}

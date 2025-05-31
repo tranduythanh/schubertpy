@@ -1,8 +1,6 @@
-% Các thuật toán hỗ trợ chung đã được liệt kê ở mục "Thuật toán hỗ trợ chung cho Pieri B/C/D" phía trên. Vui lòng tham khảo mục đó cho các hàm: \texttt{pieri\_set}, \texttt{count\_comps}, \texttt{_pieri\_fill}, \texttt{_pieri\_itr}, \texttt{part\_conj}, \texttt{_part\_star}, \texttt{_part\_tilde}, \texttt{part\_clip}.
-
 % --- Pieri Type C Algorithms ---
 
-\subsection*{Thuật toán Pieri Type C (Grassmannian symplectic) -- Python: \texttt{pieriC\_inner}}
+\subsection*{Thuật toán Pieri Type C (Grassmannian symplectic): \texttt{pieriC\_inner} và các thuật toán bổ trợ}
 
 \begin{algorithm}[H]
 \caption{Pieri Rule Type C (\texttt{pieriC\_inner})}
@@ -10,9 +8,9 @@
 \REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
 \ENSURE $\sum 2^{c(\lambda,\mu)} \sigma_\mu \in H^*(IG(k,2n))$
 \STATE $result \gets 0$
-\STATE $\mathcal{P} \gets$ PieriSet($i$, $\lambda$, $k$, $n$, $0$)
+\STATE $\mathcal{P} \gets$ $\mathtt{pieri\_set}$($i$, $\lambda$, $k$, $n$, $0$)
 \FOR{mỗi $\mu \in \mathcal{P}$}
-    \STATE $c \gets$ CountComps($\lambda$, $\mu$, true, $k$, $0$)
+    \STATE $c \gets$ $\mathtt{count\_comps}$($\lambda$, $\mu$, true, $k$, $0$)
     \STATE $a_\mu \gets 2^c$
     \STATE $result \gets result + a_\mu \cdot \sigma_\mu$
 \ENDFOR
@@ -20,18 +18,19 @@
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{Thuật toán Pieri lượng tử Type C (Quantum) -- Python: \texttt{qpieriC\_inner}}
+\subsection*{Thuật toán Pieri lượng tử Type C (Quantum): \texttt{qpieriC\_inner} và các thuật toán bổ trợ}
 
 \begin{algorithm}[H]
 \caption{Quantum Pieri Rule Type C (\texttt{qpieriC\_inner})}
 \begin{algorithmic}[1]
 \REQUIRE $i \in \mathbb{N}$, $\lambda = (\lambda_1, ..., \lambda_l)$, $k, n \in \mathbb{N}$
 \ENSURE $\sum a_\mu \sigma_\mu + \sum b_\nu q^d \sigma_\nu \in QH^*(IG(k,2n))$
-\STATE $result \gets$ PieriC($i$, $\lambda$, $k$, $n$) \COMMENT{Số hạng cổ điển}
+\STATE $result \gets$ $\mathtt{pieriC\_inner}$($i$, $\lambda$, $k$, $n$)
 \IF{$|\lambda| = n-k$ và $\lambda_{n-k} > 0$}
     \STATE $\lambda' \gets \{\lambda_j - 1 : \lambda_j > 1\}$
-    \STATE $LC \gets$ PieriC($i-1$, $\lambda'$, $k-1$, $n$)
-    \STATE $Z \gets$ ApplyLC($\mu \mapsto$ PartStar($\mu$, $k-1$), $LC$)
+    \STATE $LC \gets$ $\mathtt{pieriC\_inner}$($i-1$, $\lambda'$, $k-1$, $n$)
+    \STATE $f \gets$ ($\mu \mapsto$ $\mathtt{\_part\_star}$($\mu$, $k-1$))
+    \STATE $Z \gets$ $\mathtt{apply\_lc}$($f$, $LC$)
     \STATE $result \gets result + q \cdot Z$
 \ENDIF
 \RETURN $result$

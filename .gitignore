@@ -166,3 +166,4 @@ cython_debug/
 *.gz
 *.out
 schubertpy/.DS_Store
+.DS_Store
