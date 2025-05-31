@@ -35,6 +35,11 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
     _qpieri: Callable
     
     def __init__(self, m: int, n: int):
+        if not isinstance(m, int) or not isinstance(n, int):
+            raise TypeError("Arguments must be integers")
+        if m < 0 or n < 0:
+            raise ValueError("Arguments must be non-negative")
+            
         if n % 2 == 1:
             self._type = "B"
             self._k = (n-1)//2 - m
@@ -62,6 +67,21 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
                 self.degree_q()
             ]
         return f"Type {td[0]} ;  (k,n) = ({td[1]},{td[2]}) ;  {td[3]}({td[4]},{td[5]}) ;  deg(q) = {td[6]}"
+    
+    def get_type_data(self) -> list:
+        """Returns the type data as a list in the format [type, k, n, grassmannian_type, param1, param2, degree_q]"""
+        if self._type == "B":
+            return [
+                "B", self._k, self._n, "OG", 
+                self._n-self._k, 2*self._n+1, 
+                self.degree_q()
+            ]
+        else:  # type == "D"
+            return [
+                "D", self._k, self._n, 
+                "OG", self._n+1-self._k, 2*self._n+2,
+                self.degree_q()
+            ]
     
     def degree_q(self) -> int:
         return 2*self._n if self._k == 0 else self._n+self._k

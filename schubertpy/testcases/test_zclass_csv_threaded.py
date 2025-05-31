@@ -120,7 +120,7 @@ class TestWithCSVFileThreaded(unittest.TestCase):
         """Test qmult method with threading"""
         csv_file_path = './schubertpy/testcases/results.csv'
         batch_size = 1000
-        max_threads = 5
+        max_threads = 7
         
         print("Loading CSV data...")
         all_data = load_csv_data(csv_file_path)
@@ -185,7 +185,7 @@ class TestWithCSVFileThreaded(unittest.TestCase):
         """Test qmult_rh method with threading (Grassmannian only)"""
         csv_file_path = './schubertpy/testcases/results.csv'
         batch_size = 1000
-        max_threads = 5
+        max_threads = 7
         
         print("Loading CSV data...")
         all_data = load_csv_data(csv_file_path)
