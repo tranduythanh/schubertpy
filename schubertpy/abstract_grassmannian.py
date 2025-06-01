@@ -3,10 +3,10 @@ from typing import Callable, List, Union, Any
 from .schur import Schur
 from .lc import LinearCombination
 import sympy as sp
+from .utils.hash import hashable_lru_cache_method
 
 from .qcalc import (
     apply_lc,
-    giambelli_rec,
     isSchur,
     toSchur,
 )
@@ -19,11 +19,11 @@ class AbstractGrassmannian(ABC):
     _qpieri: Callable
     
     def __init__(self, m: int, n:int):
-        self._type = None
-        self._k = None
-        self._n = None
-        self._pieri = None
-        self._qpieri = None
+        self._type = ''
+        self._k = 0
+        self._n = 0
+        self._pieri = lambda i, lam, k, n: LinearCombination([])
+        self._qpieri = lambda i, lam, k, n: LinearCombination([])
 
     @abstractmethod
     def degree_q(self) -> int:
@@ -68,12 +68,35 @@ class AbstractGrassmannian(ABC):
         pass
 
     @abstractmethod
-    def miami_swap(self, lc: Union[sp.Expr, LinearCombination, str, List[int]]) -> LinearCombination:
-        pass
-
-    @abstractmethod
     def schub_type(self, lam: Union[Schur, List[int]]) -> int:
         pass
+
+    
+    @staticmethod
+    def static_miami_swap_inner(lam: List[int], k: int) -> LinearCombination:
+        # Check if k is not a member of lam
+        if k not in lam:
+            return LinearCombination(Schur(lam))
+        
+        # Check if the number of elements in lam greater than k is even
+        count = sum(1 for lam_i in lam if lam_i > k)
+        if count % 2 == 0:
+            return LinearCombination(Schur(lam))
+        
+        # Check if the last element of lam is 0
+        if lam[-1] == 0:
+            return LinearCombination(Schur(lam[:-1]))
+        
+        a = lam.copy()+[0]
+        return LinearCombination(Schur(a))
+    
+    
+    def miami_swap(self, lc: Union[sp.Expr, LinearCombination, str, List[int]]) -> LinearCombination:
+        if isinstance(lc, list):
+            return self.miami_swap(LinearCombination(lc))
+        if self._type == "D":
+            return apply_lc(lambda lam: self.static_miami_swap_inner(lam, self._k), lc)
+        return LinearCombination(lc)
 
     
     def clone(self):
@@ -96,7 +119,7 @@ class AbstractGrassmannian(ABC):
     def giambelli(self, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
         lc = LinearCombination(lc)
         # print("ag:-giambelli: ", lc)
-        return giambelli_rec(lc, lambda i, p: self._pieri(i, p, self._k, self._n), self._k)
+        return self.giambelli_rec(lc, lambda i, p: self._pieri(i, p, self._k, self._n), self._k)
 
 
     def mult(self, lc1: Union[sp.Expr, LinearCombination, str], lc2: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
@@ -131,7 +154,7 @@ class AbstractGrassmannian(ABC):
         # print("qgiambelli")
         lc = LinearCombination(lc)
         # print("lc: ", lc)
-        return giambelli_rec(lc, lambda i, p: self._qpieri(i, p, self._k, self._n), self._k)
+        return self.giambelli_rec(lc, lambda i, p: self._qpieri(i, p, self._k, self._n), self._k)
 
 
     def qmult(
@@ -165,10 +188,6 @@ class AbstractGrassmannian(ABC):
             raise ValueError("single part expected")
         return -sc.p[0] if len(sc.p) > 1 else sc.p[0]
 
-
-    def num2spec(self, p: int) -> Schur:
-        return Schur([p]) if p > 0 else Schur([-p, 0])
-    
     def act_lc(self, expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Callable) -> LinearCombination:
         # print("act_lc")
         lc = LinearCombination(lc)
@@ -203,3 +222,44 @@ class AbstractGrassmannian(ABC):
         # print("act_lc res 111111: ", res1)
         res = LinearCombination(res1 + lc_p2)
         return res
+
+    @hashable_lru_cache_method(maxsize=None)
+    def giambelli_rec_inner(self, lam: List[int], pieri: Callable, k: int) -> LinearCombination:
+        
+        lam = list(lam)
+        # print("----------------------giambelli_rec_inner\n", lam, k)
+        # print("len(lam): ", len(lam))
+
+        if not lam or len(lam) == 0:
+            # print("return 1")
+            return LinearCombination(1)
+
+        p = lam[0]
+        if p == k and lam[-1] == 0:
+            p = -k
+
+        # Using list slicing for the equivalent of Maple's `op` function
+        lam0 = lam[1:]
+        if lam[-1] == 0 and lam[1] < k:
+            lam0 = lam[1:-1]
+
+        # print("lam, lam0: ", lam, lam0)
+        # print("pieri(p, lam0): ", pieri(p, lam0))
+        stuff = pieri(p, lam0) - LinearCombination(Schur(lam).symbol())
+        
+        # Assuming num2spec is a previously defined function
+        a = self.giambelli_rec_inner(lam0, pieri, k)
+        b = self.giambelli_rec(stuff, pieri, k)
+        # print("a: ", a)
+        # print("b: ", b)
+
+        res = sp.expand(self.num2spec(p) * a.expr - b.expr)
+        return LinearCombination(res)
+
+    def giambelli_rec(self, lc: Union[sp.Expr, LinearCombination, str], pieri: Callable, k: int) -> LinearCombination:
+        lc = LinearCombination(lc)
+        # print("giambelli_rec lc: ", lc)
+        return apply_lc(lambda x: self.giambelli_rec_inner(x, pieri, k), lc)
+
+    def num2spec(self, p: int) -> Schur:
+        return Schur([p]) if p > 0 else Schur([-p, 0])

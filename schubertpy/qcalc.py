@@ -165,24 +165,6 @@ def pair2part_inner(pair: Tuple[List[int], List[int]]) -> List[int]:
     return Schur(a)
 
 
-def miami_swap_inner(lam: List[int], k: int) -> str:
-    # Check if k is not a member of lam
-    if k not in lam:
-        return Schur(lam)
-    
-    # Check if the number of elements in lam greater than k is even
-    count = sum(1 for lam_i in lam if lam_i > k)
-    if count % 2 == 0:
-        return Schur(lam)
-    
-    # Check if the last element of lam is 0
-    if lam[-1] == 0:
-        return Schur(lam[:-1])
-    else:
-        a = lam.copy()+[0]
-        return Schur(a)
-
-
 def type_swap_inner(lam: List[int], k: int) -> List[Union[int, str]]:
     if lam is None or len(lam) == 0:
         return Schur([])
@@ -616,10 +598,6 @@ def spec2num(sc: Union[Schur, sp.Expr]) -> int:
     return -sc.p[0] if len(sc.p) > 1 else sc.p[0]
 
 
-def num2spec(p: int) -> Schur:
-    return Schur([p]) if p > 0 else Schur([-p, 0])
-
-
 def apply_lc(f: Callable, lc: Union[sp.Expr, LinearCombination, str]) -> LinearCombination:
     lc = LinearCombination(lc)
     return lc.apply(f)
@@ -658,46 +636,6 @@ def act_lc(expc: sp.Expr, lc: Union[sp.Expr, LinearCombination, str], pieri: Cal
     # print("act_lc res 111111: ", res1)
     res = LinearCombination(res1 + lc_p2)
     return res
-
-
-@hashable_lru_cache(maxsize=None)
-def giambelli_rec_inner(lam: List[int], pieri: Callable, k: int) -> LinearCombination:
-    
-    lam = list(lam)
-    # print("----------------------giambelli_rec_inner\n", lam, k)
-    # print("len(lam): ", len(lam))
-
-    if not lam or len(lam) == 0:
-        # print("return 1")
-        return LinearCombination(1)
-
-    p = lam[0]
-    if p == k and lam[-1] == 0:
-        p = -k
-
-    # Using list slicing for the equivalent of Maple's `op` function
-    lam0 = lam[1:]
-    if lam[-1] == 0 and lam[1] < k:
-        lam0 = lam[1:-1]
-
-    # print("lam, lam0: ", lam, lam0)
-    # print("pieri(p, lam0): ", pieri(p, lam0))
-    stuff = pieri(p, lam0) - LinearCombination(Schur(lam).symbol())
-    
-    # Assuming num2spec is a previously defined function
-    a = giambelli_rec_inner(lam0, pieri, k)
-    b = giambelli_rec(stuff, pieri, k)
-    # print("a: ", a)
-    # print("b: ", b)
-
-    res = sp.expand(num2spec(p) * a.expr - b.expr)
-    return LinearCombination(res)
-
-def giambelli_rec(lc: Union[sp.Expr, LinearCombination, str], pieri: Callable, k: int) -> LinearCombination:
-    lc = LinearCombination(lc)
-    # print("giambelli_rec lc: ", lc)
-    return apply_lc(lambda x: giambelli_rec_inner(x, pieri, k), lc)
-
 
 
 
@@ -773,38 +711,7 @@ def index2part(lc: Any) -> Any:
         fail_no_type()
 
 
-def dualize(lc: Union[sp.Expr, LinearCombination, str]) -> Any:
-    lc = LinearCombination(lc)
-    N = {
-        "A": _n,
-        "C": 2*_n,
-        "B": 2*_n+1,
-        "D": 2*_n+2
-    }.get(_type, _n)
-    
-    index = part2index(lc)
-    # print("lc, index:", lc, index)
 
-    return index2part(apply_lc(lambda idx: dualize_index_inner(idx, N, _type), index))
-
-
-def type_swap(lc: Union[sp.Expr, LinearCombination, str, List[int]], k: int) -> LinearCombination:
-    if isinstance(lc, list):
-        return type_swap(Schur(lc).symbol())
-    
-    if _type == "D":
-        return apply_lc(lambda lam: type_swap_inner(lam, _k), lc)
-    
-    return LinearCombination(lc)
-
-def miami_swap(lc: Any) -> Any:
-    if isinstance(lc, list):
-        return miami_swap(Schur(lc))
-    
-    if _type == "D":
-        return apply_lc(lambda lam: miami_swap_inner(lam, _k), lc)
-    
-    return lc
 
 
 def schub_type(lam: Any) -> int:

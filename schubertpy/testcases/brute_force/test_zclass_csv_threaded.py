@@ -118,7 +118,7 @@ class TestWithCSVFileThreaded(unittest.TestCase):
 
     def test_1_threaded(self):
         """Test qmult method with threading"""
-        csv_file_path = './schubertpy/testcases/results.csv'
+        csv_file_path = './schubertpy/testcases/brute_force/results.csv'
         batch_size = 1000
         max_threads = 7
         
@@ -183,7 +183,7 @@ class TestWithCSVFileThreaded(unittest.TestCase):
 
     def test_2_threaded(self):
         """Test qmult_rh method with threading (Grassmannian only)"""
-        csv_file_path = './schubertpy/testcases/results.csv'
+        csv_file_path = './schubertpy/testcases/brute_force/results.csv'
         batch_size = 1000
         max_threads = 7
         

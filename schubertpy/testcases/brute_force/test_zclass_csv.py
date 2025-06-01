@@ -23,7 +23,7 @@ from schubertpy.utils.const import encode
 # class TestWithCSVFile(unittest.TestCase):
 
 #     def test_1(self):
-#         csv_file_path = './schubertpy/testcases/results.csv'
+#         csv_file_path = './schubertpy/testcases/brute_force/results.csv'
 #         count = 0
 #         with open(csv_file_path, newline='') as csvfile:
 #             csv_reader = csv.reader(csvfile, delimiter=';')
@@ -62,7 +62,7 @@ from schubertpy.utils.const import encode
 #                 print(f"ok\t{elapsed_time}\t{row}")
     
 #     def test_2(self):
-#         csv_file_path = './schubertpy/testcases/results.csv'
+#         csv_file_path = './schubertpy/testcases/brute_force/results.csv'
 #         count = 0
 #         with open(csv_file_path, newline='') as csvfile:
 #             csv_reader = csv.reader(csvfile, delimiter=';')

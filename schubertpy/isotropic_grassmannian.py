@@ -2,7 +2,7 @@ from .abstract_grassmannian import AbstractGrassmannian
 from typing import Callable, List, Union, Any
 from .schur import Schur
 from .lc import LinearCombination
-from .utils.hash import hashable_lru_cache
+from .utils.hash import hashable_lru_cache_method
 import sympy as sp
 from .qcalc import (
     all_kstrict,
@@ -14,7 +14,6 @@ from .qcalc import (
     part2index,
     index2partC_inner,
     dualize_index_inner,
-    miami_swap,
     pieri_set,
     count_comps,
     part_star,
@@ -137,11 +136,6 @@ class IsotropicGrassmannian(AbstractGrassmannian):
             return self.type_swap(Schur(lc).symbol())
         return LinearCombination(lc)
 
-    def miami_swap(self, lc: Union[sp.Expr, LinearCombination, str, List[int]]) -> LinearCombination:
-        if isinstance(lc, list):
-            return miami_swap(Schur(lc).symbol())
-        return lc
-
     def schub_type(self, lam: Union[Schur, List[int]]) -> int:
         raise ValueError("No type defined.")
 
@@ -149,7 +143,7 @@ class IsotropicGrassmannian(AbstractGrassmannian):
     # ##################################################################
     # # Type C: Quantum cohomology of symplectic IG(n-k,2n).
     # ##################################################################
-    @hashable_lru_cache(maxsize=None)
+    @hashable_lru_cache_method(maxsize=None)
     def pieriC_inner(self, i: int, lam: List[int], k: int, n: int) -> LinearCombination:
         lam = list(lam)
 

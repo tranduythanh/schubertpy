@@ -180,7 +180,7 @@ def translate_schur(sym: Union[sp.Symbol, str]) -> str:
     # Convert symbol back to string and translate using reverse table
     return str(sym).translate(btable)
 
-def toSchur(sym: Union[sp.Symbol, str]) -> Schur:
+def toSchur(sym: Union[sp.Symbol, str, sp.Expr]) -> Schur:
         # Convert symbol back to string and translate using reverse table
         parsed_str = str(sym).translate(btable).replace('S', '')
         # Parse the string back into a list structure

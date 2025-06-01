@@ -2,7 +2,7 @@ from .abstract_grassmannian import AbstractGrassmannian
 from typing import Callable, List, Union
 from .schur import Schur
 from .lc import LinearCombination
-from .utils.hash import hashable_lru_cache
+from .utils.hash import hashable_lru_cache_method
 import sympy as sp
 
 from .qcalc import (
@@ -17,8 +17,6 @@ from .qcalc import (
     index2partB_inner,
     index2partD_inner,
     dualize_index_inner,
-    miami_swap,
-    miami_swap_inner,
     type_swap_inner,
     pieri_set,
     count_comps,
@@ -195,13 +193,6 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
     
         return LinearCombination(lc)
 
-    def miami_swap(self, lc: Union[sp.Expr, LinearCombination, str, List[int]]) -> LinearCombination:
-        if isinstance(lc, list):
-            return miami_swap(Schur(lc).symbol())
-        if self._type == "D":
-            return apply_lc(lambda lam: miami_swap_inner(lam, self._k), lc)
-        return LinearCombination(lc)
-
     def schub_type(self, lam: Union[Schur, List[int]]) -> int:
         if self._type != "D" or not (isinstance(lam, list) or not isinstance(lam, Schur)):
             raise ValueError("No type defined.")
@@ -218,7 +209,7 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
     # ##################################################################
     # # Type B: Quantum cohomology of odd orthogonal OG(n-k,2n+1).
     # ##################################################################
-    @hashable_lru_cache(maxsize=None)
+    @hashable_lru_cache_method(maxsize=None)
     def pieriB_inner(self, p: int, lam: List[int], k: int, n: int) -> LinearCombination:
         lam = list(lam)
 
@@ -253,7 +244,7 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
     # ##################################################################
     # # Type D: Quantum cohomology of even orthogonal OG(n+1-k,2n+2).
     # ##################################################################
-    @hashable_lru_cache(maxsize=None)
+    @hashable_lru_cache_method(maxsize=None)
     def pieriD_inner(self, p: int, lam: List[int], k: int, n: int) -> LinearCombination:
         # print("pieriD_inner ------------------------")
         lam = list(lam)
@@ -308,7 +299,7 @@ class OrthogonalGrassmannian(AbstractGrassmannian):
         sch = Schur((list(_intn - set(_mu))[::-1]))
         return LinearCombination(sch.symbol())
 
-    @hashable_lru_cache(maxsize=None)
+    @hashable_lru_cache_method(maxsize=None)
     def qpieriD_inner(self, p, lam, k, n):
         # print("qpieriD_inner")
 

@@ -2,9 +2,13 @@ run-example:
 	pip3 install -e .
 	python3 example/main.py
 
-test:
+test-basic:
 	clear && printf '\e[3J'
-	python3 -m unittest schubertpy/testcases/*.py
+	python3 -m unittest schubertpy/testcases/basic/*.py
+
+test-brute-force:
+	clear && printf '\e[3J'
+	python3 -m unittest schubertpy/testcases/brute_force/*.py
 
 coverage:
 	clear && printf '\e[3J'

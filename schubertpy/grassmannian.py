@@ -4,7 +4,7 @@ from .schur import Schur
 from .lc import LinearCombination
 from .partition import Partition
 import sympy as sp
-from .utils.hash import hashable_lru_cache
+from .utils.hash import hashable_lru_cache_method
 
 from .qcalc import (
     apply_lc,
@@ -19,7 +19,6 @@ from .qcalc import (
     part2indexA_inner,
     index2partA_inner,
     dualize_index_inner,
-    miami_swap
 )
 
 class Grassmannian(AbstractGrassmannian):
@@ -124,11 +123,6 @@ class Grassmannian(AbstractGrassmannian):
             return self.type_swap(Schur(lc).symbol())
         return LinearCombination(lc)
 
-    def miami_swap(self, lc: Union[sp.Expr, LinearCombination, str, List[int]]) -> LinearCombination:
-        if isinstance(lc, list):
-            return miami_swap(Schur(lc).symbol())
-        return lc
-
     def schub_type(self, lam: Union[Schur, List[int]]) -> int:
         raise ValueError("No type defined.")
 
@@ -138,7 +132,7 @@ class Grassmannian(AbstractGrassmannian):
     # ##################################################################
 
     # DO NOT MODIFY THIS FUNCTION
-    @hashable_lru_cache(maxsize=None)
+    @hashable_lru_cache_method(maxsize=None)
     def pieriA_inner(self, i: int, lam: List[int], k: int, n: int) -> LinearCombination:
         lam = list(lam)
 

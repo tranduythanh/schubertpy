@@ -1,5 +1,6 @@
 from schubertpy.qcalc import *
 from schubertpy.utils.kstrict import itr_kstrict
+from schubertpy.abstract_grassmannian import AbstractGrassmannian
 import unittest
 from unittest.mock import patch
 
@@ -83,37 +84,37 @@ class TestMiamiSwapInner(unittest.TestCase):
     def test_k_not_in_lam(self):
         lam = [3,2,1]
         k = 4
-        result = miami_swap_inner(lam, k)
+        result = AbstractGrassmannian.static_miami_swap_inner(lam, k)
         self.assertEqual(str(result), 'S[3,2,1]')
     
     def test_even_count_greater_than_k(self):
         lam = [5,4,3,2,1]
         k = 3
-        result = miami_swap_inner(lam, k)
+        result = AbstractGrassmannian.static_miami_swap_inner(lam, k)
         self.assertEqual(str(result), 'S[5,4,3,2,1]')
     
     def test_odd_count_greater_than_k(self):
         lam = [5,4,3,2,1]
         k = 2
-        result = miami_swap_inner(lam, k)
+        result = AbstractGrassmannian.static_miami_swap_inner(lam, k)
         self.assertEqual(str(result), 'S[5,4,3,2,1,0]')
     
     def test_last_element_zero(self):
         lam = [3,2,1,0]
         k = 3
-        result = miami_swap_inner(lam, k)
+        result = AbstractGrassmannian.static_miami_swap_inner(lam, k)
         self.assertEqual(str(result), 'S[3,2,1,0]')
 
     def test_last_element_zero_2(self):
         lam = [3,2,1,0,0,0,0]
         k = 2
-        result = miami_swap_inner(lam, k)
+        result = AbstractGrassmannian.static_miami_swap_inner(lam, k)
         self.assertEqual(str(result), 'S[3,2,1,0,0,0]')
     
     def test_last_element_non_zero(self):
         lam = [4,3,2,1]
         k = 3
-        result = miami_swap_inner(lam, k)
+        result = AbstractGrassmannian.static_miami_swap_inner(lam, k)
         self.assertEqual(str(result), 'S[4,3,2,1,0]')
 
 class TestTypeSwapInner(unittest.TestCase):
