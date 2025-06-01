@@ -119,14 +119,13 @@
     \caption{Part Star Operation (\texttt{\_part\_star})}
     \begin{algorithmic}[1]
     \REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $cols \in \mathbb{N}$
-    \ENSURE Schur hoặc $0$
-    \IF{$\lambda = \emptyset$ hoặc $\lambda_1 \neq cols$}
-        \RETURN $0$
-    \ENDIF
-    \IF{$|\lambda| = 1$}
-        \RETURN $\sigma_{\emptyset}$
-    \ENDIF
-    \RETURN $\sigma_{(\lambda_2, ..., \lambda_l)}$
+    \ENSURE Hàm Schur hoặc $0$
+    \STATE $result \gets \begin{cases}
+        0 & \text{nếu } \lambda = \emptyset \text{ hoặc } \lambda_1 \neq cols \\
+        \sigma_{\emptyset} & \text{nếu } |\lambda| = 1 \\
+        \sigma_{(\lambda_2, ..., \lambda_l)} & \text{ngược lại}
+    \end{cases}$
+    \RETURN $result$
     \end{algorithmic}
     \end{algorithm}
 
