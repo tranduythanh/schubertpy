@@ -1,6 +1,6 @@
 % --- Giambelli Algorithms ---
 
-\subsection*{Thuật toán Giambelli (mọi loại Grassmannian) -- Python: \texttt{giambelli}, \texttt{giambelli\_rec}, \texttt{giambelli\_rec\_inner}}
+\subsection*{Thuật toán Giambelli (mọi loại Grassmannian): \texttt{giambelli}, \texttt{giambelli\_rec}, \texttt{giambelli\_rec\_inner}}
 
 \begin{algorithm}[H]
 \caption{Giambelli Rule (Classical) (\texttt{giambelli})}
@@ -17,7 +17,8 @@
 \begin{algorithmic}[1]
 \REQUIRE $lc$ là LinearCombination, $pieri$ là function, $k \in \mathbb{N}$
 \ENSURE Đa thức các lớp Schubert đặc biệt
-\RETURN \texttt{apply\_lc}($\lambda \mapsto$ \texttt{giambelli\_rec\_inner}($\lambda$, $pieri$, $k$), $lc$)
+\STATE $f \gets (\lambda \mapsto$ \texttt{giambelli\_rec\_inner}($\lambda$, $pieri$, $k$))
+\RETURN \texttt{apply\_lc}($f$, $lc$)
 \end{algorithmic}
 \end{algorithm}
 
@@ -37,12 +38,10 @@
 \IF{$\lambda_l = 0$ và $\lambda_2 < k$}
     \STATE $\lambda' \gets \lambda[2:-1]$
 \ENDIF
-\STATE $pieriExpansion \gets$ pieri($p$, $\lambda'$)
-\STATE $stuff \gets$ pieriExpansion $- \sigma_\lambda$
+\STATE $st \gets$ pieri($p$, $\lambda'$) - $\sigma_\lambda$
 \STATE $a \gets$ \texttt{giambelli\_rec\_inner}($\lambda'$, $pieri$, $k$)
-\STATE $b \gets$ \texttt{giambelli\_rec}($stuff$, $pieri$, $k$)
-\STATE $result \gets$ \texttt{num2spec}($p$) $\cdot a - b$
-\RETURN \texttt{expand}($result$)
+\STATE $b \gets$ \texttt{giambelli\_rec}($st$, $pieri$, $k$)
+\RETURN $\texttt{num2spec}(p) \cdot a - b$
 \end{algorithmic}
 \end{algorithm}
 
@@ -80,16 +79,7 @@
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Apply Function to Linear Combination (\texttt{apply\_lc})}
-\begin{algorithmic}[1]
-\REQUIRE $f$ là function, $lc$ là LinearCombination
-\ENSURE LinearCombination mới
-\STATE \textit{(Xem chi tiết ở phần helper Type A)}
-\end{algorithmic}
-\end{algorithm}
-
-\subsection*{Thuật toán Giambelli lượng tử (Quantum) -- Python: \texttt{qgiambelli}}
+\subsection*{Thuật toán Giambelli lượng tử (Quantum): \texttt{qgiambelli}}
 
 \begin{algorithm}[H]
 \caption{Quantum Giambelli Rule (\texttt{qgiambelli})}
@@ -140,7 +130,7 @@
 \STATE $expr_0 \gets$ $expr$ với $v=0$
 \STATE $expr_1 \gets$ $(expr - expr_0)/v$
 \STATE $term1 \gets$ \texttt{act\_lc}($p \to$ \texttt{pieri}($i$, $p$), \texttt{act\_lc}($expr_1$, $lc$, $pieri$))
-\STATE $term2 \gets$ ActLC($expr_0$, $lc$, $pieri$)
+\STATE $term2 \gets$ \texttt{act\_lc}($expr_0$, $lc$, $pieri$)
 \RETURN $term1 + term2$
 \end{algorithmic}
 \end{algorithm}
