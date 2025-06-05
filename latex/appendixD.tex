@@ -183,33 +183,6 @@
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
-\caption{Part Star Operation (\texttt{\_part\_star})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$, $cols \in \mathbb{N}$
-\ENSURE Schur hoặc $0$
-\IF{$\lambda = \emptyset$ hoặc $\lambda_1 \neq cols$}
-    \RETURN $0$
-\ENDIF
-\IF{$|\lambda| = 1$}
-    \RETURN $\sigma_{\emptyset}$
-\ENDIF
-\RETURN $\sigma_{(\lambda_2, ..., \lambda_l)}$
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]
-\caption{Part Tilde Operation (\texttt{\_part\_tilde})}
-\begin{algorithmic}[1]
-\REQUIRE $\lambda = (\lambda_1, ..., \lambda_l)$
-\ENSURE $\lambda'$ với các phần tử đã được biến đổi
-\STATE $\lambda' \gets \emptyset$
-\FOR{$i = 1$ đến $|\lambda|$}
-    \STATE $\lambda'[i] \gets \lambda[i] - 2 \cdot (i-1)$
-\ENDFOR
-\RETURN $\lambda'$
-\end{algorithmic}
-\end{algorithm}
 
 \begin{algorithm}[H]
 \caption{Dualization Operation (\texttt{dualize})}
