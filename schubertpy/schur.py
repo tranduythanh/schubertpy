@@ -181,11 +181,10 @@ def translate_schur(sym: Union[sp.Symbol, str]) -> str:
     return str(sym).translate(btable)
 
 def toSchur(sym: Union[sp.Symbol, str, sp.Expr]) -> Schur:
-        # Convert symbol back to string and translate using reverse table
-        parsed_str = str(sym).translate(btable).replace('S', '')
-        # Parse the string back into a list structure
-        pl = ast.literal_eval(parsed_str)
-        if isinstance(pl, list) and all(isinstance(i, list) or isinstance(i, int) for i in pl):
-            return Schur(pl)
-        raise ValueError("Input string does not represent a list of lists")
-        
+    """Convert an expression or symbol to a :class:`Schur` instance."""
+
+    parsed_str = str(sym).translate(btable).replace('S', '')
+    pl = ast.literal_eval(parsed_str)
+    if isinstance(pl, list) and all(isinstance(i, list) or isinstance(i, int) for i in pl):
+        return Schur(pl)
+    raise ValueError("Input string does not represent a list of lists")

@@ -3,10 +3,12 @@ from ..partition import part_clip
 
 def _first_kstrict(k: int, rows: int, cols: int) -> List[int]:
     """Generate the first k-strict partition in lexicographic order.
-    
-    A k-strict partition is a partition where each part is at least k and the difference
-    between consecutive parts is at most 1. This function generates the first such partition
-    with given dimensions.
+
+    This follows the Maple implementation from ``qcalc``.  The enumeration
+    starts with a rectangle of width ``cols`` and height ``rows``.  Parts are
+    decreased by at most one when iterating to the next partition.  Only the
+    first part is guaranteed to be at least ``k``; later parts may drop below
+    ``k`` as the enumeration proceeds.
     
     Args:
         k (int): The minimum value for each part in the partition
@@ -47,20 +49,29 @@ def _itr_kstrict(lambda_: List[int], k: int) -> Optional[List[int]]:
 
 
 
-def all_kstrict(k: int, rows: int, cols: int) -> Set[Tuple[int, ...]]:
-    res = []
+def all_kstrict(k: int, rows: int, cols: int) -> List[List[int]]:
+    """Return all k-strict partitions within a rectangle of size ``rows``×``cols``.
+
+    The partitions are returned without duplicates and each is provided as a
+    list of integers.  Internally a set is used to ensure uniqueness while the
+    resulting list preserves the order of discovery.
+    """
+
+    res: List[List[int]] = []
+    seen: Set[Tuple[int, ...]] = set()
     lam = _first_kstrict(k, rows, cols)
-    
-    while True: # Check if lam is a list
+
+    while True:
         clipped = part_clip(lam)
-        if clipped:  # Check if clipped is not None
+        tpl = tuple(clipped)
+        if tpl not in seen:
+            seen.add(tpl)
             res.append(clipped)
-            lam = _itr_kstrict(lam, k)
-            continue
-        
-        res.append([])
-        break
+        lam = _itr_kstrict(lam, k)
+        if not lam:
+            break
 
     return res
+
 
 itr_kstrict = _itr_kstrict
