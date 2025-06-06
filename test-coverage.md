@@ -1,6 +1,6 @@
 # Test Coverage
 
-The following table summarizes the test coverage generated with `coverage`:
+The following table summarizes the latest test coverage generated with `coverage`:
 
 ```
 Name                                            Stmts   Miss  Cover
