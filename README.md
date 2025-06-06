@@ -1,6 +1,8 @@
 # schubertpy
 
 [![codecov](https://codecov.io/gh/tranduythanh/schubertpy/branch/main/graph/badge.svg)](https://codecov.io/gh/tranduythanh/schubertpy)
+[![Coverage evolution](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tranduythanh/schubertpy/python-coverage-comment-action-data/evolution_endpoint.json)](https://htmlpreview.github.io/?https://github.com/tranduythanh/schubertpy/blob/python-coverage-comment-action-data/htmlcov/index.html)
+[![PR Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tranduythanh/schubertpy/python-coverage-comment-action-data/pr_endpoint.json)](https://htmlpreview.github.io/?https://github.com/tranduythanh/schubertpy/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
 ## Overview
 
