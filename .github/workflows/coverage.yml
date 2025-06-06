@@ -37,3 +37,17 @@ jobs:
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Generate extra coverage badges
+        run: |
+          pip install diff-cover
+          python scripts/coverage_badges.py
+      - name: Commit extra badges
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout python-coverage-comment-action-data
+          mv ../evolution_endpoint.json . || true
+          mv ../pr_endpoint.json . || true
+          git add evolution_endpoint.json pr_endpoint.json
+          git commit -m "Update extra coverage badges" || echo "No changes"
+          git push origin HEAD:python-coverage-comment-action-data
