@@ -1,5 +1,7 @@
 # schubertpy
 
+[![codecov](https://codecov.io/gh/tranduythanh/schubertpy/branch/main/graph/badge.svg)](https://codecov.io/gh/tranduythanh/schubertpy)
+
 ## Overview
 
 `schubertpy` is a powerful Python package designed for performing advanced mathematical operations on the Grassmannian, a key concept in algebraic geometry and representation theory. This module facilitates operations such as quantum Pieri rules, quantum Giambelli formulae, and the manipulation of Schubert classes. It is a Python implementation based on the comprehensive maple library available at [https://sites.math.rutgers.edu/~asbuch/qcalc/](https://sites.math.rutgers.edu/~asbuch/qcalc/).
